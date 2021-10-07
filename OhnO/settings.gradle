@@ -1,0 +1,4 @@
+include ':PCLauncher'
+include ':Logic'
+include ':app'
+rootProject.name = "OhnO"
