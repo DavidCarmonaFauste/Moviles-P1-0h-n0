@@ -31,58 +31,112 @@ namespace PruebaLogica
     {
         const int X = 4, Y = 4;
         public static celda[,] _mapa = new celda[4, 4];
-        //Recusivamente mirar ahsa ared o hueco si hay algo
 
-        //método util, devuevlve color del ultimo en ver (4 = pared) y la cantidad de lo que ve
-        static bool legolas(celda_Numerica c, coordenada dir,ref int vistos)
+        static void gimli(celda_Numerica c, coordenada dir, ref int vistos, color vigilada = color.azul)
         {
             coordenada _new_pos = c._pos + dir;
 
-            if (_new_pos._x < 0 ||
-                _new_pos._x > _mapa.GetLength(0) ||
-                _new_pos._y < 0 ||
-                _new_pos._y > _mapa.GetLength(1)) return false;
-
-            if (_mapa[_new_pos._x, _new_pos._y]._c == 0) return true;
-            else
+            if (!(  _new_pos._x < 0 ||
+                    _new_pos._x > _mapa.GetLength(0) ||
+                    _new_pos._y < 0 ||
+                    _new_pos._y > _mapa.GetLength(1) &&
+                    _mapa[_new_pos._x, _new_pos._y]._c != vigilada))
             {
                 vistos++;
-                legolas(c, dir, ref vistos);
+                gimli(c, dir, ref vistos);
+            }
+        }
+        static void legolas(celda_Numerica c, coordenada dir, ref int vistos, color vigilada = color.azul)
+        {
+            coordenada _new_pos = c._pos + dir;
+
+            if (!(_new_pos._x < 0 ||
+                    _new_pos._x > _mapa.GetLength(0) ||
+                    _new_pos._y < 0 ||
+                    _new_pos._y > _mapa.GetLength(1) &&
+                    _mapa[_new_pos._x, _new_pos._y]._c == vigilada))
+            {
+                vistos++;
+                gimli(c, dir, ref vistos);
+            }
+        }
+
+        static bool pista01(celda_Numerica c)
+        {
+            int _vistos = 0;
+            gimli(c, new coordenada(0, 1), ref _vistos);
+            gimli(c, new coordenada(1, 0), ref _vistos);
+            gimli(c, new coordenada(0, -1), ref _vistos);
+            gimli(c, new coordenada(-1, 0), ref _vistos);
+            return c._vista == _vistos;
+        }
+
+        static bool pista02(celda_Numerica c, coordenada dir)
+        {
+            int _vistos = 0;
+
+            if (dir._x < 0 ||
+                dir._x > _mapa.GetLength(0) ||
+                dir._y < 0 ||
+                dir._y > _mapa.GetLength(1)) return false;
+
+            coordenada next_pos = c._pos + dir;
+            color last_c = _mapa[next_pos._x, next_pos._y]._c;
+            _mapa[next_pos._x, next_pos._y]._c = color.azul;
+
+            gimli(c, dir, ref _vistos, color.gris);
+
+            _mapa[next_pos._x, next_pos._y]._c = last_c;
+
+            return c._vista > _vistos;
+        }
+        static bool pista03(celda_Numerica c, coordenada dir)
+        {
+            if(dir._x == 0)
+            {
+                if (dir._y == -1)   return c._vista > c._pos._y;
+                else                return c._vista > (_mapa.GetLength(1) - c._pos._y);
+            }
+            else
+            {
+                if (dir._x == -1)   return c._vista > c._pos._x;
+                else                return c._vista > (_mapa.GetLength(0) - c._pos._x);
             }
 
             return false;
         }
 
-        //Calcula si en alguna dirección ve otras celdas, si la cantidad de celdas que está viendo
-        //es igual o mayor a la que debe, podemos decir que se puede cerrar
-        static bool sePuedeCerrar(celda_Numerica c, coordenada dir)
+        static bool pista04(celda_Numerica c)
         {
             int _vistos = 0;
-
-            legolas(c, new coordenada(0, 1),  ref _vistos);
-            legolas(c, new coordenada(1, 0),  ref _vistos);
-            legolas(c, new coordenada(0, -1), ref _vistos);
-            legolas(c, new coordenada(-1, 0), ref _vistos);
-
-            return _vistos >= c._vista;
+            gimli(c, new coordenada(0, 1), ref _vistos);
+            gimli(c, new coordenada(1, 0), ref _vistos);
+            gimli(c, new coordenada(0, -1), ref _vistos);
+            gimli(c, new coordenada(-1, 0), ref _vistos);
+            return c._vista < _vistos;
         }
-
-        //Podemos poner un azul en una celda vacia sin cargarnos el rango de visión??
-        static Stack cortoDeMiras(celda_Numerica c)
+        static bool pista05(celda_Numerica c)
         {
-            int _vistos = 0;
-            Stack _posiciones = new Stack();
+            int _huecos_Libres = 0;
+            legolas(c, new coordenada(0, 1), ref _huecos_Libres, color.rojo);
+            legolas(c, new coordenada(1, 0), ref _huecos_Libres, color.rojo);
+            legolas(c, new coordenada(0, -1), ref _huecos_Libres, color.rojo);
+            legolas(c, new coordenada(-1, 0), ref _huecos_Libres, color.rojo);
 
-            legolas(c, new coordenada(0, 1), ref _vistos);
-            legolas(c, new coordenada(1, 0), ref _vistos);
-            legolas(c, new coordenada(0, -1), ref _vistos);
-            legolas(c, new coordenada(-1, 0), ref _vistos);
-
-            return c._vista == 1;
+            return c._vista < _huecos_Libres;
         }
 
+        //Tambien responde a la pista 7....
+        static bool pista06(celda_Numerica c)
+        {
+            int _huecos_Libres = 0;
+            legolas(c, new coordenada(0, 1), ref _huecos_Libres, color.rojo);
+            legolas(c, new coordenada(1, 0), ref _huecos_Libres, color.rojo);
+            legolas(c, new coordenada(0, -1), ref _huecos_Libres, color.rojo);
+            legolas(c, new coordenada(-1, 0), ref _huecos_Libres, color.rojo);
 
-
+            return _huecos_Libres == 0;
+        }
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
