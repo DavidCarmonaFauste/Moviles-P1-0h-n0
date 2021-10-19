@@ -11,9 +11,12 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/AndroidEngine" />
+            <option value="$PROJECT_DIR$/AndroidLauncher" />
+            <option value="$PROJECT_DIR$/Engine" />
             <option value="$PROJECT_DIR$/Logic" />
+            <option value="$PROJECT_DIR$/PCEngine" />
             <option value="$PROJECT_DIR$/PCLauncher" />
-            <option value="$PROJECT_DIR$/app" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

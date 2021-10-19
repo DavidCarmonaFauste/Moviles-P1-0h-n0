@@ -1,4 +1,8 @@
+include ':AndroidEngine'
+include ':AndroidEngine'
+include ':PCEngine'
+include ':Engine'
 include ':PCLauncher'
 include ':Logic'
-include ':app'
+include ':AndroidLauncher'
 rootProject.name = "OhnO"
