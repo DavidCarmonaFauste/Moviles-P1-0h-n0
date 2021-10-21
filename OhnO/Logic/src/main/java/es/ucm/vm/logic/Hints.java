@@ -2,7 +2,7 @@ package es.ucm.vm.logic;
 
 public class Hints {
     //Si un número tiene ya visibles el número de celdas que dice, entonces se puede
-    //“cerrar”,
+    // cerrar,
     public boolean checkVisibleFulfilled() {
         return false;
     }
@@ -24,7 +24,7 @@ public class Hints {
     }
 
     // Un número tiene una cantidad insuficiente de casillas azules visibles y sin embargo
-    //ya está “cerrada” (no puede ampliarse más por culpa de paredes)
+    //ya está cerrada (no puede ampliarse más por culpa de paredes)
     public boolean checkTooMuchRed() {
         return false;
     }
