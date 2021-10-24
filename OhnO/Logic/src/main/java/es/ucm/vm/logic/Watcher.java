@@ -3,12 +3,45 @@ package es.ucm.vm.logic;
 import static es.ucm.vm.logic.Color.BLUE;
 
 public class Watcher {
-    public int gimli(CounterTile tile, Coord dir, Color watching) {
-        return 0;
+    private Tile[][] _map;
+    private int _mapSize = 0;
+
+    public void setMapSize(int size) { _mapSize = size;}
+    public void setMap(Tile[][] map) { _map  = map; }
+
+    public Tile[][] getMap(){ return _map; }
+    public int getMapSize() { return _mapSize; }
+
+    public int gimli(CounterTile tile, Coord dir, Color watching)
+    {
+        int counted = 0;
+        Coord _newPos = Coord.add(tile._pos, dir);
+
+        if (!(  _newPos._x < 0 ||
+                _newPos._x > _mapSize ||
+                _newPos._y < 0 ||
+                _newPos._y > _mapSize && _map[_newPos._x][_newPos._y]._c != watching))
+        {
+            counted++;
+            counted += gimli(tile, dir, watching);
+        }
+        return counted;
     }
 
-    public int legolas(CounterTile tile, Coord dir, Color watching) {
-        return 0;
+    public int legolas(CounterTile tile, Coord dir, Color watching)
+    {
+        int _free = 0;
+        Coord _newPos = Coord.add(tile._pos, dir);
+
+        if (!(  _newPos._x < 0 ||
+                _newPos._x > _mapSize ||
+                _newPos._y < 0 ||
+                _newPos._y > _mapSize && _map[_newPos._x][_newPos._y]._c == watching))
+        {
+            _free++;
+            _free += gimli(tile, dir, watching);
+        }
+        return _free;
     }
 }
 

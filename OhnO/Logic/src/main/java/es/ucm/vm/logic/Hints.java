@@ -1,38 +1,100 @@
 package es.ucm.vm.logic;
 
 public class Hints {
+    public Watcher _rorschach = new Watcher();
+
+    public Hints(int mapSize)
+    {
+        _rorschach.setMap(new Tile[mapSize][mapSize]);
+        _rorschach.setMapSize(mapSize);
+    }
+
+    public void updateMap(Tile[][] map)
+    {
+        _rorschach.setMap(map);
+    }
+
     //Si un número tiene ya visibles el número de celdas que dice, entonces se puede
-    // cerrar,
-    public boolean checkVisibleFulfilled() {
-        return false;
+    //“cerrar”,
+    public boolean checkVisibleFulfilled(CounterTile c) {
+        int _counted = 0;
+
+        _counted += _rorschach.gimli(c, new Coord(0, 1), Color.BLUE);
+        _counted += _rorschach.gimli(c, new Coord(1, 0), Color.BLUE);
+        _counted += _rorschach.gimli(c, new Coord(0, -1), Color.BLUE);
+        _counted += _rorschach.gimli(c, new Coord(-1, 0), Color.BLUE);
+        return c._count == _counted;
     }
 
     // si ponemos otro punto, se pasa del numero?
-    public boolean checkNoMoreBlue() {
-        return false;
+    public boolean checkNoMoreBlue(CounterTile c, Coord dir) {
+        int _counted = 0;
+
+        if (dir._x < 0 ||
+                dir._x > _rorschach.getMapSize() ||
+                dir._y < 0 ||
+                dir._y > _rorschach.getMapSize()) return false;
+
+        Coord next_pos = Coord.add(c._pos, dir);
+        Color last_c = _rorschach.getMap()[next_pos._x][next_pos._y]._c;
+        _rorschach.getMap()[next_pos._x][next_pos._y]._c = Color.BLUE;
+
+        _counted += _rorschach.gimli(c, dir, Color.GREY);
+
+        _rorschach.getMap()[next_pos._x][next_pos._y]._c = last_c;
+
+        return  c._count > _counted;
     }
 
     //Si no ponemos un punto azul en alguna celda vacía, entonces es imposible alcanzar el
     //número
-    public boolean checkForcedBlue() {
-        return false;
+    public boolean checkForcedBlue(CounterTile c, Coord dir) {
+        if(dir._x == 0)
+        {
+            if (dir._y == -1)   return c._count > c._pos._y;
+            else                return c._count > (_rorschach.getMapSize() - c._pos._y);
+        }
+        else
+        {
+            if (dir._x == -1)   return c._count > c._pos._x;
+            else                return c._count > (_rorschach.getMapSize() - c._pos._x);
+        }
     }
 
     //Un número tiene más casillas azules visibles de las que debería.
-    public boolean checkTooMuchBlue() {
-        return false;
+    public boolean checkTooMuchBlue(CounterTile c) {
+        int _counted = 0;
+        _counted += _rorschach.gimli(c, new Coord(0, 1), Color.BLUE);
+        _counted += _rorschach.gimli(c, new Coord(1, 0), Color.BLUE);
+        _counted += _rorschach.gimli(c, new Coord(0, -1), Color.BLUE);
+        _counted += _rorschach.gimli(c, new Coord(-1, 0), Color.BLUE);
+        return c._count < _counted;
     }
 
     // Un número tiene una cantidad insuficiente de casillas azules visibles y sin embargo
-    //ya está cerrada (no puede ampliarse más por culpa de paredes)
-    public boolean checkTooMuchRed() {
-        return false;
+    //ya está “cerrada” (no puede ampliarse más por culpa de paredes)
+    public boolean checkTooMuchRed(CounterTile c) {
+        int _free = 0;
+
+        _free += _rorschach.legolas(c, new Coord(0, 1), Color.RED);
+        _free += _rorschach.legolas(c, new Coord(1, 0), Color.RED);
+        _free += _rorschach.legolas(c, new Coord(0, -1), Color.RED);
+        _free += _rorschach.legolas(c, new Coord(-1, 0), Color.RED);
+
+        return c._count < _free;
     }
 
     // Si una celda está vacía y cerrada y no ve ninguna celda azul, entonces es pared (todos
     //los puntos azules deben ver al menos a otro)
-    public boolean checkIfRed() {
-        return false;
+    public boolean checkIfRed(CounterTile c) {
+        int _free = 0;
+
+        _free += _rorschach.legolas(c, new Coord(0, 1), Color.RED);
+        _free += _rorschach.legolas(c, new Coord(1, 0), Color.RED);
+        _free += _rorschach.legolas(c, new Coord(0, -1), Color.RED);
+        _free += _rorschach.legolas(c, new Coord(-1, 0), Color.RED);
+
+        return _free == 0;
     }
 
     // En sentido opuesto, si hay una celda punto puesta por el usuario que está cerrada
