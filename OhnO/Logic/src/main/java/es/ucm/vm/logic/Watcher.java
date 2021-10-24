@@ -3,13 +3,13 @@ package es.ucm.vm.logic;
 import static es.ucm.vm.logic.Color.BLUE;
 
 public class Watcher {
-    private Tile[][] _map;
+    private CounterTile[][] _map;
     private int _mapSize = 0;
 
     public void setMapSize(int size) { _mapSize = size;}
-    public void setMap(Tile[][] map) { _map  = map; }
+    public void setMap(CounterTile[][] map) { _map  = map; }
 
-    public Tile[][] getMap(){ return _map; }
+    public CounterTile[][] getMap(){ return _map; }
     public int getMapSize() { return _mapSize; }
 
     public int gimli(CounterTile tile, Coord dir, Color watching)
@@ -67,5 +67,10 @@ class Tile {
 }
 
 class CounterTile extends Tile {
+    public CounterTile(Color c, Coord pos, int count){
+        _c = c;
+        _pos = pos;
+        _count = count;
+    }
     public int _count;
 }

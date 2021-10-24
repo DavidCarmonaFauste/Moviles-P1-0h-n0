@@ -5,11 +5,11 @@ public class Hints {
 
     public Hints(int mapSize)
     {
-        _rorschach.setMap(new Tile[mapSize][mapSize]);
+        _rorschach.setMap(new CounterTile[mapSize][mapSize]);
         _rorschach.setMapSize(mapSize);
     }
 
-    public void updateMap(Tile[][] map)
+    public void updateMap(CounterTile[][] map)
     {
         _rorschach.setMap(map);
     }
