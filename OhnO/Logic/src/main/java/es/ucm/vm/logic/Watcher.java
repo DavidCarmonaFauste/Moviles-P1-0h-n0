@@ -12,34 +12,40 @@ public class Watcher {
     public CounterTile[][] getMap(){ return _map; }
     public int getMapSize() { return _mapSize; }
 
-    public int gimli(CounterTile tile, Coord dir, Color watching)
+    public int gimli(Coord pos, Coord dir, Color watching)
     {
         int counted = 0;
-        Coord _newPos = Coord.add(tile._pos, dir);
+        Coord _newPos = Coord.add(pos, dir);
 
         if (!(  _newPos._x < 0 ||
-                _newPos._x > _mapSize ||
+                _newPos._x >= _mapSize ||
                 _newPos._y < 0 ||
-                _newPos._y > _mapSize && _map[_newPos._x][_newPos._y]._c != watching))
+                _newPos._y >= _mapSize))
         {
-            counted++;
-            counted += gimli(tile, dir, watching);
+            if(_map[_newPos._x][_newPos._y]._c == watching)
+            {
+                counted++;
+                counted += gimli(_newPos, dir, watching);
+            }
         }
         return counted;
     }
 
-    public int legolas(CounterTile tile, Coord dir, Color watching)
+    public int legolas(Coord pos, Coord dir, Color watching)
     {
         int _free = 0;
-        Coord _newPos = Coord.add(tile._pos, dir);
+        Coord _newPos = Coord.add(pos, dir);
 
         if (!(  _newPos._x < 0 ||
-                _newPos._x > _mapSize ||
+                _newPos._x >= _mapSize ||
                 _newPos._y < 0 ||
-                _newPos._y > _mapSize && _map[_newPos._x][_newPos._y]._c == watching))
+                _newPos._y >= _mapSize))
         {
-            _free++;
-            _free += gimli(tile, dir, watching);
+            if(_map[_newPos._x][_newPos._y]._c != watching)
+            {
+                _free++;
+                _free += gimli(_newPos, dir, watching);
+            }
         }
         return _free;
     }
@@ -58,6 +64,10 @@ class Coord {
 
     public static Coord add(Coord a, Coord b) {
         return new Coord(a._x + b._x,a._y + b._y);
+    }
+
+    public static boolean compare(Coord a, Coord b) {
+        return a._x == b._x && a._y == b._y;
     }
 }
 

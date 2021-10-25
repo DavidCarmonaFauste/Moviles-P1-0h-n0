@@ -14,41 +14,45 @@ public class Hints {
         _rorschach.setMap(map);
     }
 
-    //Si un número tiene ya visibles el número de celdas que dice, entonces se puede
-    //“cerrar”,
+    //Si un número tiene ya visibles el número de celdas que dice, entonces se puede cerrar
     public boolean checkVisibleFulfilled(CounterTile c) {
         int _counted = 0;
 
-        _counted += _rorschach.gimli(c, new Coord(0, 1), Color.BLUE);
-        _counted += _rorschach.gimli(c, new Coord(1, 0), Color.BLUE);
-        _counted += _rorschach.gimli(c, new Coord(0, -1), Color.BLUE);
-        _counted += _rorschach.gimli(c, new Coord(-1, 0), Color.BLUE);
+        _counted += _rorschach.gimli(c._pos, new Coord(0, 1), Color.BLUE);
+        _counted += _rorschach.gimli(c._pos, new Coord(1, 0), Color.BLUE);
+        _counted += _rorschach.gimli(c._pos, new Coord(0, -1), Color.BLUE);
+        _counted += _rorschach.gimli(c._pos, new Coord(-1, 0), Color.BLUE);
         return c._count == _counted;
     }
 
     // si ponemos otro punto, se pasa del numero?
     public boolean checkNoMoreBlue(CounterTile c, Coord dir) {
         int _counted = 0;
+        Coord _newPos = Coord.add(c._pos, dir);
 
-        if (dir._x < 0 ||
-                dir._x > _rorschach.getMapSize() ||
-                dir._y < 0 ||
-                dir._y > _rorschach.getMapSize()) return false;
+        if (_newPos._x < 0 ||
+            _newPos._x >= _rorschach.getMapSize() ||
+            _newPos._y < 0 ||
+            _newPos._y >= _rorschach.getMapSize()) return false;
 
-        Coord next_pos = Coord.add(c._pos, dir);
-        Color last_c = _rorschach.getMap()[next_pos._x][next_pos._y]._c;
-        _rorschach.getMap()[next_pos._x][next_pos._y]._c = Color.BLUE;
+        Color last_c = _rorschach.getMap()[_newPos._x][_newPos._y]._c;
+        _rorschach.getMap()[_newPos._x][_newPos._y]._c = Color.BLUE;
 
-        _counted += _rorschach.gimli(c, dir, Color.GREY);
+        _counted += _rorschach.gimli(c._pos, dir, Color.BLUE);
 
-        _rorschach.getMap()[next_pos._x][next_pos._y]._c = last_c;
+        _rorschach.getMap()[_newPos._x][_newPos._y]._c = last_c;
 
-        return  c._count > _counted;
+        if(!Coord.compare(dir, new Coord(0, 1)))  _counted += _rorschach.gimli(c._pos, new Coord(0, 1), Color.BLUE);
+        if(!Coord.compare(dir, new Coord(1, 0)))  _counted += _rorschach.gimli(c._pos, new Coord(1, 0), Color.BLUE);
+        if(!Coord.compare(dir, new Coord(0, -1))) _counted += _rorschach.gimli(c._pos, new Coord(0, -1), Color.BLUE);
+        if(!Coord.compare(dir, new Coord(-1, 0))) _counted += _rorschach.gimli(c._pos, new Coord(-1, 0), Color.BLUE);
+
+        return  c._count >= _counted;
     }
 
-    //Si no ponemos un punto azul en alguna celda vacía, entonces es imposible alcanzar el
-    //número
+    //Si no ponemos un punto azul en alguna celda vacía, entonces es imposible alcanzar el número
     public boolean checkForcedBlue(CounterTile c, Coord dir) {
+        /*
         if(dir._x == 0)
         {
             if (dir._y == -1)   return c._count > c._pos._y;
@@ -58,28 +62,36 @@ public class Hints {
         {
             if (dir._x == -1)   return c._count > c._pos._x;
             else                return c._count > (_rorschach.getMapSize() - c._pos._x);
-        }
+        }*/
+        int _free = 0;
+
+        if(!Coord.compare(dir, new Coord(0, 1))) _free += _rorschach.legolas(c._pos, new Coord(0, 1), Color.RED);
+        if(!Coord.compare(dir, new Coord(0, 1))) _free += _rorschach.legolas(c._pos, new Coord(1, 0), Color.RED);
+        if(!Coord.compare(dir, new Coord(0, 1))) _free += _rorschach.legolas(c._pos, new Coord(0, -1), Color.RED);
+        if(!Coord.compare(dir, new Coord(0, 1))) _free += _rorschach.legolas(c._pos, new Coord(-1, 0), Color.RED);
+
+        return _free < c._count;
     }
 
     //Un número tiene más casillas azules visibles de las que debería.
     public boolean checkTooMuchBlue(CounterTile c) {
         int _counted = 0;
-        _counted += _rorschach.gimli(c, new Coord(0, 1), Color.BLUE);
-        _counted += _rorschach.gimli(c, new Coord(1, 0), Color.BLUE);
-        _counted += _rorschach.gimli(c, new Coord(0, -1), Color.BLUE);
-        _counted += _rorschach.gimli(c, new Coord(-1, 0), Color.BLUE);
-        return c._count < _counted;
+        _counted += _rorschach.gimli(c._pos, new Coord(0, 1), Color.BLUE);
+        _counted += _rorschach.gimli(c._pos, new Coord(1, 0), Color.BLUE);
+        _counted += _rorschach.gimli(c._pos, new Coord(0, -1), Color.BLUE);
+        _counted += _rorschach.gimli(c._pos, new Coord(-1, 0), Color.BLUE);
+        return c._count >= _counted;
     }
 
     // Un número tiene una cantidad insuficiente de casillas azules visibles y sin embargo
-    //ya está “cerrada” (no puede ampliarse más por culpa de paredes)
+    //ya está cerrada (no puede ampliarse más por culpa de paredes)
     public boolean checkTooMuchRed(CounterTile c) {
         int _free = 0;
 
-        _free += _rorschach.legolas(c, new Coord(0, 1), Color.RED);
-        _free += _rorschach.legolas(c, new Coord(1, 0), Color.RED);
-        _free += _rorschach.legolas(c, new Coord(0, -1), Color.RED);
-        _free += _rorschach.legolas(c, new Coord(-1, 0), Color.RED);
+        _free += _rorschach.legolas(c._pos, new Coord(0, 1), Color.RED);
+        _free += _rorschach.legolas(c._pos, new Coord(1, 0), Color.RED);
+        _free += _rorschach.legolas(c._pos, new Coord(0, -1), Color.RED);
+        _free += _rorschach.legolas(c._pos, new Coord(-1, 0), Color.RED);
 
         return c._count < _free;
     }
@@ -89,10 +101,10 @@ public class Hints {
     public boolean checkIfRed(CounterTile c) {
         int _free = 0;
 
-        _free += _rorschach.legolas(c, new Coord(0, 1), Color.RED);
-        _free += _rorschach.legolas(c, new Coord(1, 0), Color.RED);
-        _free += _rorschach.legolas(c, new Coord(0, -1), Color.RED);
-        _free += _rorschach.legolas(c, new Coord(-1, 0), Color.RED);
+        _free += _rorschach.legolas(c._pos, new Coord(0, 1), Color.RED);
+        _free += _rorschach.legolas(c._pos, new Coord(1, 0), Color.RED);
+        _free += _rorschach.legolas(c._pos, new Coord(0, -1), Color.RED);
+        _free += _rorschach.legolas(c._pos, new Coord(-1, 0), Color.RED);
 
         return _free == 0;
     }
