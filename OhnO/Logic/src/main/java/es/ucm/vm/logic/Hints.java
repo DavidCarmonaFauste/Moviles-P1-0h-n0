@@ -13,7 +13,51 @@ public class Hints {
     {
         _rorschach.setMap(map);
     }
-
+    public void solveMap()
+    {
+        for(CounterTile[] column : _rorschach.getMap())
+        {
+            for(CounterTile t : column)
+            {
+                //Para azules -> 1,2,3
+                if(t._c == Color.BLUE)
+                {
+                    //Pista 1
+                    if(checkVisibleFulfilled(t))
+                    {
+                        if(t._pos._y < _rorschach.getMapSize() - 1){
+                            if(_rorschach.getMap()[t._pos._x][t._pos._y + 1]._c == Color.GREY) _rorschach.getMap()[t._pos._x][t._pos._y + 1]._c = Color.RED;
+                        }
+                        if(t._pos._y > 0){
+                            if(_rorschach.getMap()[t._pos._x][t._pos._y - 1]._c == Color.GREY) _rorschach.getMap()[t._pos._x][t._pos._y - 1]._c = Color.RED;
+                        }
+                        if(t._pos._x < _rorschach.getMapSize() - 1){
+                            if(_rorschach.getMap()[t._pos._x + 1][t._pos._y]._c == Color.GREY) _rorschach.getMap()[t._pos._x + 1][t._pos._y ]._c = Color.RED;
+                        }
+                        if(t._pos._x > 0){
+                            if(_rorschach.getMap()[t._pos._x - 1][t._pos._y]._c == Color.GREY) _rorschach.getMap()[t._pos._x + 1][t._pos._y ]._c = Color.RED;
+                        }
+                    }
+                    //Pista 2
+                    if(checkNoMoreBlue(t, new Coord(0, 1))) _rorschach.getMap()[t._pos._x][t._pos._y + 1]._c = Color.RED;
+                    if(checkNoMoreBlue(t, new Coord(0, -1))) _rorschach.getMap()[t._pos._x][t._pos._y - 1]._c = Color.RED;
+                    if(checkNoMoreBlue(t, new Coord(1, 0))) _rorschach.getMap()[t._pos._x + 1][t._pos._y]._c = Color.RED;
+                    if(checkNoMoreBlue(t, new Coord(-1, 0))) _rorschach.getMap()[t._pos._x - 1][t._pos._y]._c = Color.RED;
+                    //Pista 3 BUG
+                    if(checkForcedBlue(t, new Coord(0, 1))) _rorschach.getMap()[t._pos._x][t._pos._y + 1]._c = Color.BLUE;
+                    if(checkForcedBlue(t, new Coord(0, -1))) _rorschach.getMap()[t._pos._x][t._pos._y - 1]._c = Color.BLUE;
+                    if(checkForcedBlue(t, new Coord(1, 0))) _rorschach.getMap()[t._pos._x + 1][t._pos._y]._c = Color.BLUE;
+                    if(checkForcedBlue(t, new Coord(-1, 0))) _rorschach.getMap()[t._pos._x - 1][t._pos._y]._c = Color.BLUE;
+                }
+                //Para grises -> 5
+                else if(t._c == Color.GREY)
+                {
+                    //Pista 5
+                    if(checkIfRed(t)) t._c = Color.RED;
+                }
+            }
+        }
+    }
     //Si un número tiene ya visibles el número de celdas que dice, entonces se puede cerrar
     public boolean checkVisibleFulfilled(CounterTile c) {
         int _counted = 0;
@@ -47,7 +91,7 @@ public class Hints {
         if(!Coord.compare(dir, new Coord(0, -1))) _counted += _rorschach.gimli(c._pos, new Coord(0, -1), Color.BLUE);
         if(!Coord.compare(dir, new Coord(-1, 0))) _counted += _rorschach.gimli(c._pos, new Coord(-1, 0), Color.BLUE);
 
-        return  c._count >= _counted;
+        return  c._count < _counted;
     }
 
     //Si no ponemos un punto azul en alguna celda vacía, entonces es imposible alcanzar el número
