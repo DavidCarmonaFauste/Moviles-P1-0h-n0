@@ -1,7 +1,5 @@
 package es.ucm.vm.logic;
 
-import static es.ucm.vm.logic.Color.BLUE;
-
 public class Watcher {
     private CounterTile[][] _map;
     private int _mapSize = 0;
