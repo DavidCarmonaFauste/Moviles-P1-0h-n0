@@ -10,6 +10,8 @@ public class Logic {
         renderPrueba(mapaPrueba);
         pistas.solveMap();
         renderPrueba(pistas._rorschach.getMap());
+        pistas.reCountEmpty();
+        renderPrueba(pistas._rorschach.getMap());
         //String respuesta;
         //PISTA 01
         //respuesta = (pistas.checkVisibleFulfilled(mapaPrueba[4][0])) ? "Se puede cerrar" : "hmmm falla algo...";
@@ -41,6 +43,16 @@ public class Logic {
         System.out.println("+---+---+---+---+");
     }
     /*
+    +---+---+---+---+
+    |   | X |   |   |
+    +---+---+---+---+
+    | X |   | 2 |   |
+    +---+---+---+---+
+    |   | 1 | X |   |
+    +---+---+---+---+
+    |   | 0 | 2 | 4 |
+    +---+---+---+---+
+
     +---+---+---+---+
     |   | X |   |   |
     +---+---+---+---+

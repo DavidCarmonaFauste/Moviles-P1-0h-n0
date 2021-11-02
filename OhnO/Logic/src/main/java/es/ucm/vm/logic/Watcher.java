@@ -17,10 +17,7 @@ public class Watcher {
         int counted = 0;
         Coord _newPos = Coord.add(pos, dir);
 
-        if (!(  _newPos._x < 0 ||
-                _newPos._x >= _mapSize ||
-                _newPos._y < 0 ||
-                _newPos._y >= _mapSize))
+        if (!offLimits(_newPos))
         {
             if(_map[_newPos._x][_newPos._y]._c == watching)
             {
@@ -36,20 +33,29 @@ public class Watcher {
         int _free = 0;
         Coord _newPos = Coord.add(pos, dir);
 
-        if (!(  _newPos._x < 0 ||
-                _newPos._x >= _mapSize ||
-                _newPos._y < 0 ||
-                _newPos._y >= _mapSize))
+        if (!offLimits(_newPos))
         {
             if(_map[_newPos._x][_newPos._y]._c != watching)
             {
                 _free++;
-                _free += gimli(_newPos, dir, watching);
+                int l = legolas(_newPos, dir, watching);
+                if(l == -1) return -1;
+                else _free += l;
             }
+            return _free;
         }
-        return _free;
+        return  -1;
+    }
+    private boolean offLimits(Coord pos)
+    {
+        return (pos._x < 0 ||
+                pos._x >= _mapSize ||
+                pos._y < 0 ||
+                pos._y >= _mapSize);
+
     }
 }
+
 
 enum Color {GREY, RED, BLUE};
 
