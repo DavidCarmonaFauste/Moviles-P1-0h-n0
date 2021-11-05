@@ -9,9 +9,9 @@ public class Logic {
         pistas.updateMap(mapaPrueba);
         renderPrueba(mapaPrueba);
         pistas.solveMap();
-        renderPrueba(pistas._rorschach.getMap());
+        //renderPrueba(pistas._rorschach.getMap());
         pistas.reCountEmpty();
-        renderPrueba(pistas._rorschach.getMap());
+        //renderPrueba(pistas._rorschach.getMap());
         //String respuesta;
         //PISTA 01
         //respuesta = (pistas.checkVisibleFulfilled(mapaPrueba[4][0])) ? "Se puede cerrar" : "hmmm falla algo...";
@@ -34,8 +34,8 @@ public class Logic {
             System.out.println("+---+---+---+---+");
             for(int x = 0; x < 4; x++)
             {
-                if(mapa[x][y]._c == Color.BLUE)      System.out.print("| " + mapa[x][y]._count + " ");
-                else if (mapa[x][y]._c == Color.RED) System.out.print("| X ");
+                if(mapa[x][y]._color == Color.BLUE)      System.out.print("| " + mapa[x][y]._count + " ");
+                else if (mapa[x][y]._color == Color.RED) System.out.print("| X ");
                 else                                 System.out.print("|   ");
             }
             System.out.println("|");

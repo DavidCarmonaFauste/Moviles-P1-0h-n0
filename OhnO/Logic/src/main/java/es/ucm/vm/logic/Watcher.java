@@ -4,11 +4,25 @@ public class Watcher {
     private CounterTile[][] _map;
     private int _mapSize = 0;
 
-    public void setMapSize(int size) { _mapSize = size;}
-    public void setMap(CounterTile[][] map) { _map  = map; }
+    public void setMapSize(int size)
+    {
+        _mapSize = size;
+    }
 
-    public CounterTile[][] getMap(){ return _map; }
-    public int getMapSize() { return _mapSize; }
+    public void setMap(CounterTile[][] map)
+    {
+        _map  = map;
+    }
+
+    public CounterTile[][] getMap()
+    {
+        return _map;
+    }
+
+    public int getMapSize()
+    {
+        return _mapSize;
+    }
 
     public int gimli(Coord pos, Coord dir, Color watching)
     {
@@ -17,7 +31,7 @@ public class Watcher {
 
         if (!offLimits(_newPos))
         {
-            if(_map[_newPos._x][_newPos._y]._c == watching)
+            if(_map[_newPos._x][_newPos._y]._color == watching)
             {
                 counted++;
                 counted += gimli(_newPos, dir, watching);
@@ -33,7 +47,7 @@ public class Watcher {
 
         if (!offLimits(_newPos))
         {
-            if(_map[_newPos._x][_newPos._y]._c != watching)
+            if(_map[_newPos._x][_newPos._y]._color != watching)
             {
                 _free++;
                 int l = legolas(_newPos, dir, watching);
@@ -44,6 +58,7 @@ public class Watcher {
         }
         return  -1;
     }
+
     private boolean offLimits(Coord pos)
     {
         return (pos._x < 0 ||
@@ -55,9 +70,14 @@ public class Watcher {
 }
 
 
-enum Color {GREY, RED, BLUE};
+enum Color {GREY, RED, BLUE}
 
 class Coord {
+    public static final Coord[] DIRECTIONS;
+    static {
+        DIRECTIONS = new Coord[]{new Coord(0, 1), new Coord(0, -1), new Coord(1, 0), new Coord(-1, 0)};
+    }
+
     public int _x;
     public int _y;
 
@@ -76,15 +96,16 @@ class Coord {
 }
 
 class Tile {
-    public Color _c;
+    public Color _color;
     public Coord _pos;
 }
 
 class CounterTile extends Tile {
     public CounterTile(Color c, Coord pos, int count){
-        _c = c;
-        _pos = pos;
-        _count = count;
+        this._color = c;
+        this._pos = pos;
+        this._count = count;
     }
+
     public int _count;
 }

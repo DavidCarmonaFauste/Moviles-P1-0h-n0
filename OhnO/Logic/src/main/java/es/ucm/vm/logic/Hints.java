@@ -1,194 +1,225 @@
 package es.ucm.vm.logic;
 
 public class Hints {
-    public Watcher _rorschach = new Watcher();
+    public Watcher _watcher = new Watcher();
 
     public Hints(int mapSize)
     {
-        _rorschach.setMap(new CounterTile[mapSize][mapSize]);
-        _rorschach.setMapSize(mapSize);
+        _watcher.setMap(new CounterTile[mapSize][mapSize]);
+        _watcher.setMapSize(mapSize);
     }
 
     public void updateMap(CounterTile[][] map)
     {
-        _rorschach.setMap(map);
+        _watcher.setMap(map);
     }
+
     public void solveMap()
     {
-        for(CounterTile[] column : _rorschach.getMap())
+        for(CounterTile[] column : _watcher.getMap())
         {
             for(CounterTile t : column)
             {
-                //Para azules -> 1,2,3
-                int util = 0;
-                if(t._c == Color.BLUE && t._count > 0)
+                switch (t._color)
                 {
-                    //Pista 1
-
-                    if(checkVisibleFulfilled(t))
-                    {
-                        if(t._pos._y < _rorschach.getMapSize() - 1){
-                            util = _rorschach.gimli(t._pos, new Coord(0, 1), Color.BLUE);
-                            if(t._pos._y + util + 1 < _rorschach.getMapSize()) {
-                                if (_rorschach.getMap()[t._pos._x][t._pos._y + util + 1]._c == Color.GREY)
-                                    _rorschach.getMap()[t._pos._x][t._pos._y + util + 1]._c = Color.RED;
-                            }
-                            //if(_rorschach.getMap()[t._pos._x][t._pos._y + 1]._c == Color.GREY) _rorschach.getMap()[t._pos._x][t._pos._y + 1]._c = Color.RED;
-                        }
-                        if(t._pos._y > 0){
-                            util = _rorschach.gimli(t._pos, new Coord(0, -1), Color.BLUE);
-                            if(t._pos._y - util - 1 >= 0) {
-                                if (_rorschach.getMap()[t._pos._x][t._pos._y - util - 1]._c == Color.GREY)
-                                    _rorschach.getMap()[t._pos._x][t._pos._y - util - 1]._c = Color.RED;
-                            }
-                            /*util = _rorschach.legolas(t._pos, new Coord(0, -1), Color.GREY);
-                            if(util != -1) _rorschach.getMap()[t._pos._x][t._pos._y - util]._c = Color.RED;
-                            */
-                            //if(_rorschach.getMap()[t._pos._x][t._pos._y - 1]._c == Color.GREY) _rorschach.getMap()[t._pos._x][t._pos._y - 1]._c = Color.RED;
-                        }
-                        if(t._pos._x < _rorschach.getMapSize() - 1){
-                            util = _rorschach.gimli(t._pos, new Coord(1, 0), Color.BLUE);
-                            if(t._pos._x + util + 1 < _rorschach.getMapSize()) {
-                                if (_rorschach.getMap()[t._pos._x + util + 1][t._pos._y]._c == Color.GREY)
-                                    _rorschach.getMap()[t._pos._x + util + 1][t._pos._y]._c = Color.RED;
-                            }
-                            /*
-                            util = _rorschach.legolas(t._pos, new Coord(1, 0), Color.GREY);
-                            if(util != -1) _rorschach.getMap()[t._pos._x + util][t._pos._y]._c = Color.RED;
-                            */
-                            //if(_rorschach.getMap()[t._pos._x + 1][t._pos._y]._c == Color.GREY) _rorschach.getMap()[t._pos._x + 1][t._pos._y ]._c = Color.RED;
-                        }
-                        if(t._pos._x > 0){
-                            util = _rorschach.gimli(t._pos, new Coord(-1, 0), Color.BLUE);
-                            if(t._pos._x - util - 1 >= 0) {
-                                if (_rorschach.getMap()[t._pos._x - util - 1][t._pos._y]._c == Color.GREY)
-                                    _rorschach.getMap()[t._pos._x - util - 1][t._pos._y]._c = Color.RED;
-                            }
-                            /*
-                            util = _rorschach.legolas(t._pos, new Coord(-1, 0), Color.GREY);
-                            if(util != -1) _rorschach.getMap()[t._pos._x - util][t._pos._y]._c = Color.RED;
-                            */
-                            //if(_rorschach.getMap()[t._pos._x - 1][t._pos._y]._c == Color.GREY) _rorschach.getMap()[t._pos._x + 1][t._pos._y ]._c = Color.RED;
-                        }
-                    }
-                    else {
-                        //Pista 2
-                        if (checkNoMoreBlue(t, new Coord(0, 1))) {
-                            _rorschach.getMap()[t._pos._x][t._pos._y + 1]._c = Color.RED;
-                        }
-                        if (checkNoMoreBlue(t, new Coord(0, -1))) {
-                            _rorschach.getMap()[t._pos._x][t._pos._y - 1]._c = Color.RED;
-                        }
-                        if (checkNoMoreBlue(t, new Coord(1, 0))) {
-                            _rorschach.getMap()[t._pos._x + 1][t._pos._y]._c = Color.RED;
-                        }
-                        if (checkNoMoreBlue(t, new Coord(-1, 0))) {
-                            _rorschach.getMap()[t._pos._x - 1][t._pos._y]._c = Color.RED;
-                        }
-
-                        //Pista 3 BUG
-                        if (checkForcedBlue(t, new Coord(0, 1))) {
-                            _rorschach.getMap()[t._pos._x][t._pos._y + 1]._c = Color.BLUE;
-                        }
-                        if (checkForcedBlue(t, new Coord(0, -1))) {
-                            _rorschach.getMap()[t._pos._x][t._pos._y - 1]._c = Color.BLUE;
-                        }
-                        if (checkForcedBlue(t, new Coord(1, 0))) {
-                            _rorschach.getMap()[t._pos._x + 1][t._pos._y]._c = Color.BLUE;
-                        }
-                        if (checkForcedBlue(t, new Coord(-1, 0))) {
-                            _rorschach.getMap()[t._pos._x - 1][t._pos._y]._c = Color.BLUE;
-                        }
-                    }
+                    case BLUE:
+                        tryHintsOnBlue(t);
+                        break;
+                    case GREY:
+                        tryHintsOnGrey(t);
+                        break;
                 }
-                //Para grises -> 5
-                else if(t._c == Color.GREY)
-                {
-                    //Pista 5
-                    if(checkIfRed(t)) {
-                        t._c = Color.RED;
-                    }
-                }
-                //System.out.println("X: " + t._pos._x + "   Y: " +  t._pos._y);
-                //renderPrueba();
             }
         }
-        if(!isSolved()) solveMap();
+        if(!isSolved())
+            solveMap();
     }
-    void renderPrueba()
+
+
+    public void renderPrueba()
     {
         for(int y = 0; y < 4; y++)
         {
+            System.out.println("+---+---+---+---+");
             for(int x = 0; x < 4; x++)
             {
-                if(_rorschach.getMap()[x][y]._c == Color.BLUE)      System.out.print(_rorschach.getMap()[x][y]._count);
-                else if (_rorschach.getMap()[x][y]._c == Color.RED) System.out.print("X");
-                else                                 System.out.print("#");
+                switch (_watcher.getMap()[x][y]._color){
+                    case RED:
+                        System.out.print("| X ");
+                        break;
+                    case BLUE:
+                        System.out.print("| " + _watcher.getMap()[x][y]._count + " ");
+                        break;
+                    default:
+                        System.out.print("|   ");
+                }
             }
-            System.out.println("");
+            System.out.println("|");
         }
         System.out.println("+---+---+---+---+");
     }
+
+    /**
+     * Adds the "views"/counter info to blue tiles that currently don't have it
+     */
     public void reCountEmpty()
     {
-        for(CounterTile[] column : _rorschach.getMap())
+        for(CounterTile[] column : _watcher.getMap())
         {
             for(CounterTile t : column) {
-                if(t._c == Color.BLUE && t._count == 0) {
-                    t._count += _rorschach.gimli(t._pos, new Coord(0, 1), Color.BLUE);
-                    t._count += _rorschach.gimli(t._pos, new Coord(1, 0), Color.BLUE);
-                    t._count += _rorschach.gimli(t._pos, new Coord(0, -1), Color.BLUE);
-                    t._count += _rorschach.gimli(t._pos, new Coord(-1, 0), Color.BLUE);
+                if(t._color == Color.BLUE && t._count == 0) {
+                    for (Coord dir: Coord.DIRECTIONS)
+                    {
+                        t._count += _watcher.gimli(t._pos, dir, Color.BLUE);
+                    }
                 }
             }
         }
     }
+
+    /**
+     * Checks for puzzle completion by looking for grey tiles. If no grey tiles remain, it's a win
+     * @return (boolean) true if no grey tiles, false if one or more grey tiles remaining
+     */
     public boolean isSolved()
     {
-        for(CounterTile[] column : _rorschach.getMap())
+        for(CounterTile[] column : _watcher.getMap())
         {
             for(CounterTile t : column) {
-                if(t._c == Color.GREY) return false;
+                if(t._color == Color.GREY) return false;
             }
         }
         return true;
     }
-    //Si un número tiene ya visibles el número de celdas que dice, entonces se puede cerrar
-    public boolean checkVisibleFulfilled(CounterTile c) {
-        int _counted = 0;
 
-        _counted += _rorschach.gimli(c._pos, new Coord(0, 1), Color.BLUE);
-        _counted += _rorschach.gimli(c._pos, new Coord(1, 0), Color.BLUE);
-        _counted += _rorschach.gimli(c._pos, new Coord(0, -1), Color.BLUE);
-        _counted += _rorschach.gimli(c._pos, new Coord(-1, 0), Color.BLUE);
-        return c._count == _counted;
+    void tryHintsOnGrey(CounterTile t)
+    {
+        // HINT 5   --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
+        if(checkIfRed(t)) {
+            t._color = Color.RED;
+            renderPrueba();
+        }
+    }
+
+    /**
+     * Runs hints that involve a blue tile
+     * @param t (CounterTile) blue tile we want to check
+     */
+    void tryHintsOnBlue(CounterTile t)
+    {
+        // HINT 1   --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
+        if(checkVisibleFulfilled(t))
+        {
+            closeWithRed(t);
+            renderPrueba();
+        }
+        else {
+            // HINT 2   --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
+            for (Coord dir: Coord.DIRECTIONS)
+            {
+                if (checkNoMoreBlue(t, dir)) {
+                    _watcher.getMap()[t._pos._x + dir._x][t._pos._y + dir._y]._color = Color.RED;
+                    renderPrueba();
+                }
+            }
+
+            // HINT 3 (BUGGY)   --  --  --  --  --  --  --  --  --  --  --  --  --  --
+            for (Coord dir: Coord.DIRECTIONS)
+            {
+                if (checkForcedBlue(t, dir)) {
+                    _watcher.getMap()[t._pos._x + dir._x][t._pos._y + dir._y]._color = Color.BLUE;
+                    renderPrueba();
+                }
+            }
+        }
+    }
+
+    /**
+     * Given a tile, it checks around it and adds red tiles on the surrounding empty spaces.
+     * @param t (CounterTile) tile we want to close. it has passed a checkVisibleFulfilled test
+     */
+    void closeWithRed(CounterTile t)
+    {
+        if (validMapPosition(t._pos))
+        {
+            int blueCount = 0;
+            for (Coord dir: Coord.DIRECTIONS)
+            {
+                Coord auxPos = new Coord(t._pos._x, t._pos._y);
+                blueCount = _watcher.gimli(t._pos, dir, Color.BLUE);
+                auxPos._x += (dir._x * blueCount) + dir._x;
+                auxPos._y += (dir._y * blueCount) + dir._y;
+                if(validMapPosition(auxPos) && _watcher.getMap()[auxPos._x][auxPos._y]._color == Color.GREY)
+                {
+                    _watcher.getMap()[auxPos._x][auxPos._y]._color = Color.RED;
+                }
+            }
+        }
+    }
+
+    /**
+     * Counts all visible blue tiles surrounding the given tile
+     * @param t (CounterTile) blue tile we want to count for
+     * @return (int) number of visible blue tiles
+     */
+    int countVisibleBlue(CounterTile t)
+    {
+        int counted = 0;
+        for (Coord dir: Coord.DIRECTIONS)
+        {
+            counted += _watcher.gimli(t._pos, dir, Color.BLUE);
+        }
+
+        return counted;
+    }
+
+    boolean validMapPosition(Coord point)
+    {
+        return  (point._y < _watcher.getMapSize()) &&
+                (point._y >= 0) &&
+                (point._x < _watcher.getMapSize()) &&
+                (point._x >= 0);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    //                                H I N T    M E T H O D S
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Checks if a blue tile already sees all the necessary blue tiles. Then it can be closed off
+     * with red tiles
+     * @param c (CounterTile) blue tile to be checked
+     * @return (boolean) true if the seen tiles are the same as the blue tiles it neeeds to see
+     */
+    public boolean checkVisibleFulfilled(CounterTile c) {
+        int counted = countVisibleBlue(c);
+
+        return c._count == counted;
     }
 
     // si ponemos otro punto, se pasa del numero?
+
+    /**
+     * Checks if a tile doesn't allow more blue visible tiles in a given direction
+     * @param c
+     * @param dir
+     * @return
+     */
     public boolean checkNoMoreBlue(CounterTile c, Coord dir) {
-        int _counted = 0;
+        int counted = 0;
         Coord _newPos = Coord.add(c._pos, dir);
 
-        if (_newPos._x < 0 ||
-            _newPos._x >= _rorschach.getMapSize() ||
-            _newPos._y < 0 ||
-            _newPos._y >= _rorschach.getMapSize()) return false;
+        if (!validMapPosition(_newPos)) return false;
 
-        Color last_c = _rorschach.getMap()[_newPos._x][_newPos._y]._c;
+        Color last_c = _watcher.getMap()[_newPos._x][_newPos._y]._color;
         if(last_c == Color.BLUE) return false;
-        _rorschach.getMap()[_newPos._x][_newPos._y]._c = Color.BLUE;
+        _watcher.getMap()[_newPos._x][_newPos._y]._color = Color.BLUE;
 
-        //_counted += _rorschach.gimli(c._pos, dir, Color.BLUE);
+        counted = countVisibleBlue(c);
 
+        _watcher.getMap()[_newPos._x][_newPos._y]._color = last_c;
 
-        _counted += _rorschach.gimli(c._pos, new Coord(0, 1), Color.BLUE);
-        _counted += _rorschach.gimli(c._pos, new Coord(1, 0), Color.BLUE);
-        _counted += _rorschach.gimli(c._pos, new Coord(0, -1), Color.BLUE);
-        _counted += _rorschach.gimli(c._pos, new Coord(-1, 0), Color.BLUE);
-
-        _rorschach.getMap()[_newPos._x][_newPos._y]._c = last_c;
-
-        return  c._count < _counted;
+        return  c._count < counted;
     }
 
     //Si no ponemos un punto azul en alguna celda vacía, entonces es imposible alcanzar el número
@@ -206,26 +237,24 @@ public class Hints {
         }*/
         int _free = 0;
         Coord _newPos = Coord.add(c._pos, dir);
-        if (_newPos._x < 0 ||
-                _newPos._x >= _rorschach.getMapSize() ||
-                _newPos._y < 0 ||
-                _newPos._y >= _rorschach.getMapSize()) return false;
+        if (!validMapPosition(_newPos)) return false;
+
         int leg = 0;
         if(!Coord.compare(dir, new Coord(0, 1))){
-            leg = _rorschach.legolas(c._pos, new Coord(0, 1), Color.RED);
-            _free += (leg == -1) ? _rorschach.getMapSize() - Coord.add(c._pos, new Coord(0, 1))._y : leg;
+            leg = _watcher.legolas(c._pos, new Coord(0, 1), Color.RED);
+            _free += (leg == -1) ? _watcher.getMapSize() - Coord.add(c._pos, new Coord(0, 1))._y : leg;
 
         }
         if(!Coord.compare(dir, new Coord(1, 0))){
-            leg = _rorschach.legolas(c._pos, new Coord(1, 0), Color.RED);
-            _free += (leg == -1) ? _rorschach.getMapSize() - Coord.add(c._pos, new Coord(1, 0))._x : leg;
+            leg = _watcher.legolas(c._pos, new Coord(1, 0), Color.RED);
+            _free += (leg == -1) ? _watcher.getMapSize() - Coord.add(c._pos, new Coord(1, 0))._x : leg;
         }
         if(!Coord.compare(dir, new Coord(0, -1))) {
-            leg = _rorschach.legolas(c._pos, new Coord(0, -1), Color.RED);
+            leg = _watcher.legolas(c._pos, new Coord(0, -1), Color.RED);
             _free += (leg == -1) ? c._pos._y : leg;
         }
         if(!Coord.compare(dir, new Coord(-1, 0))){
-            leg = _rorschach.legolas(c._pos, new Coord(-1, 0), Color.RED);
+            leg = _watcher.legolas(c._pos, new Coord(-1, 0), Color.RED);
             _free += (leg == -1) ? c._pos._x : leg;
         }
 
@@ -234,42 +263,44 @@ public class Hints {
 
     //Un número tiene más casillas azules visibles de las que debería.
     public boolean checkTooMuchBlue(CounterTile c) {
-        int _counted = 0;
-        _counted += _rorschach.gimli(c._pos, new Coord(0, 1), Color.BLUE);
-        _counted += _rorschach.gimli(c._pos, new Coord(1, 0), Color.BLUE);
-        _counted += _rorschach.gimli(c._pos, new Coord(0, -1), Color.BLUE);
-        _counted += _rorschach.gimli(c._pos, new Coord(-1, 0), Color.BLUE);
-        return c._count >= _counted;
+        int counted = countVisibleBlue(c);
+
+        return c._count >= counted;
     }
 
     // Un número tiene una cantidad insuficiente de casillas azules visibles y sin embargo
     //ya está cerrada (no puede ampliarse más por culpa de paredes)
     public boolean checkTooMuchRed(CounterTile c) {
-        int _free = 0;
+        int free = 0;
 
-        _free += _rorschach.legolas(c._pos, new Coord(0, 1), Color.RED);
-        _free += _rorschach.legolas(c._pos, new Coord(1, 0), Color.RED);
-        _free += _rorschach.legolas(c._pos, new Coord(0, -1), Color.RED);
-        _free += _rorschach.legolas(c._pos, new Coord(-1, 0), Color.RED);
+        for (Coord dir: Coord.DIRECTIONS)
+        {
+            free += _watcher.legolas(c._pos, dir, Color.RED);
+        }
 
-        return c._count < _free;
+        return c._count < free;
     }
 
     // Si una celda está vacía y cerrada y no ve ninguna celda azul, entonces es pared (todos
     //los puntos azules deben ver al menos a otro)
     public boolean checkIfRed(CounterTile c) {
-        int _free = 0, lego = 0;
+        int free = 0, lego = 0;
 
-        lego = _rorschach.legolas(c._pos, new Coord(0, 1), Color.RED);
-        _free += (lego == -1) ? _rorschach.getMapSize() - Coord.add(c._pos, new Coord(0, 1))._y : lego;
-        lego = _rorschach.legolas(c._pos, new Coord(1, 0), Color.RED);
-        _free += (lego == -1) ? _rorschach.getMapSize() - Coord.add(c._pos, new Coord(1, 0))._x : lego;
-        lego = _rorschach.legolas(c._pos, new Coord(0, -1), Color.RED);
-        _free += (lego == -1) ? Coord.add(c._pos, new Coord(0, -1))._y : lego;
-        lego = _rorschach.legolas(c._pos, new Coord(-1, 0), Color.RED);
-        _free += (lego == -1) ? Coord.add(c._pos, new Coord(-1, 0))._x : lego;
+        /*for (Coord dir: Coord.DIRECTIONS)
+        {
+            lego = _rorschach.legolas(c._pos, dir, Color.RED);
+            free += (lego == -1)? _rorschach.getMapSize() - Coord.add(c._pos, dir) : lego;
+        }*/
+        lego = _watcher.legolas(c._pos, new Coord(0, 1), Color.RED);
+        free += (lego == -1) ? _watcher.getMapSize() - Coord.add(c._pos, new Coord(0, 1))._y : lego;
+        lego = _watcher.legolas(c._pos, new Coord(1, 0), Color.RED);
+        free += (lego == -1) ? _watcher.getMapSize() - Coord.add(c._pos, new Coord(1, 0))._x : lego;
+        lego = _watcher.legolas(c._pos, new Coord(0, -1), Color.RED);
+        free += (lego == -1) ? Coord.add(c._pos, new Coord(0, -1))._y : lego;
+        lego = _watcher.legolas(c._pos, new Coord(-1, 0), Color.RED);
+        free += (lego == -1) ? Coord.add(c._pos, new Coord(-1, 0))._x : lego;
 
-        return _free <= 0;
+        return free <= 0;
     }
 
     // En sentido opuesto, si hay una celda punto puesta por el usuario que está cerrada
