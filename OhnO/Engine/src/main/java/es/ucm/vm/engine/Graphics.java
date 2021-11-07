@@ -73,6 +73,8 @@ public interface Graphics {
 
     void fillRect(int x1, int y1, int x2, int y2);
 
+    void fillCircle(int x, int y, int radius);
+
     void drawText(String text, int x, int y);
 
     //Font newFont(String filename, int size, boolean isBold);

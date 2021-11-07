@@ -50,6 +50,11 @@ public class Graphics extends AbstractGraphics {
     }
 
     @Override
+    public void fillCircle(int x, int y, int radius) {
+        
+    }
+
+    @Override
     public void drawText(String text, int x, int y) {
 
     }

@@ -1,22 +1,23 @@
 package es.ucm.vm.logic;
 
 public class Hints {
-    public Watcher _watcher = new Watcher();
+    public Watcher _watcher;
+    Board _board;
 
-    public Hints(int mapSize)
+    public Hints(Board b)
     {
-        _watcher.setMap(new CounterTile[mapSize][mapSize]);
-        _watcher.setMapSize(mapSize);
+        _board = b;
+        _watcher = new Watcher(_board);
     }
 
-    public void updateMap(CounterTile[][] map)
+    public void updateMap(Board b)
     {
-        _watcher.setMap(map);
+        _board = b;
     }
 
     public void solveMap()
     {
-        for(CounterTile[] column : _watcher.getMap())
+        for(CounterTile[] column : _board.getMap())
         {
             for(CounterTile t : column)
             {
@@ -43,12 +44,12 @@ public class Hints {
             System.out.println("+---+---+---+---+");
             for(int x = 0; x < 4; x++)
             {
-                switch (_watcher.getMap()[x][y]._color){
+                switch (_board.getMap()[x][y]._color){
                     case RED:
                         System.out.print("| X ");
                         break;
                     case BLUE:
-                        System.out.print("| " + _watcher.getMap()[x][y]._count + " ");
+                        System.out.print("| " + _board.getMap()[x][y]._count + " ");
                         break;
                     default:
                         System.out.print("|   ");
@@ -64,7 +65,7 @@ public class Hints {
      */
     public void reCountEmpty()
     {
-        for(CounterTile[] column : _watcher.getMap())
+        for(CounterTile[] column : _board.getMap())
         {
             for(CounterTile t : column) {
                 if(t._color == Color.BLUE && t._count == 0) {
@@ -83,7 +84,7 @@ public class Hints {
      */
     public boolean isSolved()
     {
-        for(CounterTile[] column : _watcher.getMap())
+        for(CounterTile[] column : _board.getMap())
         {
             for(CounterTile t : column) {
                 if(t._color == Color.GREY) return false;
@@ -118,7 +119,7 @@ public class Hints {
             for (Coord dir: Coord.DIRECTIONS)
             {
                 if (checkNoMoreBlue(t, dir)) {
-                    _watcher.getMap()[t._pos._x + dir._x][t._pos._y + dir._y]._color = Color.RED;
+                    _board.getMap()[t._pos._x + dir._x][t._pos._y + dir._y]._color = Color.RED;
                     renderPrueba();
                 }
             }
@@ -127,7 +128,7 @@ public class Hints {
             for (Coord dir: Coord.DIRECTIONS)
             {
                 if (checkForcedBlue(t, dir)) {
-                    _watcher.getMap()[t._pos._x + dir._x][t._pos._y + dir._y]._color = Color.BLUE;
+                    _board.getMap()[t._pos._x + dir._x][t._pos._y + dir._y]._color = Color.BLUE;
                     renderPrueba();
                 }
             }
@@ -140,7 +141,7 @@ public class Hints {
      */
     void closeWithRed(CounterTile t)
     {
-        if (validMapPosition(t._pos))
+        if (!_board.offLimits(t._pos))
         {
             int blueCount = 0;
             for (Coord dir: Coord.DIRECTIONS)
@@ -149,9 +150,9 @@ public class Hints {
                 blueCount = _watcher.gimli(t._pos, dir, Color.BLUE);
                 auxPos._x += (dir._x * blueCount) + dir._x;
                 auxPos._y += (dir._y * blueCount) + dir._y;
-                if(validMapPosition(auxPos) && _watcher.getMap()[auxPos._x][auxPos._y]._color == Color.GREY)
+                if(!_board.offLimits(auxPos) && _board.getMap()[auxPos._x][auxPos._y]._color == Color.GREY)
                 {
-                    _watcher.getMap()[auxPos._x][auxPos._y]._color = Color.RED;
+                    _board.getMap()[auxPos._x][auxPos._y]._color = Color.RED;
                 }
             }
         }
@@ -173,13 +174,13 @@ public class Hints {
         return counted;
     }
 
-    boolean validMapPosition(Coord point)
+    /*boolean validMapPosition(Coord point)
     {
-        return  (point._y < _watcher.getMapSize()) &&
+        return  (point._y < _board.getMapSize()) &&
                 (point._y >= 0) &&
-                (point._x < _watcher.getMapSize()) &&
+                (point._x < _board.getMapSize()) &&
                 (point._x >= 0);
-    }
+    }*/
 
     // ---------------------------------------------------------------------------------------------
     //                                H I N T    M E T H O D S
@@ -209,15 +210,15 @@ public class Hints {
         int counted = 0;
         Coord _newPos = Coord.add(c._pos, dir);
 
-        if (!validMapPosition(_newPos)) return false;
+        if (_board.offLimits(_newPos)) return false;
 
-        Color last_c = _watcher.getMap()[_newPos._x][_newPos._y]._color;
+        Color last_c = _board.getMap()[_newPos._x][_newPos._y]._color;
         if(last_c == Color.BLUE) return false;
-        _watcher.getMap()[_newPos._x][_newPos._y]._color = Color.BLUE;
+        _board.getMap()[_newPos._x][_newPos._y]._color = Color.BLUE;
 
         counted = countVisibleBlue(c);
 
-        _watcher.getMap()[_newPos._x][_newPos._y]._color = last_c;
+        _board.getMap()[_newPos._x][_newPos._y]._color = last_c;
 
         return  c._count < counted;
     }
@@ -237,17 +238,17 @@ public class Hints {
         }*/
         int _free = 0;
         Coord _newPos = Coord.add(c._pos, dir);
-        if (!validMapPosition(_newPos)) return false;
+        if (_board.offLimits(_newPos)) return false;
 
         int leg = 0;
         if(!Coord.compare(dir, new Coord(0, 1))){
             leg = _watcher.legolas(c._pos, new Coord(0, 1), Color.RED);
-            _free += (leg == -1) ? _watcher.getMapSize() - Coord.add(c._pos, new Coord(0, 1))._y : leg;
+            _free += (leg == -1) ? _board.getMapSize() - Coord.add(c._pos, new Coord(0, 1))._y : leg;
 
         }
         if(!Coord.compare(dir, new Coord(1, 0))){
             leg = _watcher.legolas(c._pos, new Coord(1, 0), Color.RED);
-            _free += (leg == -1) ? _watcher.getMapSize() - Coord.add(c._pos, new Coord(1, 0))._x : leg;
+            _free += (leg == -1) ? _board.getMapSize() - Coord.add(c._pos, new Coord(1, 0))._x : leg;
         }
         if(!Coord.compare(dir, new Coord(0, -1))) {
             leg = _watcher.legolas(c._pos, new Coord(0, -1), Color.RED);
@@ -292,9 +293,9 @@ public class Hints {
             free += (lego == -1)? _rorschach.getMapSize() - Coord.add(c._pos, dir) : lego;
         }*/
         lego = _watcher.legolas(c._pos, new Coord(0, 1), Color.RED);
-        free += (lego == -1) ? _watcher.getMapSize() - Coord.add(c._pos, new Coord(0, 1))._y : lego;
+        free += (lego == -1) ? _board.getMapSize() - Coord.add(c._pos, new Coord(0, 1))._y : lego;
         lego = _watcher.legolas(c._pos, new Coord(1, 0), Color.RED);
-        free += (lego == -1) ? _watcher.getMapSize() - Coord.add(c._pos, new Coord(1, 0))._x : lego;
+        free += (lego == -1) ? _board.getMapSize() - Coord.add(c._pos, new Coord(1, 0))._x : lego;
         lego = _watcher.legolas(c._pos, new Coord(0, -1), Color.RED);
         free += (lego == -1) ? Coord.add(c._pos, new Coord(0, -1))._y : lego;
         lego = _watcher.legolas(c._pos, new Coord(-1, 0), Color.RED);

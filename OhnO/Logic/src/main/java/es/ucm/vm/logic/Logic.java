@@ -4,10 +4,12 @@ public class Logic {
 
     public void prueba()
     {
-        CounterTile[][] mapaPrueba = pruebas();
-        Hints pistas = new Hints(4);
-        pistas.updateMap(mapaPrueba);
-        renderPrueba(mapaPrueba);
+        Board board = new Board(4);
+        board.setMap(pruebas());
+
+        Hints pistas = new Hints(board);
+        pistas.updateMap(board);
+        renderPrueba(board.getMap());
         pistas.solveMap();
         //renderPrueba(pistas._rorschach.getMap());
         pistas.reCountEmpty();

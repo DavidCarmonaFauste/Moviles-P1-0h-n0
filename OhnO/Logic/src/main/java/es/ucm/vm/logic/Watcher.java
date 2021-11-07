@@ -1,27 +1,10 @@
 package es.ucm.vm.logic;
 
 public class Watcher {
-    private CounterTile[][] _map;
-    private int _mapSize = 0;
+    Board _board;
 
-    public void setMapSize(int size)
-    {
-        _mapSize = size;
-    }
-
-    public void setMap(CounterTile[][] map)
-    {
-        _map  = map;
-    }
-
-    public CounterTile[][] getMap()
-    {
-        return _map;
-    }
-
-    public int getMapSize()
-    {
-        return _mapSize;
+    public Watcher(Board b) {
+        _board = b;
     }
 
     public int gimli(Coord pos, Coord dir, Color watching)
@@ -29,9 +12,9 @@ public class Watcher {
         int counted = 0;
         Coord _newPos = Coord.add(pos, dir);
 
-        if (!offLimits(_newPos))
+        if (!_board.offLimits(_newPos))
         {
-            if(_map[_newPos._x][_newPos._y]._color == watching)
+            if(_board.getMap()[_newPos._x][_newPos._y]._color == watching)
             {
                 counted++;
                 counted += gimli(_newPos, dir, watching);
@@ -45,9 +28,9 @@ public class Watcher {
         int _free = 0;
         Coord _newPos = Coord.add(pos, dir);
 
-        if (!offLimits(_newPos))
+        if (!_board.offLimits(_newPos))
         {
-            if(_map[_newPos._x][_newPos._y]._color != watching)
+            if(_board.getMap()[_newPos._x][_newPos._y]._color != watching)
             {
                 _free++;
                 int l = legolas(_newPos, dir, watching);
@@ -57,15 +40,6 @@ public class Watcher {
             return _free;
         }
         return  -1;
-    }
-
-    private boolean offLimits(Coord pos)
-    {
-        return (pos._x < 0 ||
-                pos._x >= _mapSize ||
-                pos._y < 0 ||
-                pos._y >= _mapSize);
-
     }
 }
 
