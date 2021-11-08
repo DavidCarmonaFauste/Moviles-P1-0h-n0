@@ -50,16 +50,16 @@ public interface Graphics {
     /**
      * Clears the screen filling it with a specific color.
      *
-     * @param color (int) Color to fill screen
+     * @param color (Color) Color to fill screen
      */
-    void clear(int color);
+    void clear(Color color);
 
     /**
      * Sets a color to draw things in screen.
      *
-     * @param color (int) Color to set for drawing
+     * @param color (Color) Color to set for drawing
      */
-    void setColor(int color);
+    void setColor(Color color);
 
     /**
      * Draws a line between to points specified with some color provided.
