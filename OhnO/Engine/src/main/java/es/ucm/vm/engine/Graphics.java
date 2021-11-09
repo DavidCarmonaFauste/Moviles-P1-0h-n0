@@ -106,7 +106,7 @@ public interface Graphics {
      *
      * @param src (Rect) Rectangle to scale.
      * @param dim (Rect) Rectangle to fit source Rect.
-     * @return (Rect) New scalated rectangle.
+     * @return (Rect) New scaled rectangle.
      */
     Rect scale(Rect src, Rect dim);
 

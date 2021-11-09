@@ -22,7 +22,7 @@ public class Graphics extends AbstractGraphics {
     AssetManager _aMan;
     Paint _pnt;
     Canvas _cnv;
-    es.ucm.vm.engine.Color _color;
+    public es.ucm.vm.engine.Color _color;
     //es.ucm.vdm.androidengine.Font _font;
 
     /**
