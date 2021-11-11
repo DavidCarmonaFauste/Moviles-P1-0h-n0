@@ -44,28 +44,46 @@ public class PlayGameState implements GameState{
     private BoardTile[][] fillBoard(int mapSize) {
         // TODO: ACTUALLY GENERATE BOARD HERE
         int d = 30; // temp diameter for tiles
-        BoardTile[][] mapaPruebas = new BoardTile[4][4];
-        /*----------------------------------------------------*///y -> 0
-        mapaPruebas[0][0] = new BoardTile(100,100, d, TileColor.GREY, 0, new BoardPosition(0,0));
-        mapaPruebas[1][0] = new BoardTile(200, 100, d, TileColor.RED, 0, new BoardPosition(1,0));
-        mapaPruebas[2][0] = new BoardTile(300, 100, d, TileColor.GREY, 0, new BoardPosition(2,0));
-        mapaPruebas[3][0] = new BoardTile(400, 100, d, TileColor.GREY, 0, new BoardPosition(3,0));
-        /*----------------------------------------------------*///y -> 1
-        mapaPruebas[0][1] = new BoardTile(100,200, d, TileColor.RED, 0, new BoardPosition(0,1));
-        mapaPruebas[1][1] = new BoardTile(200, 200, d, TileColor.GREY, 0, new BoardPosition(1,1));
-        mapaPruebas[2][1] = new BoardTile(300, 200, d, TileColor.BLUE, 2, new BoardPosition(2,1));
-        mapaPruebas[3][1] = new BoardTile(400, 200, d, TileColor.GREY, 0, new BoardPosition(3,1));
-        /*----------------------------------------------------*///y -> 2
-        mapaPruebas[0][2] = new BoardTile(100, 300, d, TileColor.GREY, 0, new BoardPosition(0,2));
-        mapaPruebas[1][2] = new BoardTile(200, 300, d, TileColor.BLUE, 1, new BoardPosition(1,2));
-        mapaPruebas[2][2] = new BoardTile(300, 300, d, TileColor.GREY, 0, new BoardPosition(2,2));
-        mapaPruebas[3][2] = new BoardTile(400, 300, d, TileColor.GREY, 0, new BoardPosition(3,2));
-        /*----------------------------------------------------*///y -> 3
-        mapaPruebas[0][3] = new BoardTile(100, 400, d, TileColor.GREY, 0, new BoardPosition(0,3));
-        mapaPruebas[1][3] = new BoardTile(200, 400, d, TileColor.GREY, 0, new BoardPosition(1,3));
-        mapaPruebas[2][3] = new BoardTile(300, 400, d, TileColor.BLUE, 2, new BoardPosition(2,3));
-        mapaPruebas[3][3] = new BoardTile(400, 400, d, TileColor.BLUE, 4, new BoardPosition(3,3));
-        /*----------------------------------------------------*/
+        BoardTile[][] mapaPruebas = new BoardTile[mapSize][mapSize];
+        // Vector de bool para saber las casillas que relleno aleatoriamente de azules, y depués recorrer el resto para ponerlas en gris
+        boolean rellenas [][] = new boolean[mapSize][mapSize];
+
+        for (int i = 0; i < rellenas.length; i++) {
+            for (int j = 0; j < rellenas[i].length; j++) {
+                rellenas[i][j] = false;
+            }
+        }
+
+        // Generación de 'mpaSize' casillas aleatorias azules con 'maxSize' números aleatorios
+        for (int i = 0; i< mapSize; i++){
+            int x = (int)(Math.random()*(mapSize+1)) -1;
+            int y = (int)(Math.random()*(mapSize+1)) -1;
+
+            rellenas[x-1][y-1] = true;
+
+            int count = (int)(Math.random()*(mapSize+1));
+
+            mapaPruebas[x][y] = new BoardTile((x +1)*100,(y+1)*100, d, TileColor.BLUE, count, new BoardPosition(x,y));
+        }
+
+        for (int i = 0; i < mapSize; i++) {
+            for (int j = 0; j < mapSize; j++) {
+                if(!rellenas[i][j])
+                    mapaPruebas[i][j] = new BoardTile((i +1)*100,(j+1)*100, d, TileColor.GREY, 0, new BoardPosition(i,j));
+            }
+        }
+
+        while (!_hints.solveMap()){
+            int x = (int)(Math.random()*(mapSize+1)) -1;
+            int y = (int)(Math.random()*(mapSize+1)) -1;
+
+            rellenas[x-1][y-1] = true;
+
+            int count = (int)(Math.random()*(mapSize+1));
+
+            mapaPruebas[x][y] = new BoardTile((x +1)*100,(y+1)*100, d, TileColor.BLUE, count, new BoardPosition(x,y));
+        }
+
 
         for (BoardTile row[]:mapaPruebas) {
             for (BoardTile tile: row) {

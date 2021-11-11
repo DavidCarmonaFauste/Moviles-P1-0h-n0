@@ -5,7 +5,7 @@ import static es.ucm.vm.logic.BoardPosition.DIRECTIONS;
 public class Hints {
     public Watcher _watcher;
     Board _board;
-    public boolean _mapSolved = false;
+    public boolean _sameMap = false;
 
     public Hints(Board b)
     {
@@ -18,8 +18,9 @@ public class Hints {
         _board = b;
     }
 
-    public void solveMap()
+    public boolean solveMap()
     {
+        _sameMap = true;
         for(BoardTile[] column : _board.getMap())
         {
             for(BoardTile t : column)
@@ -35,10 +36,9 @@ public class Hints {
                 }
             }
         }
-        if(!isSolved())
+        if(!isSolved() && !_sameMap)
             solveMap();
-        else
-            reCountEmpty();
+        return !_sameMap;
     }
 
 
@@ -81,7 +81,6 @@ public class Hints {
                 }
             }
         }
-        _mapSolved = true;
     }
 
     /**
@@ -117,6 +116,7 @@ public class Hints {
         // HINT 1   --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
         if(checkVisibleFulfilled(t))
         {
+            _sameMap = false;
             closeWithRed(t);
             renderPrueba();
         }
@@ -125,6 +125,7 @@ public class Hints {
             for (BoardPosition dir: DIRECTIONS)
             {
                 if (checkNoMoreBlue(t, dir)) {
+                    _sameMap = false;
                     _board.getMap()[t._boardPos._x + dir._x][t._boardPos._y + dir._y]._tileColor = TileColor.RED;
                     renderPrueba();
                 }
@@ -134,6 +135,7 @@ public class Hints {
             for (BoardPosition dir: DIRECTIONS)
             {
                 if (checkForcedBlue(t, dir)) {
+                    _sameMap = false;
                     _board.getMap()[t._boardPos._x + dir._x][t._boardPos._y + dir._y]._tileColor = TileColor.BLUE;
                     renderPrueba();
                 }
