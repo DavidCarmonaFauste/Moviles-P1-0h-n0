@@ -68,6 +68,16 @@ public class PlayGameState implements GameState{
             }
         }
 
+        while (!_hints.solveMap()){
+            int x = (int)(Math.random()*(mapSize+1)) -1;
+            int y = (int)(Math.random()*(mapSize+1)) -1;
+
+            rellenas[x-1][y-1] = true;
+
+            int count = (int)(Math.random()*(mapSize+1));
+
+            mapaPruebas[x][y] = new BoardTile((x +1)*100,(y+1)*100, d, TileColor.BLUE, count, new BoardPosition(x,y));
+        }
 
 
         for (BoardTile row[]:mapaPruebas) {
