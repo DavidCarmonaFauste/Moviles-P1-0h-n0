@@ -13,6 +13,9 @@ public class Text extends GameObject {
     private String _t;
     private String _f;
 
+    int _thickness;
+    Color _c;
+
     /**
      * Constructor of Text GameObject. Creates a new Text object with all the parameters provided
      * to apply it for the text.
@@ -28,7 +31,8 @@ public class Text extends GameObject {
     public Text(double x, double y, Color c, int thickness,
                 String text, boolean bold, String font) {
         super(x, y);
-
+        _c = c;
+        _thickness = thickness;
         _b = bold;
         _t = text;
         _f = font;

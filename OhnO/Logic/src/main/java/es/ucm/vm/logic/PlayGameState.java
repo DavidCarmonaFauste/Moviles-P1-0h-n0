@@ -3,6 +3,7 @@ package es.ucm.vm.logic;
 import java.util.List;
 
 import es.ucm.vm.engine.Color;
+import es.ucm.vm.engine.Font;
 import es.ucm.vm.engine.Graphics;
 import es.ucm.vm.engine.Input;
 
@@ -17,6 +18,8 @@ public class PlayGameState implements GameState{
     int _coordOrX; // Coord origin X value
     int _coordOrY; // Coord origin Y value
 
+    Text _text;
+
     public PlayGameState(Logic l, int mapSize) {
         _l = l;
         _color = new Color();
@@ -27,6 +30,8 @@ public class PlayGameState implements GameState{
         _coordOr = new Vector2(_coordOrX, _coordOrY);
 
         newMap(mapSize);
+        _text = new Text(0,0, new Color(100, 100, 100, 255), 30, "Hola", false, Font.FONT_JOSEFIN_BOLD);
+        _text.setCoordOrigin(_coordOr);
     }
 
     public void newMap(int mapSize) {
@@ -96,6 +101,8 @@ public class PlayGameState implements GameState{
             }
             System.out.println("+---+---+---+---+");
         }
+
+        _text.render(g);
     }
 
     /**

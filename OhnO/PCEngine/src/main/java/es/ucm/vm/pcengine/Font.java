@@ -29,7 +29,7 @@ public class Font implements es.ucm.vm.engine.Font {
         // Loading the font from the .ttf file
         java.awt.Font baseFont;
 
-        try (InputStream is = new FileInputStream("Resources/" + filename)) {
+        try (InputStream is = new FileInputStream("data/" + filename)) {
             baseFont = java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, is);
         }
         catch (Exception e) {
