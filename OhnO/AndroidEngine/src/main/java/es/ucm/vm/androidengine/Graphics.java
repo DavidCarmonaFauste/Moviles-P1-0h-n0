@@ -106,12 +106,14 @@ public class Graphics extends AbstractGraphics {
 
     @Override
     public void fillCircle(int x, int y, int diameter) {
-        
+        _pnt.setStyle(Paint.Style.FILL);
+        _cnv.drawCircle(x -diameter/2, y -diameter/2, diameter/2, _pnt);
     }
 
     @Override
-    public void drawText(String text, int x, int y) {
-
+    public void drawText(String text, int x, int y, int size) {
+        _pnt.setTextSize(size);
+        _cnv.drawText(text, 10, 25, _pnt);
     }
 
     /**
@@ -149,16 +151,6 @@ public class Graphics extends AbstractGraphics {
     public void restore() {
         _cnv.restore();
     } // restore
-
-    /**
-     * Rotates transformation matrix for painting rotated objects.
-     *
-     * @param angle (float) Angle to rotate object
-     */
-    @Override
-    public void rotate(float angle) {
-        _cnv.rotate(angle);
-    } // rotate
 
     /**
      * Changes the origin coordinates of transformation matrix.
