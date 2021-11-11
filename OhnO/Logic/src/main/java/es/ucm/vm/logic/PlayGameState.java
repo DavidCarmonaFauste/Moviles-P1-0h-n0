@@ -36,9 +36,9 @@ public class PlayGameState implements GameState{
 
     public void newMap(int mapSize) {
         _board = new Board(mapSize);
-        _board.setMap(fillBoard(mapSize));
-
         _hints = new Hints(_board);
+        _board.setMap(fillBoard(mapSize));
+        _hints.updateMap(_board);
     }
 
     private BoardTile[][] fillBoard(int mapSize) {
@@ -55,11 +55,11 @@ public class PlayGameState implements GameState{
         }
 
         // Generación de 'mpaSize' casillas aleatorias azules con 'maxSize' números aleatorios
-        for (int i = 0; i< mapSize; i++){
-            int x = (int)(Math.random()*(mapSize+1)) -1;
-            int y = (int)(Math.random()*(mapSize+1)) -1;
+        for (int i = 0; i < mapSize; i++){
+            int x = (int)(Math.random()*(mapSize));
+            int y = (int)(Math.random()*(mapSize));
 
-            rellenas[x-1][y-1] = true;
+            rellenas[x][y] = true;
 
             int count = (int)(Math.random()*(mapSize+1));
 
@@ -73,9 +73,11 @@ public class PlayGameState implements GameState{
             }
         }
 
+        _board.setMap(mapaPruebas);
+        _hints.updateMap(_board);
         while (!_hints.solveMap()){
-            int x = (int)(Math.random()*(mapSize+1)) -1;
-            int y = (int)(Math.random()*(mapSize+1)) -1;
+            int x = (int)(Math.random()*(mapSize));
+            int y = (int)(Math.random()*(mapSize));
 
             rellenas[x-1][y-1] = true;
 
@@ -96,7 +98,7 @@ public class PlayGameState implements GameState{
 
     @Override
     public void update(double t) {
-        if (!_hints._mapSolved)
+        if (!_hints._sameMap)
             _hints.solveMap();
     }
 
@@ -105,7 +107,7 @@ public class PlayGameState implements GameState{
         _color.setWhite();
         g.setColor(_color);
         _board.render(g);
-        if (!_hints._mapSolved) {
+        if (!_hints._sameMap) {
             for(int y = 0; y < 4; y++)
             {
                 System.out.println("+---+---+---+---+");
