@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.view.SurfaceView;
 
 import es.ucm.vm.engine.AbstractGraphics;
+import es.ucm.vm.engine.Font;
 import es.ucm.vm.engine.Rect;
 import es.ucm.vm.engine.Color;
 
@@ -112,6 +113,11 @@ public class Graphics extends AbstractGraphics {
     @Override
     public void drawText(String text, int x, int y) {
 
+    }
+
+    @Override
+    public Font newFont(String filename, int size, boolean isBold) {
+        return null;
     }
 
     /**
