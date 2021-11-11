@@ -7,14 +7,14 @@ public class Watcher {
         _board = b;
     }
 
-    public int gimli(Coord pos, Coord dir, Color watching)
+    public int gimli(Coord pos, Coord dir, TileColor watching)
     {
         int counted = 0;
         Coord _newPos = Coord.add(pos, dir);
 
         if (!_board.offLimits(_newPos))
         {
-            if(_board.getMap()[_newPos._x][_newPos._y]._color == watching)
+            if(_board.getMap()[_newPos._x][_newPos._y]._Tile_color == watching)
             {
                 counted++;
                 counted += gimli(_newPos, dir, watching);
@@ -23,14 +23,14 @@ public class Watcher {
         return counted;
     }
 
-    public int legolas(Coord pos, Coord dir, Color watching)
+    public int legolas(Coord pos, Coord dir, TileColor watching)
     {
         int _free = 0;
         Coord _newPos = Coord.add(pos, dir);
 
         if (!_board.offLimits(_newPos))
         {
-            if(_board.getMap()[_newPos._x][_newPos._y]._color != watching)
+            if(_board.getMap()[_newPos._x][_newPos._y]._Tile_color != watching)
             {
                 _free++;
                 int l = legolas(_newPos, dir, watching);
@@ -44,7 +44,7 @@ public class Watcher {
 }
 
 
-enum Color {GREY, RED, BLUE}
+enum TileColor {GREY, RED, BLUE}
 
 class Coord {
     public static final Coord[] DIRECTIONS;
@@ -70,13 +70,13 @@ class Coord {
 }
 
 class Tile {
-    public Color _color;
+    public TileColor _Tile_color;
     public Coord _pos;
 }
 
 class CounterTile extends Tile {
-    public CounterTile(Color c, Coord pos, int count){
-        this._color = c;
+    public CounterTile(TileColor c, Coord pos, int count){
+        this._Tile_color = c;
         this._pos = pos;
         this._count = count;
     }

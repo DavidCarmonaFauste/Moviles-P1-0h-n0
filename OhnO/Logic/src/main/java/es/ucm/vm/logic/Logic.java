@@ -1,97 +1,90 @@
 package es.ucm.vm.logic;
 
-public class Logic {
+import es.ucm.vm.engine.Color;
+import es.ucm.vm.engine.Engine;
+import es.ucm.vm.engine.Rect;
 
-    public void prueba()
-    {
-        Board board = new Board(4);
-        board.setMap(pruebas());
+public class Logic implements es.ucm.vm.engine.Logic {
+    //---------------------------------------------------------------
+    //----------------------Private Atributes------------------------
+    //---------------------------------------------------------------
+    Engine _eng; // Instance of Engine for loading levels and resources.
+    Rect _cnv; // Surface to paint current GameState.
+    Color _clearColor; // Black color to clear the render.
+    GameState _currentGameState; // Current GameState instance
+    PlayGameState _pgs = null; // PlayGameState to use its different functions
 
-        Hints pistas = new Hints(board);
-        pistas.updateMap(board);
-        renderPrueba(board.getMap());
-        pistas.solveMap();
-        //renderPrueba(pistas._rorschach.getMap());
-        pistas.reCountEmpty();
-        //renderPrueba(pistas._rorschach.getMap());
-        //String respuesta;
-        //PISTA 01
-        //respuesta = (pistas.checkVisibleFulfilled(mapaPrueba[4][0])) ? "Se puede cerrar" : "hmmm falla algo...";
-        //PISTA 02
-        //respuesta = (pistas.checkNoMoreBlue(mapaPrueba[2][3], new Coord(0, -1))) ?  "Por ahí ya hay demasiados azules" : "Puedes avanzar en esa direccion";
-        //PISTA 03
-        //respuesta = (pistas.checkForcedBlue(mapaPrueba[2][3], new Coord(-1, 0))) ? "Tienes que avanzar por ahí" : "Hay mucho campo por explorar";
-        //PISTA 04
-        //respuesta = (pistas.checkTooMuchBlue(mapaPrueba[2][3])) ? "Vas bien" : "Te has pasao amigo";
-        //PISTA 05
-        //respuesta = (pistas.checkTooMuchRed(mapaPrueba[2][3])) ? "Vas bien de rojo" : "Te has pasao amigo";
-        //PISTA 06 - 07
-        //respuesta = (pistas.checkIfRed(mapaPrueba[4][2])) ? "Eso es una pared" : "Puede ser azul";
-        //System.out.print(respuesta);
+    enum GameStates {PLAY, MENU, RESET} // Enum with the different type of GameStates.
+
+    int _mapSize;
+
+    /**
+     * Logic constructor, creates a new instance of Logic with a new Engine.
+     *
+     * @param e (Engine) New engine instance.
+     */
+    public Logic(Engine e){
+        // Save instance of engine for updates and rendering
+        _eng = e;
+
+        // Init everything
+        _cnv = new Rect (640, 0, 0, 480);
+        _clearColor = new Color(0,0,0,255);
+    } // Logic
+
+    @Override
+    public void initLogic() {
+        // TODO: REPLACE WHEN WE HAVE A MENU, LOAD MENU INSTEAD
+        _mapSize = 4;
+        setGameState(GameStates.PLAY);
     }
-    public void renderPrueba(CounterTile[][] mapa)
-    {
-        for(int y = 0; y < 4; y++)
-        {
-            System.out.println("+---+---+---+---+");
-            for(int x = 0; x < 4; x++)
-            {
-                if(mapa[x][y]._color == Color.BLUE)      System.out.print("| " + mapa[x][y]._count + " ");
-                else if (mapa[x][y]._color == Color.RED) System.out.print("| X ");
-                else                                 System.out.print("|   ");
-            }
-            System.out.println("|");
-        }
-        System.out.println("+---+---+---+---+");
-    }
-    /*
-    +---+---+---+---+
-    |   | X |   |   |
-    +---+---+---+---+
-    | X |   | 2 |   |
-    +---+---+---+---+
-    |   | 1 | X |   |
-    +---+---+---+---+
-    |   | 0 | 2 | 4 |
-    +---+---+---+---+
 
-    +---+---+---+---+
-    |   | X |   |   |
-    +---+---+---+---+
-    | X |   | 2 |   |
-    +---+---+---+---+
-    |   | 1 |   |   |
-    +---+---+---+---+
-    |   |   | 2 | 4 |
-    +---+---+---+---+
-    esta es la funcional, puede estar cambiada para probar pistas
-    */
-    private CounterTile[][] pruebas()
-    {
-        CounterTile[][] mapaPruebas = new CounterTile[4][4];
-        /*----------------------------------------------------*///y -> 0
-        mapaPruebas[0][0] = new CounterTile(Color.GREY, new Coord(0,0), 0);
-        mapaPruebas[1][0] = new CounterTile(Color.RED,  new Coord(1,0), 0);
-        mapaPruebas[2][0] = new CounterTile(Color.GREY, new Coord(2,0), 0);
-        mapaPruebas[3][0] = new CounterTile(Color.GREY, new Coord(3,0), 0);
-        /*----------------------------------------------------*///y -> 1
-        mapaPruebas[0][1] = new CounterTile(Color.RED,  new Coord(0,1), 0);
-        mapaPruebas[1][1] = new CounterTile(Color.GREY, new Coord(1,1), 0);
-        mapaPruebas[2][1] = new CounterTile(Color.BLUE, new Coord(2,1), 2);
-        mapaPruebas[3][1] = new CounterTile(Color.GREY, new Coord(3,1), 0);
-        /*----------------------------------------------------*///y -> 2
-        mapaPruebas[0][2] = new CounterTile(Color.GREY, new Coord(0,2), 0);
-        mapaPruebas[1][2] = new CounterTile(Color.BLUE, new Coord(1,2), 1);
-        mapaPruebas[2][2] = new CounterTile(Color.GREY, new Coord(2,2), 0);
-        mapaPruebas[3][2] = new CounterTile(Color.GREY, new Coord(3,2), 0);
-        /*----------------------------------------------------*///y -> 3
-        mapaPruebas[0][3] = new CounterTile(Color.GREY, new Coord(0,3), 0);
-        mapaPruebas[1][3] = new CounterTile(Color.GREY, new Coord(1,3), 0);
-        mapaPruebas[2][3] = new CounterTile(Color.BLUE, new Coord(2,3), 2);
-        mapaPruebas[3][3] = new CounterTile(Color.BLUE, new Coord(3,3), 4);
-        /*----------------------------------------------------*/
+    /**
+     * Returns the actual canvas of the logic established here.
+     *
+     * @return (Rect) Logic canvas
+     */
+    @Override
+    public Rect getCanvasSize() {
+        return _cnv;
+    } // getCanvasSize
 
-        return mapaPruebas;
+    /**
+     * Updates the game variables and data for the next frame render.
+     *
+     * @param t (double) Time elapsed between frames.
+     */
+    @Override
+    public void update(double t) {
+        // Process actual input and update GameState
+        _currentGameState.processInput((_eng.getInput().getTouchEvents()));
+        _currentGameState.update(t);
+    } // update
+
+    /**
+     * Renders the actual state of the game.
+     */
+    @Override
+    public void render() {
+        // Clear buffer with black
+        _eng.getGraphics().clear(_clearColor);
+
+        //_pgs.render(_eng.getGraphics());
+        _currentGameState.render(_eng.getGraphics());
+    } // render
+
+    public void setMapSize(int size) {
+        _mapSize = size;
     }
+
+    public void setGameState(GameStates gs) {
+        if (gs == GameStates.PLAY) {
+            _currentGameState = new PlayGameState(this, _mapSize);
+            _pgs = (PlayGameState)_currentGameState;
+        } // if
+        else if (gs == GameStates.MENU) {
+            _currentGameState = new MainMenuState(this);
+        } // else if
+    } // setGameState
 
 }
