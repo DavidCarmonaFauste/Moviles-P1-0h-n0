@@ -77,7 +77,7 @@ public interface Graphics {
 
     void drawText(String text, int x, int y);
 
-    //Font newFont(String filename, int size, boolean isBold);
+    Font newFont(String filename, int size, boolean isBold);
 
     //------------------------------------------------------------------------
 
