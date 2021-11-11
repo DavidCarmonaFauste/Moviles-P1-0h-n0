@@ -73,7 +73,7 @@ public interface Graphics {
 
     void fillRect(int x1, int y1, int x2, int y2);
 
-    void fillCircle(int x, int y, int radius);
+    void fillCircle(int x, int y, int diameter);
 
     void drawText(String text, int x, int y);
 

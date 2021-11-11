@@ -109,8 +109,8 @@ public class Graphics extends AbstractGraphics {
     } // fillRect
 
     @Override
-    public void fillCircle(int x, int y, int radius) {
-
+    public void fillCircle(int x, int y, int diameter) {
+        (_win.getJGraphics()).fillOval(x, y, diameter, diameter);
     }
 
     @Override

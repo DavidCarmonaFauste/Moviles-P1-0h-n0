@@ -53,5 +53,13 @@ public class Vector2 {
         }
         _unit = new Vector2(_x / _magnitude, _y / _magnitude);
     } // normalize
-} // Vector2
 
+    public void add(Vector2 other) {
+        _x += other._x;
+        _y += other._y;
+    }
+
+    public boolean equalTo(Vector2 other) {
+        return (_x == other._x && _y == other._y);
+    }
+} // Vector2

@@ -43,7 +43,7 @@ public class Window extends JFrame {
         setSize(w, h); // Size of window
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Close operation
         setExtendedState(JFrame.MAXIMIZED_BOTH); // Fullscreen
-        setUndecorated(true);
+        //setUndecorated(true);
         setIgnoreRepaint(true); // Active painting
 
         setVisible(true); // Set Window visible

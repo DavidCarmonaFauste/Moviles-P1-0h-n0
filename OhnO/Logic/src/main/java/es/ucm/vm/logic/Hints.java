@@ -1,5 +1,7 @@
 package es.ucm.vm.logic;
 
+import static es.ucm.vm.logic.BoardPosition.DIRECTIONS;
+
 public class Hints {
     public Watcher _watcher;
     Board _board;
@@ -18,11 +20,11 @@ public class Hints {
 
     public void solveMap()
     {
-        for(CounterTile[] column : _board.getMap())
+        for(BoardTile[] column : _board.getMap())
         {
-            for(CounterTile t : column)
+            for(BoardTile t : column)
             {
-                switch (t._Tile_color)
+                switch (t._tileColor)
                 {
                     case BLUE:
                         tryHintsOnBlue(t);
@@ -47,7 +49,7 @@ public class Hints {
             System.out.println("+---+---+---+---+");
             for(int x = 0; x < 4; x++)
             {
-                switch (_board.getMap()[x][y]._Tile_color){
+                switch (_board.getMap()[x][y]._tileColor){
                     case RED:
                         System.out.print("| X ");
                         break;
@@ -68,13 +70,13 @@ public class Hints {
      */
     public void reCountEmpty()
     {
-        for(CounterTile[] column : _board.getMap())
+        for(BoardTile[] column : _board.getMap())
         {
-            for(CounterTile t : column) {
-                if(t._Tile_color == TileColor.BLUE && t._count == 0) {
-                    for (Coord dir: Coord.DIRECTIONS)
+            for(BoardTile t : column) {
+                if(t._tileColor == TileColor.BLUE && t._count == 0) {
+                    for (BoardPosition dir: DIRECTIONS)
                     {
-                        t._count += _watcher.gimli(t._pos, dir, TileColor.BLUE);
+                        t._count += _watcher.gimli(t._boardPos, dir, TileColor.BLUE);
                     }
                 }
             }
@@ -88,20 +90,20 @@ public class Hints {
      */
     public boolean isSolved()
     {
-        for(CounterTile[] column : _board.getMap())
+        for(BoardTile[] column : _board.getMap())
         {
-            for(CounterTile t : column) {
-                if(t._Tile_color == TileColor.GREY) return false;
+            for(BoardTile t : column) {
+                if(t._tileColor == TileColor.GREY) return false;
             }
         }
         return true;
     }
 
-    void tryHintsOnGrey(CounterTile t)
+    void tryHintsOnGrey(BoardTile t)
     {
         // HINT 5   --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
         if(checkIfRed(t)) {
-            t._Tile_color = TileColor.RED;
+            t._tileColor = TileColor.RED;
             renderPrueba();
         }
     }
@@ -110,7 +112,7 @@ public class Hints {
      * Runs hints that involve a blue tile
      * @param t (CounterTile) blue tile we want to check
      */
-    void tryHintsOnBlue(CounterTile t)
+    void tryHintsOnBlue(BoardTile t)
     {
         // HINT 1   --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
         if(checkVisibleFulfilled(t))
@@ -120,19 +122,19 @@ public class Hints {
         }
         else {
             // HINT 2   --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
-            for (Coord dir: Coord.DIRECTIONS)
+            for (BoardPosition dir: DIRECTIONS)
             {
                 if (checkNoMoreBlue(t, dir)) {
-                    _board.getMap()[t._pos._x + dir._x][t._pos._y + dir._y]._Tile_color = TileColor.RED;
+                    _board.getMap()[t._boardPos._x + dir._x][t._boardPos._y + dir._y]._tileColor = TileColor.RED;
                     renderPrueba();
                 }
             }
 
             // HINT 3 (BUGGY)   --  --  --  --  --  --  --  --  --  --  --  --  --  --
-            for (Coord dir: Coord.DIRECTIONS)
+            for (BoardPosition dir: DIRECTIONS)
             {
                 if (checkForcedBlue(t, dir)) {
-                    _board.getMap()[t._pos._x + dir._x][t._pos._y + dir._y]._Tile_color = TileColor.BLUE;
+                    _board.getMap()[t._boardPos._x + dir._x][t._boardPos._y + dir._y]._tileColor = TileColor.BLUE;
                     renderPrueba();
                 }
             }
@@ -143,20 +145,20 @@ public class Hints {
      * Given a tile, it checks around it and adds red tiles on the surrounding empty spaces.
      * @param t (CounterTile) tile we want to close. it has passed a checkVisibleFulfilled test
      */
-    void closeWithRed(CounterTile t)
+    void closeWithRed(BoardTile t)
     {
-        if (!_board.offLimits(t._pos))
+        if (!_board.offLimits(t._boardPos))
         {
             int blueCount = 0;
-            for (Coord dir: Coord.DIRECTIONS)
+            for (BoardPosition dir: DIRECTIONS)
             {
-                Coord auxPos = new Coord(t._pos._x, t._pos._y);
-                blueCount = _watcher.gimli(t._pos, dir, TileColor.BLUE);
+                BoardPosition auxPos = new BoardPosition(t._boardPos._x, t._boardPos._y);
+                blueCount = _watcher.gimli(t._boardPos, dir, TileColor.BLUE);
                 auxPos._x += (dir._x * blueCount) + dir._x;
                 auxPos._y += (dir._y * blueCount) + dir._y;
-                if(!_board.offLimits(auxPos) && _board.getMap()[auxPos._x][auxPos._y]._Tile_color == TileColor.GREY)
+                if(!_board.offLimits(auxPos) && _board.getMap()[auxPos._x][auxPos._y]._tileColor == TileColor.GREY)
                 {
-                    _board.getMap()[auxPos._x][auxPos._y]._Tile_color = TileColor.RED;
+                    _board.getMap()[auxPos._x][auxPos._y]._tileColor = TileColor.RED;
                 }
             }
         }
@@ -167,12 +169,12 @@ public class Hints {
      * @param t (CounterTile) blue tile we want to count for
      * @return (int) number of visible blue tiles
      */
-    int countVisibleBlue(CounterTile t)
+    int countVisibleBlue(BoardTile t)
     {
         int counted = 0;
-        for (Coord dir: Coord.DIRECTIONS)
+        for (BoardPosition dir: DIRECTIONS)
         {
-            counted += _watcher.gimli(t._pos, dir, TileColor.BLUE);
+            counted += _watcher.gimli(t._boardPos, dir, TileColor.BLUE);
         }
 
         return counted;
@@ -196,7 +198,7 @@ public class Hints {
      * @param c (CounterTile) blue tile to be checked
      * @return (boolean) true if the seen tiles are the same as the blue tiles it neeeds to see
      */
-    public boolean checkVisibleFulfilled(CounterTile c) {
+    public boolean checkVisibleFulfilled(BoardTile c) {
         int counted = countVisibleBlue(c);
 
         return c._count == counted;
@@ -210,25 +212,25 @@ public class Hints {
      * @param dir
      * @return
      */
-    public boolean checkNoMoreBlue(CounterTile c, Coord dir) {
+    public boolean checkNoMoreBlue(BoardTile c, BoardPosition dir) {
         int counted = 0;
-        Coord _newPos = Coord.add(c._pos, dir);
+        BoardPosition _newPos = BoardPosition.add(c._boardPos, dir);
 
         if (_board.offLimits(_newPos)) return false;
 
-        TileColor last_c = _board.getMap()[_newPos._x][_newPos._y]._Tile_color;
+        TileColor last_c = _board.getMap()[_newPos._x][_newPos._y]._tileColor;
         if(last_c == TileColor.BLUE) return false;
-        _board.getMap()[_newPos._x][_newPos._y]._Tile_color = TileColor.BLUE;
+        _board.getMap()[_newPos._x][_newPos._y]._tileColor = TileColor.BLUE;
 
         counted = countVisibleBlue(c);
 
-        _board.getMap()[_newPos._x][_newPos._y]._Tile_color = last_c;
+        _board.getMap()[_newPos._x][_newPos._y]._tileColor = last_c;
 
         return  c._count < counted;
     }
 
     //Si no ponemos un punto azul en alguna celda vacía, entonces es imposible alcanzar el número
-    public boolean checkForcedBlue(CounterTile c, Coord dir) {
+    public boolean checkForcedBlue(BoardTile c, BoardPosition dir) {
         /*
         if(dir._x == 0)
         {
@@ -241,25 +243,25 @@ public class Hints {
             else                return c._count > (_rorschach.getMapSize() - c._pos._x);
         }*/
         int _free = 0;
-        Coord _newPos = Coord.add(c._pos, dir);
+        BoardPosition _newPos = BoardPosition.add(c._boardPos, dir);
         if (_board.offLimits(_newPos)) return false;
 
         int leg = 0;
-        if(!Coord.compare(dir, new Coord(0, 1))){
-            leg = _watcher.legolas(c._pos, new Coord(0, 1), TileColor.RED);
-            _free += (leg == -1) ? _board.getMapSize() - Coord.add(c._pos, new Coord(0, 1))._y : leg;
+        if(!BoardPosition.compare(dir, new BoardPosition(0, 1))){
+            leg = _watcher.legolas(c._boardPos, new BoardPosition(0, 1), TileColor.RED);
+            _free += (leg == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(0, 1))._y : leg;
 
         }
-        if(!Coord.compare(dir, new Coord(1, 0))){
-            leg = _watcher.legolas(c._pos, new Coord(1, 0), TileColor.RED);
-            _free += (leg == -1) ? _board.getMapSize() - Coord.add(c._pos, new Coord(1, 0))._x : leg;
+        if(!BoardPosition.compare(dir, new BoardPosition(1, 0))){
+            leg = _watcher.legolas(c._boardPos, new BoardPosition(1, 0), TileColor.RED);
+            _free += (leg == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(1, 0))._x : leg;
         }
-        if(!Coord.compare(dir, new Coord(0, -1))) {
-            leg = _watcher.legolas(c._pos, new Coord(0, -1), TileColor.RED);
+        if(!BoardPosition.compare(dir, new BoardPosition(0, -1))) {
+            leg = _watcher.legolas(c._boardPos, new BoardPosition(0, -1), TileColor.RED);
             _free += (leg == -1) ? c._pos._y : leg;
         }
-        if(!Coord.compare(dir, new Coord(-1, 0))){
-            leg = _watcher.legolas(c._pos, new Coord(-1, 0), TileColor.RED);
+        if(!BoardPosition.compare(dir, new BoardPosition(-1, 0))){
+            leg = _watcher.legolas(c._boardPos, new BoardPosition(-1, 0), TileColor.RED);
             _free += (leg == -1) ? c._pos._x : leg;
         }
 
@@ -267,7 +269,7 @@ public class Hints {
     }
 
     //Un número tiene más casillas azules visibles de las que debería.
-    public boolean checkTooMuchBlue(CounterTile c) {
+    public boolean checkTooMuchBlue(BoardTile c) {
         int counted = countVisibleBlue(c);
 
         return c._count >= counted;
@@ -275,12 +277,12 @@ public class Hints {
 
     // Un número tiene una cantidad insuficiente de casillas azules visibles y sin embargo
     //ya está cerrada (no puede ampliarse más por culpa de paredes)
-    public boolean checkTooMuchRed(CounterTile c) {
+    public boolean checkTooMuchRed(BoardTile c) {
         int free = 0;
 
-        for (Coord dir: Coord.DIRECTIONS)
+        for (BoardPosition dir: DIRECTIONS)
         {
-            free += _watcher.legolas(c._pos, dir, TileColor.RED);
+            free += _watcher.legolas(c._boardPos, dir, TileColor.RED);
         }
 
         return c._count < free;
@@ -288,7 +290,7 @@ public class Hints {
 
     // Si una celda está vacía y cerrada y no ve ninguna celda azul, entonces es pared (todos
     //los puntos azules deben ver al menos a otro)
-    public boolean checkIfRed(CounterTile c) {
+    public boolean checkIfRed(BoardTile c) {
         int free = 0, lego = 0;
 
         /*for (Coord dir: Coord.DIRECTIONS)
@@ -296,14 +298,14 @@ public class Hints {
             lego = _rorschach.legolas(c._pos, dir, Color.RED);
             free += (lego == -1)? _rorschach.getMapSize() - Coord.add(c._pos, dir) : lego;
         }*/
-        lego = _watcher.legolas(c._pos, new Coord(0, 1), TileColor.RED);
-        free += (lego == -1) ? _board.getMapSize() - Coord.add(c._pos, new Coord(0, 1))._y : lego;
-        lego = _watcher.legolas(c._pos, new Coord(1, 0), TileColor.RED);
-        free += (lego == -1) ? _board.getMapSize() - Coord.add(c._pos, new Coord(1, 0))._x : lego;
-        lego = _watcher.legolas(c._pos, new Coord(0, -1), TileColor.RED);
-        free += (lego == -1) ? Coord.add(c._pos, new Coord(0, -1))._y : lego;
-        lego = _watcher.legolas(c._pos, new Coord(-1, 0), TileColor.RED);
-        free += (lego == -1) ? Coord.add(c._pos, new Coord(-1, 0))._x : lego;
+        lego = _watcher.legolas(c._boardPos, new BoardPosition(0, 1), TileColor.RED);
+        free += (lego == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(0, 1))._y : lego;
+        lego = _watcher.legolas(c._boardPos, new BoardPosition(1, 0), TileColor.RED);
+        free += (lego == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(1, 0))._x : lego;
+        lego = _watcher.legolas(c._boardPos, new BoardPosition(0, -1), TileColor.RED);
+        free += (lego == -1) ? BoardPosition.add(c._boardPos, new BoardPosition(0, -1))._y : lego;
+        lego = _watcher.legolas(c._boardPos, new BoardPosition(-1, 0), TileColor.RED);
+        free += (lego == -1) ? BoardPosition.add(c._boardPos, new BoardPosition(-1, 0))._x : lego;
 
         return free <= 0;
     }

@@ -49,7 +49,7 @@ public class Input extends AbstractInput implements es.ucm.vm.engine.Input, Mous
         if(keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE) {
             aux = new TouchEvent(0, 0, TouchEvent.TouchType.KEY_EXIT);
         } // if
-        else if(keyEvent.getKeyCode() == 82) {
+        else if(keyEvent.getKeyCode() == 82) { // R key
             aux = new TouchEvent(0, 0, TouchEvent.TouchType.KEY_RESTART);
         }
         else {

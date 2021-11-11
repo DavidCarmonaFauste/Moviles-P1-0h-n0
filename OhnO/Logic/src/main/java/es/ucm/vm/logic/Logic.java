@@ -87,4 +87,10 @@ public class Logic implements es.ucm.vm.engine.Logic {
         } // else if
     } // setGameState
 
+    /**
+     * Function to close the game.
+     */
+    public void closeGame(){
+        _eng.closeGame();
+    } // closeGame
 }
