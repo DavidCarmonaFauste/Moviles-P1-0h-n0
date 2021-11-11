@@ -62,6 +62,12 @@ public class PlayGameState implements GameState{
         mapaPruebas[3][3] = new BoardTile(400, 400, d, TileColor.BLUE, 4, new BoardPosition(3,3));
         /*----------------------------------------------------*/
 
+        for (BoardTile row[]:mapaPruebas) {
+            for (BoardTile tile: row) {
+                tile.setCoordOrigin(_coordOr);
+            }
+        }
+
         return mapaPruebas;
     }
 

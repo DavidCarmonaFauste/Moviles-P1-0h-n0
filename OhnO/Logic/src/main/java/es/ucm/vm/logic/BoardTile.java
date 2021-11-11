@@ -2,6 +2,7 @@ package es.ucm.vm.logic;
 
 import es.ucm.vm.engine.Color;
 import es.ucm.vm.engine.Graphics;
+import es.ucm.vm.engine.Rect;
 
 
 public class BoardTile extends GameObject{
@@ -46,7 +47,22 @@ public class BoardTile extends GameObject{
 
     @Override
     public void render(Graphics g) {
-        g.fillCircle((int)_pos._x, (int)_pos._y, _d);
+        Rect o;
+        Rect n = null;
+        o = new Rect(_d/2, 0, 0, _d/2);
+        n = g.scale(o, g.getCanvas());
+        // Set the color to paint the coin/item
+        g.setColor(_c);
+        // Save the actual canvas transformation matrix
+        g.save();
+
+        g.translate((int) _coordOrigin._x + (int) _pos._x,
+                (int) _coordOrigin._y + ((int) _pos._y * (-1)));
+
+        g.fillCircle((int)n.getX(), (int)n.getY(), n.getWidth());
+
+        // Reset canvas after drawing
+        g.restore();
     }
 }
 
