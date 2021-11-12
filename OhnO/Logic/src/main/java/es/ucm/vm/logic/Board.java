@@ -1,11 +1,15 @@
 package es.ucm.vm.logic;
 
+import java.util.Stack;
+
 import es.ucm.vm.engine.Graphics;
 import es.ucm.vm.engine.Input;
 
 public class Board {
     private BoardTile[][] _map;
     private int _mapSize = 0;
+
+    Stack<BoardPosition> _lastMoves;
 
     public Board(int size)
     {
@@ -56,6 +60,36 @@ public class Board {
                 pos._y < 0 ||
                 pos._y >= _mapSize);
 
+    }
+
+    public boolean clickTile(int x, int y){
+        for(BoardTile[] column : this.getMap()) {
+            for (BoardTile t : column) {
+                /*
+                int xTile = (int) t._coordOrigin._x + (int) t._pos._x,
+                    yTile = (int) t._coordOrigin._y + (int) t._pos._y * (-1);
+                */
+                if(/*(xTile + t.getSize()/2) <= x &&
+                    (xTile - t.getSize()/2) >= x &&
+                    (yTile + t.getSize()/2) <= y &&
+                    (yTile - t.getSize()/2) >= y*/
+                    t.isPressed(x, y)) {
+                    TileColor colorNow = _map[x][y]._tileColor;
+                    _lastMoves.push(_map[x][y]._boardPos);
+                    _map[x][y]._tileColor = (colorNow == TileColor.GREY) ? TileColor.BLUE :
+                                            (colorNow == TileColor.BLUE) ? TileColor.RED : TileColor.GREY;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void removeLastMove(){
+        BoardPosition bp =  _lastMoves.pop();
+        TileColor colorNow = _map[bp._x][bp._y]._tileColor;
+        _map[bp._x][bp._y]._tileColor = (colorNow == TileColor.GREY) ? TileColor.RED :
+                                        (colorNow == TileColor.BLUE) ? TileColor.GREY : TileColor.BLUE;
     }
 
     public void render(Graphics g) {

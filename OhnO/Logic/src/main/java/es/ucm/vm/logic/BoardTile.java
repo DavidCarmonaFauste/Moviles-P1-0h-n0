@@ -42,6 +42,7 @@ public class BoardTile extends GameObject{
         }
     }
 
+    public int getSize(){return _d;}
 
     protected Object clone() throws CloneNotSupportedException {
         BoardTile bt = new BoardTile(this._pos._x, this._pos._y, this._d, this._tileColor, this._count, new BoardPosition(this._boardPos._x, this._boardPos._y));
@@ -165,6 +166,22 @@ public class BoardTile extends GameObject{
                     break;
                 case RED:
                     updateTileColor(TileColor.GREY);
+                    break;
+            }
+        }
+    }
+
+    public void backCicleTileColor(){
+        if (this._count == 0) {
+            switch (_tileColor) {
+                case GREY:
+                    updateTileColor(TileColor.RED);
+                    break;
+                case BLUE:
+                    updateTileColor(TileColor.GREY);
+                    break;
+                case RED:
+                    updateTileColor(TileColor.BLUE);
                     break;
             }
         }
