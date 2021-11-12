@@ -1,6 +1,7 @@
 package es.ucm.vm.logic;
 
 import es.ucm.vm.engine.Color;
+import es.ucm.vm.engine.Font;
 import es.ucm.vm.engine.Graphics;
 import es.ucm.vm.engine.Rect;
 
@@ -12,6 +13,7 @@ public class BoardTile extends GameObject{
     private double _cD; // Current diameter
     private boolean _taken; // Flag to control if the player has taken this item
     private float _distanceCenter; // Distance to the center point
+    private Text _text = null;
 
     //---------------------------------------------------------------
     //----------------------Public Attributes------------------------
@@ -34,11 +36,15 @@ public class BoardTile extends GameObject{
         this._boardPos = new BoardPosition(bPos._x, bPos._y);
         updateTileColor(tileC);
         updateCount(count);
+        if (_tileColor == TileColor.BLUE) {
+            this._text = new Text(x, y, new Color(50,50,50,255), 30,
+                    String.valueOf(count), false, Font.FONT_JOSEFIN_BOLD);
+        }
     }
 
 
     protected Object clone() throws CloneNotSupportedException {
-        BoardTile bt = new BoardTile(this._pos._x, this._pos._y, this._d, this._tileColor, this._count, this._boardPos);
+        BoardTile bt = new BoardTile(this._pos._x, this._pos._y, this._d, this._tileColor, this._count, new BoardPosition(this._boardPos._x, this._boardPos._y));
         return bt;
     }
 
@@ -65,6 +71,11 @@ public class BoardTile extends GameObject{
 
         // Reset canvas after drawing
         g.restore();
+
+        if (_text != null) {
+            this._text.setCoordOrigin(_coordOrigin);
+            _text.render(g);
+        }
     }
 
     /**
