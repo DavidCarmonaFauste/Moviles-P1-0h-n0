@@ -36,8 +36,10 @@ public class Hints {
                 }
             }
         }
-        if(!isSolved() && !_sameMap)
+        if(!_sameMap && !isSolved()){
             solveMap();
+        }
+
         return !_sameMap;
     }
 
@@ -103,7 +105,8 @@ public class Hints {
         // HINT 5   --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
         if(checkIfRed(t)) {
             t._tileColor = TileColor.RED;
-            renderPrueba();
+            _sameMap = false;
+            //renderPrueba();
         }
     }
 
@@ -113,31 +116,33 @@ public class Hints {
      */
     void tryHintsOnBlue(BoardTile t)
     {
+        if (t._count == 0) return;
+
         // HINT 1   --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
         if(checkVisibleFulfilled(t))
         {
             _sameMap = false;
             closeWithRed(t);
-            renderPrueba();
+            //renderPrueba();
         }
         else {
             // HINT 2   --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
             for (BoardPosition dir: DIRECTIONS)
             {
-                if (checkNoMoreBlue(t, dir)) {
+                if (checkNoMoreBlue(t, dir) && _board.getMap()[t._boardPos._x + dir._x][t._boardPos._y + dir._y]._tileColor != TileColor.RED) {
                     _sameMap = false;
                     _board.getMap()[t._boardPos._x + dir._x][t._boardPos._y + dir._y]._tileColor = TileColor.RED;
-                    renderPrueba();
+                    //renderPrueba();
                 }
             }
 
             // HINT 3 (BUGGY)   --  --  --  --  --  --  --  --  --  --  --  --  --  --
             for (BoardPosition dir: DIRECTIONS)
             {
-                if (checkForcedBlue(t, dir)) {
+                if (checkForcedBlue(t, dir) && _board.getMap()[t._boardPos._x + dir._x][t._boardPos._y + dir._y]._tileColor != TileColor.BLUE) {
                     _sameMap = false;
                     _board.getMap()[t._boardPos._x + dir._x][t._boardPos._y + dir._y]._tileColor = TileColor.BLUE;
-                    renderPrueba();
+                    //renderPrueba();
                 }
             }
         }
@@ -232,6 +237,10 @@ public class Hints {
 
     //Si no ponemos un punto azul en alguna celda vacía, entonces es imposible alcanzar el número
     public boolean checkForcedBlue(BoardTile c, BoardPosition dir) {
+
+
+
+
         /*
         if(dir._x == 0)
         {

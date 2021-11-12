@@ -7,6 +7,7 @@ import es.ucm.vm.engine.Color;
 import es.ucm.vm.engine.Font;
 import es.ucm.vm.engine.Graphics;
 import es.ucm.vm.engine.Input;
+import sun.rmi.runtime.Log;
 
 public class PlayGameState implements GameState{
     Logic _l; // For changing gamestate
@@ -55,10 +56,34 @@ public class PlayGameState implements GameState{
         System.out.println("+---+---+---+---+");
     }
 
+
+
+    /*----------------------------------------------------*//*//y -> 0
+    mapaPruebas[0][0] = new BoardTile(100,100, d, TileColor.GREY, 0, new BoardPosition(0,0));
+    mapaPruebas[1][0] = new BoardTile(200, 100, d, TileColor.RED, 0, new BoardPosition(1,0));
+    mapaPruebas[2][0] = new BoardTile(300, 100, d, TileColor.GREY, 0, new BoardPosition(2,0));
+    mapaPruebas[3][0] = new BoardTile(400, 100, d, TileColor.GREY, 0, new BoardPosition(3,0));
+    *//*----------------------------------------------------*//*//y -> 1
+    mapaPruebas[0][1] = new BoardTile(100,200, d, TileColor.RED, 0, new BoardPosition(0,1));
+    mapaPruebas[1][1] = new BoardTile(200, 200, d, TileColor.GREY, 0, new BoardPosition(1,1));
+    mapaPruebas[2][1] = new BoardTile(300, 200, d, TileColor.BLUE, 2, new BoardPosition(2,1));
+    mapaPruebas[3][1] = new BoardTile(400, 200, d, TileColor.GREY, 0, new BoardPosition(3,1));
+    *//*----------------------------------------------------*//*//y -> 2
+    mapaPruebas[0][2] = new BoardTile(100, 300, d, TileColor.GREY, 0, new BoardPosition(0,2));
+    mapaPruebas[1][2] = new BoardTile(200, 300, d, TileColor.BLUE, 1, new BoardPosition(1,2));
+    mapaPruebas[2][2] = new BoardTile(300, 300, d, TileColor.GREY, 0, new BoardPosition(2,2));
+    mapaPruebas[3][2] = new BoardTile(400, 300, d, TileColor.GREY, 0, new BoardPosition(3,2));
+    *//*----------------------------------------------------*//*//y -> 3
+    mapaPruebas[0][3] = new BoardTile(100, 400, d, TileColor.GREY, 0, new BoardPosition(0,3));
+    mapaPruebas[1][3] = new BoardTile(200, 400, d, TileColor.GREY, 0, new BoardPosition(1,3));
+    mapaPruebas[2][3] = new BoardTile(300, 400, d, TileColor.BLUE, 2, new BoardPosition(2,3));
+    mapaPruebas[3][3] = new BoardTile(400, 400, d, TileColor.BLUE, 4, new BoardPosition(3,3));
+    *//*----------------------------------------------------*/
+
     private BoardTile[][] fillBoard(int mapSize) {
         // TODO: ACTUALLY GENERATE BOARD HERE
         int d = 30; // temp diameter for tiles
-        float probabilityLimit = 0.1f;
+        float probabilityLimit = 0.15f;
         int blueCount;
 
         BoardTile[][] generatedMap = new BoardTile[mapSize][mapSize];
@@ -72,7 +97,11 @@ public class PlayGameState implements GameState{
                     generatedMap[i][j] = new BoardTile(-200 + i * 100, -200 + j * 100, d,
                             TileColor.GREY, 0, new BoardPosition(i, j));
                 }
-                else {
+                else if (f <= probabilityLimit/2) { // red
+                    generatedMap[i][j] = new BoardTile(-200 + i * 100, -200 + j * 100, d,
+                            TileColor.RED, 0, new BoardPosition(i, j));
+                }
+                else { // blue
                     rand = new Random();
                     blueCount = 1 + rand.nextInt(mapSize);
                     generatedMap[i][j] = new BoardTile(-200 + i * 100, -200 + j * 100, d,
