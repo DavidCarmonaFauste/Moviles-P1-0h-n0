@@ -67,11 +67,10 @@ public class BoardTile extends GameObject{
         g.translate((int) _coordOrigin._x + (int) _pos._x,
                 (int) _coordOrigin._y + ((int) _pos._y * (-1)));
 
-        g.fillCircle((int)n.getX(), (int)n.getY(), n.getWidth());
+        g.fillCircle((int)n.getX() - n.getRight()/2, (int)n.getY() - n.getBottom()/2, n.getWidth());
 
         // Reset canvas after drawing
         g.restore();
-
         if (_text != null) {
             this._text.setCoordOrigin(_coordOrigin);
             _text.render(g);
