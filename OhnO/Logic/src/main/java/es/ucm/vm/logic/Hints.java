@@ -45,7 +45,7 @@ public class Hints {
                 {
                     case BLUE:
                         tryHintsOnBlue(t);
-                        if(t._count > 0 &&(checkTooMuchBlue(t) || checkTooMuchRed(t))) return true;
+                        if(t._count > 0 &&(checkTooMuchBlue(t) || checkTooMuchRed(t))) return false;
                         break;
                     case GREY:
                         tryHintsOnGrey(t);
@@ -137,18 +137,17 @@ public class Hints {
         // HINT 1   --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
         if(checkVisibleFulfilled(t))
         {
-            _sameMap = false;
             closeWithRed(t);
-            renderPrueba();
+            //renderPrueba();
         }
         else {
             // HINT 2   --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
             for (BoardPosition dir: DIRECTIONS)
             {
                 if (checkNoMoreBlue(t, dir) && _board.getMap()[t._boardPos._x + dir._x][t._boardPos._y + dir._y]._tileColor != TileColor.RED) {
-                    _sameMap = false;
                     _board.getMap()[t._boardPos._x + dir._x][t._boardPos._y + dir._y]._tileColor = TileColor.RED;
-                    renderPrueba();
+                    _sameMap = false;
+                    //renderPrueba();
                 }
             }
 
@@ -156,14 +155,15 @@ public class Hints {
             for (BoardPosition dir: DIRECTIONS)
             {
                 if (checkForcedBlue(t, dir)) {
-                    _sameMap = false;
                     int blueCount = _watcher.gimli(t._boardPos, dir, TileColor.BLUE);
-                    _auxPos._x += (dir._x * blueCount) + dir._x;
-                    _auxPos._y += (dir._y * blueCount) + dir._y;
+                    _auxPos._x = (dir._x * blueCount) + dir._x + t._boardPos._x;
+                    _auxPos._y = (dir._y * blueCount) + dir._y + t._boardPos._y;
                     if(!_board.offLimits(_auxPos))
-                        if(_board.getMap()[_auxPos._x][_auxPos._y]._tileColor == TileColor.GREY)
+                        if(_board.getMap()[_auxPos._x][_auxPos._y]._tileColor == TileColor.GREY){
                             _board.getMap()[_auxPos._x][_auxPos._y]._tileColor = TileColor.BLUE;
-                    renderPrueba();
+                            _sameMap = false;
+                        }
+                    //renderPrueba();
                 }
             }
         }
@@ -180,13 +180,13 @@ public class Hints {
             int blueCount = 0;
             for (BoardPosition dir: DIRECTIONS)
             {
-                _auxPos = new BoardPosition(t._boardPos._x, t._boardPos._y);
                 blueCount = _watcher.gimli(t._boardPos, dir, TileColor.BLUE);
-                _auxPos._x += (dir._x * blueCount) + dir._x;
-                _auxPos._y += (dir._y * blueCount) + dir._y;
+                _auxPos._x = (dir._x * blueCount) + dir._x + t._boardPos._x;
+                _auxPos._y = (dir._y * blueCount) + dir._y + t._boardPos._y;
                 if(!_board.offLimits(_auxPos) && _board.getMap()[_auxPos._x][_auxPos._y]._tileColor == TileColor.GREY)
                 {
                     _board.getMap()[_auxPos._x][_auxPos._y]._tileColor = TileColor.RED;
+                    _sameMap = false;
                 }
             }
         }

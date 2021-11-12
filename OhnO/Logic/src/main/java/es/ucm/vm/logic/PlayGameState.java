@@ -2,7 +2,6 @@ package es.ucm.vm.logic;
 
 import java.util.List;
 import java.util.Random;
-import java.util.Stack;
 
 import es.ucm.vm.engine.Color;
 import es.ucm.vm.engine.Font;
@@ -40,8 +39,8 @@ public class PlayGameState implements GameState{
     public void newMap(int mapSize) {
         _board = new Board(mapSize);
         _hints = new Hints(_board);
-        _board.setMap(fillBoard(mapSize));
-        _hints.updateMap(_board);
+        fillBoard(mapSize);
+
 
         for(int y = 0; y < 4; y++)
         {
@@ -81,7 +80,7 @@ public class PlayGameState implements GameState{
     mapaPruebas[3][3] = new BoardTile(400, 400, d, TileColor.BLUE, 4, new BoardPosition(3,3));
     *//*----------------------------------------------------*/
 
-    private BoardTile[][] fillBoard(int mapSize) {
+    private void fillBoard(int mapSize) {
         // TODO: ACTUALLY GENERATE BOARD HERE
         int d = 50; // temp diameter for tiles
         float probabilityLimit = 0.25f;
@@ -114,18 +113,34 @@ public class PlayGameState implements GameState{
             }
         }
 
+        _board.setMap(generatedMap);
+        _hints.updateMap(_board);
+        while(!_hints.solveMap())
+        {
+            Random rand = new Random();
+            float f = rand.nextFloat();
+            if (f <= probabilityLimit/2) { // red
+                tileColor = TileColor.RED;
+                blueCount = -1;
+            }
+            else { // blue
+                rand = new Random();
+                blueCount = 1 + rand.nextInt(mapSize);
+                tileColor = TileColor.BLUE;
+            }
+            rand = new Random();
+            int i = rand.nextInt(mapSize - 1);
+            rand = new Random();
+            int j = rand.nextInt(mapSize - 1);
+            generatedMap[i][j] = new BoardTile(-100 + i * 50, -100 + j * 50, d, tileColor, blueCount, new BoardPosition(i, j));
+            _board.setMap(generatedMap);
+            _hints.updateMap(_board);
+        }
         for (BoardTile row[]:generatedMap) {
             for (BoardTile tile: row) {
                 tile.setCoordOrigin(_coordOr);
             }
         }
-        return generatedMap;
-
-
-
-
-
-
         /*BoardTile[][] mapaPruebas = new BoardTile[mapSize][mapSize];
         // Vector de bool para saber las casillas que relleno aleatoriamente de azules, y depués recorrer el resto para ponerlas en gris
         boolean rellenas [][] = new boolean[mapSize][mapSize];
@@ -183,7 +198,20 @@ public class PlayGameState implements GameState{
     @Override
     public void update(double t) {
         //if (!_hints._sameMap)
-        //    _hints.solveMap();
+
+        /*
+        for(int y = 0; y < 4; y++)
+        {
+            System.out.println("+---+---+---+---+");
+            for(int x = 0; x < 4; x++)
+            {
+                if(_board.getMap()[x][y]._tileColor == TileColor.BLUE)      System.out.print("| " + _board.getMap()[x][y]._count + " ");
+                else if (_board.getMap()[x][y]._tileColor == TileColor.RED) System.out.print("| X ");
+                else                                 System.out.print("|   ");
+            }
+            System.out.println("|");
+        }
+        System.out.println("+---+---+---+---+");*/
     }
 
     @Override
@@ -192,20 +220,6 @@ public class PlayGameState implements GameState{
         g.clear(_color);
 
         _board.render(g);
-        if (!_hints._sameMap) {
-            for(int y = 0; y < 4; y++)
-            {
-                System.out.println("+---+---+---+---+");
-                for(int x = 0; x < 4; x++)
-                {
-                    if(_board.getMap()[x][y]._tileColor == TileColor.BLUE)      System.out.print("| " + _board.getMap()[x][y]._count + " ");
-                    else if (_board.getMap()[x][y]._tileColor == TileColor.RED) System.out.print("| X ");
-                    else                                 System.out.print("|   ");
-                }
-                System.out.println("|");
-            }
-            System.out.println("+---+---+---+---+");
-        }
 
         _text.render(g);
     }
