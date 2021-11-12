@@ -181,14 +181,15 @@ public class PlayGameState implements GameState{
 
     @Override
     public void update(double t) {
-        if (!_hints._sameMap)
-            _hints.solveMap();
+        //if (!_hints._sameMap)
+        //    _hints.solveMap();
     }
 
     @Override
     public void render(Graphics g) {
         _color.setWhite();
-        g.setColor(_color);
+        g.clear(_color);
+
         _board.render(g);
         if (!_hints._sameMap) {
             for(int y = 0; y < 4; y++)

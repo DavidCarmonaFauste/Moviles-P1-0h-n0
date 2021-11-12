@@ -127,7 +127,7 @@ public class BoardTile extends GameObject{
                 break;
             default:
             case GREY:
-                _c.setLightGrey();
+                _c.setMediumGrey();
                 break;
         }
     }
@@ -140,7 +140,23 @@ public class BoardTile extends GameObject{
             this._count = 0;
         }
         else {
-            this._count = 0;
+            this._count = -1;
+        }
+    }
+
+    public void circleTileColor(){
+        if (this._count == 0) {
+            switch (_tileColor) {
+                case GREY:
+                    updateTileColor(TileColor.BLUE);
+                    break;
+                case BLUE:
+                    updateTileColor(TileColor.RED);
+                    break;
+                case RED:
+                    updateTileColor(TileColor.GREY);
+                    break;
+            }
         }
     }
 }
