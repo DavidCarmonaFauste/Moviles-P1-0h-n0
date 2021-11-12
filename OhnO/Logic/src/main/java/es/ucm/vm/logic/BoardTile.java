@@ -9,15 +9,14 @@ public class BoardTile extends GameObject{
     //---------------------------------------------------------------
     //---------------------Private Attributes------------------------
     //---------------------------------------------------------------
-    private int _d; // diameter
     private double _cD; // Current diameter
-    private Color _transpCol; // color change variable
     private boolean _taken; // Flag to control if the player has taken this item
     private float _distanceCenter; // Distance to the center point
 
     //---------------------------------------------------------------
     //----------------------Public Attributes------------------------
     //---------------------------------------------------------------
+    public int _d; // diameter
     public TileColor _tileColor;
     public int _count = -1; // -1 is the counter by default and the one given to red tiles
     BoardPosition _boardPos;
@@ -33,18 +32,8 @@ public class BoardTile extends GameObject{
         super(x, y);
         this._d = d;
         this._boardPos = new BoardPosition(bPos._x, bPos._y);
-        if (tileC == TileColor.BLUE) {
-            this._tileColor = tileC;
-            this._count = count;
-        }
-        else if (tileC == TileColor.GREY) {
-            this._tileColor = TileColor.GREY;
-            this._count = 0;
-        }
-        else {
-            this._tileColor = TileColor.RED;
-            this._count = 0;
-        }
+        updateTileColor(tileC);
+        updateCount(count);
     }
 
 
@@ -122,6 +111,38 @@ public class BoardTile extends GameObject{
             return false;
         } // else
     } // isPressed
+
+    /**
+     * Used to change the drawing color of the tile as well as the internal TileColor
+     * @param newColor (TileColor) color of tile we want to set (either red, blue or grey)
+     */
+    public void updateTileColor(TileColor newColor) {
+        _tileColor = newColor;
+        switch (newColor){
+            case BLUE:
+                _c.setBlue();
+                break;
+            case RED:
+                _c.setRed();
+                break;
+            default:
+            case GREY:
+                _c.setLightGrey();
+                break;
+        }
+    }
+
+    public void updateCount(int count) {
+        if (_tileColor == TileColor.BLUE) {
+            this._count = count;
+        }
+        else if (_tileColor == TileColor.GREY) {
+            this._count = 0;
+        }
+        else {
+            this._count = 0;
+        }
+    }
 }
 
 enum TileColor {GREY, RED, BLUE}

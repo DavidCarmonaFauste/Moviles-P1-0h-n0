@@ -82,9 +82,10 @@ public class PlayGameState implements GameState{
 
     private BoardTile[][] fillBoard(int mapSize) {
         // TODO: ACTUALLY GENERATE BOARD HERE
-        int d = 30; // temp diameter for tiles
+        int d = 50; // temp diameter for tiles
         float probabilityLimit = 0.18f;
-        int blueCount;
+        int blueCount = 0;
+        TileColor tileColor = TileColor.GREY;
 
         BoardTile[][] generatedMap = new BoardTile[mapSize][mapSize];
 
@@ -94,19 +95,21 @@ public class PlayGameState implements GameState{
                 float f = rand.nextFloat();
 
                 if (f >= probabilityLimit) { // grey
-                    generatedMap[i][j] = new BoardTile(-200 + i * 100, -200 + j * 100, d,
-                            TileColor.GREY, 0, new BoardPosition(i, j));
+                    tileColor = TileColor.GREY;
+                    blueCount = 0;
                 }
                 else if (f <= probabilityLimit/2) { // red
-                    generatedMap[i][j] = new BoardTile(-200 + i * 100, -200 + j * 100, d,
-                            TileColor.RED, 0, new BoardPosition(i, j));
+                    tileColor = TileColor.RED;
+                    blueCount = -1;
                 }
                 else { // blue
                     rand = new Random();
                     blueCount = 1 + rand.nextInt(mapSize);
-                    generatedMap[i][j] = new BoardTile(-200 + i * 100, -200 + j * 100, d,
-                            TileColor.BLUE, blueCount, new BoardPosition(i, j));
+                    tileColor = TileColor.BLUE;
                 }
+
+                generatedMap[i][j] = new BoardTile(-200 + i * 100, -200 + j * 100, d,
+                        tileColor, blueCount, new BoardPosition(i, j));
             }
         }
 
@@ -222,7 +225,7 @@ public class PlayGameState implements GameState{
             switch(te.getType()){
                 case CLICKED:
                 case PRESSED:
-
+                    _board.sendClickEvent(te);
                     break;
                 case KEY_RESTART:
                     _l.setMapSize(_board.getMapSize());

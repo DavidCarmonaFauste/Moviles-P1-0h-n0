@@ -1,6 +1,7 @@
 package es.ucm.vm.logic;
 
 import es.ucm.vm.engine.Graphics;
+import es.ucm.vm.engine.Input;
 
 public class Board {
     private BoardTile[][] _map;
@@ -13,13 +14,13 @@ public class Board {
     }
 
     protected Object clone() throws CloneNotSupportedException {
-
         Board b = new Board(this.getMapSize());
 
         int x = 0, y = 0;
         for(BoardTile[] column : this.getMap()) {
             for (BoardTile t : column) {
-                b.getMap()[x][y] = t;
+                b.getMap()[x][y] = new BoardTile(t._pos._x, t._pos._y, t._d, t._tileColor, t._count,
+                        new BoardPosition(t._boardPos._x, t._boardPos._y));
                 y++;
             }
             y = 0;
@@ -61,6 +62,17 @@ public class Board {
         for (BoardTile row[]: _map) {
             for (BoardTile tile: row) {
                 tile.render(g);
+            }
+        }
+    }
+
+    public void sendClickEvent(Input.TouchEvent te) {
+        for (BoardTile row[]: _map) {
+            for (BoardTile tile: row) {
+                if (tile.isPressed(te.getX(), te.getY())) {
+                    System.out.println("clicked tile");
+                    return;
+                }
             }
         }
     }
