@@ -31,13 +31,26 @@ public class BoardTile extends GameObject{
      */
     public BoardTile(double x, double y, int d, TileColor tileC, int count, BoardPosition bPos) {
         super(x, y);
-        _d = d;
-        _boardPos = new BoardPosition(bPos._x, bPos._y);
-        _tileColor = tileC;
-        if (tileC == TileColor.BLUE)
-            _count = count;
-        else if (tileC == TileColor.GREY)
-            _count = 0;
+        this._d = d;
+        this._boardPos = new BoardPosition(bPos._x, bPos._y);
+        if (tileC == TileColor.BLUE) {
+            this._tileColor = tileC;
+            this._count = count;
+        }
+        else if (tileC == TileColor.GREY) {
+            this._tileColor = TileColor.GREY;
+            this._count = 0;
+        }
+        else {
+            this._tileColor = TileColor.RED;
+            this._count = 0;
+        }
+    }
+
+
+    protected Object clone() throws CloneNotSupportedException {
+        BoardTile bt = new BoardTile(this._pos._x, this._pos._y, this._d, this._tileColor, this._count, this._boardPos);
+        return bt;
     }
 
     @Override
@@ -64,6 +77,51 @@ public class BoardTile extends GameObject{
         // Reset canvas after drawing
         g.restore();
     }
+
+    /**
+     * Function that checks if a button is pressed. Returns true when that happens, false if not.
+     *
+     * @param x X position of the pointer
+     * @param y Y position of the pointer
+     * @return Returns true if button is pressed, false if not
+     */
+    public boolean isPressed(int x, int y){
+        // If the cursor is inside the rectangle of the sprite.
+        double leftX, leftY;
+        double rightX, rightY;
+
+        leftX = _pos._x - (_d / 2);
+        leftY = _pos._y - (_d / 2);
+        rightX = _pos._x + (_d / 2);
+        rightY = _pos._y + (_d / 2);
+
+        // Translate to coordOriginPos
+
+        // x
+        if(x < _coordOrigin._x) {
+            x = (((int)_coordOrigin._x - x) * -1);
+        } // if
+        else {
+            x = (((int)_coordOrigin._x -((2 * (int)_coordOrigin._x) - x)));
+        } // else
+
+        // y
+        if(y < _coordOrigin._y) {
+            y = (((int)_coordOrigin._y - y));
+        } // if
+        else {
+            y = (((int)_coordOrigin._y -((2 * (int)_coordOrigin._y) - y)) * -1);
+        } // else
+
+        // Check inside button
+        if( ((x >= leftX) && (x < rightX))
+                && ((y >= leftY) && (y < rightY))) {
+            return true;
+        } // if
+        else{ // If not, return Button not Pressed
+            return false;
+        } // else
+    } // isPressed
 }
 
 enum TileColor {GREY, RED, BLUE}

@@ -8,8 +8,24 @@ public class Board {
 
     public Board(int size)
     {
-        _map = new BoardTile[size][size];
-        _mapSize = size;
+        this._map = new BoardTile[size][size];
+        this._mapSize = size;
+    }
+
+    protected Object clone() throws CloneNotSupportedException {
+
+        Board b = new Board(this.getMapSize());
+
+        int x = 0, y = 0;
+        for(BoardTile[] column : this.getMap()) {
+            for (BoardTile t : column) {
+                b.getMap()[x][y] = t;
+                y++;
+            }
+            y = 0;
+            x++;
+        }
+        return b;
     }
 
     public void setMapSize(int size)

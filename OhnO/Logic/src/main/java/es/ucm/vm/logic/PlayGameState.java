@@ -83,7 +83,7 @@ public class PlayGameState implements GameState{
     private BoardTile[][] fillBoard(int mapSize) {
         // TODO: ACTUALLY GENERATE BOARD HERE
         int d = 30; // temp diameter for tiles
-        float probabilityLimit = 0.15f;
+        float probabilityLimit = 0.18f;
         int blueCount;
 
         BoardTile[][] generatedMap = new BoardTile[mapSize][mapSize];

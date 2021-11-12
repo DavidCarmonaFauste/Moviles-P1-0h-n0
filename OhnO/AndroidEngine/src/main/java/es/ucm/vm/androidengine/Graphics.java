@@ -24,7 +24,7 @@ public class Graphics extends AbstractGraphics {
     Paint _pnt;
     Canvas _cnv;
     public es.ucm.vm.engine.Color _color;
-    //es.ucm.vdm.androidengine.Font _font;
+    es.ucm.vm.androidengine.Font _font;
 
     /**
      * Constructor. Receives and saves an instance of the SurfaceView to paint there later. Also
@@ -112,9 +112,10 @@ public class Graphics extends AbstractGraphics {
     }
 
     @Override
-    public void drawText(String text, int x, int y, int size) {
-        _pnt.setTextSize(size);
-        _cnv.drawText(text, 10, 25, _pnt);
+    public void drawText(String text, int x, int y) {
+        _font.setContents(text);
+        _font.setPosition(x, y);
+        _font.render();
     }
 
     @Override
@@ -157,6 +158,11 @@ public class Graphics extends AbstractGraphics {
     public void restore() {
         _cnv.restore();
     } // restore
+
+    @Override
+    public void rotate(float angle) {
+
+    }
 
     /**
      * Changes the origin coordinates of transformation matrix.
