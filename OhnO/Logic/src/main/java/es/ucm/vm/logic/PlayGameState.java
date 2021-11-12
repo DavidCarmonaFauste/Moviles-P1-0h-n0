@@ -151,6 +151,7 @@ public class PlayGameState implements GameState{
     public void update(double t) {
         if (!_hints._sameMap)
             _hints.solveMap();
+        System.out.println("s");
     }
 
     @Override

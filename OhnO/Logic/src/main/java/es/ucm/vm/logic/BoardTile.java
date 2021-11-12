@@ -31,13 +31,26 @@ public class BoardTile extends GameObject{
      */
     public BoardTile(double x, double y, int d, TileColor tileC, int count, BoardPosition bPos) {
         super(x, y);
-        _d = d;
-        _boardPos = new BoardPosition(bPos._x, bPos._y);
-        _tileColor = tileC;
-        if (tileC == TileColor.BLUE)
-            _count = count;
-        else if (tileC == TileColor.GREY)
-            _count = 0;
+        this._d = d;
+        this._boardPos = new BoardPosition(bPos._x, bPos._y);
+        if (tileC == TileColor.BLUE) {
+            this._tileColor = tileC;
+            this._count = count;
+        }
+        else if (tileC == TileColor.GREY) {
+            this._tileColor = TileColor.GREY;
+            this._count = 0;
+        }
+        else {
+            this._tileColor = TileColor.RED;
+            this._count = 0;
+        }
+    }
+
+
+    protected Object clone() throws CloneNotSupportedException {
+        BoardTile bt = new BoardTile(this._pos._x, this._pos._y, this._d, this._tileColor, this._count, this._boardPos);
+        return bt;
     }
 
     @Override

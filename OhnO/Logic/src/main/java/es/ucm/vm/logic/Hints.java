@@ -9,13 +9,38 @@ public class Hints {
 
     public Hints(Board b)
     {
-        _board = b;
-        _watcher = new Watcher(_board);
+            //_board = (Board) b.clone();
+            _board = new Board(b.getMapSize());
+            updateMap(b);
+            /*
+            int x = 0, y = 0;
+            for(BoardTile[] column : b.getMap()) {
+                for (BoardTile t : column) {
+                    _board.getMap()[x][y] = t;
+                    y++;
+                }
+                y = 0;
+                x++;
+            }
+            */
+            _watcher = new Watcher(_board);
     }
 
     public void updateMap(Board b)
     {
-        _board = b;
+        try {
+            int x = 0, y = 0;
+            for (BoardTile[] column : b.getMap()) {
+                for (BoardTile t : column) {
+                    _board.getMap()[x][y] = (BoardTile) t.clone();
+                    y++;
+                }
+                y = 0;
+                x++;
+            }
+        } catch (Exception e){
+
+        }
     }
 
     public boolean solveMap()
@@ -38,6 +63,7 @@ public class Hints {
         }
         if(!isSolved() && !_sameMap)
             solveMap();
+
         return !_sameMap;
     }
 
