@@ -206,7 +206,6 @@ public class Hints {
         return c._count == counted;
     }
 
-    // si ponemos otro punto, se pasa del numero?
 
     /**
      * Checks if a tile doesn't allow more blue visible tiles in a given direction

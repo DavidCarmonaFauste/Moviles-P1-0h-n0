@@ -1,6 +1,7 @@
 package es.ucm.vm.logic;
 
 import java.util.List;
+import java.util.Random;
 
 import es.ucm.vm.engine.Color;
 import es.ucm.vm.engine.Font;
@@ -39,12 +40,60 @@ public class PlayGameState implements GameState{
         _hints = new Hints(_board);
         _board.setMap(fillBoard(mapSize));
         _hints.updateMap(_board);
+
+        for(int y = 0; y < 4; y++)
+        {
+            System.out.println("+---+---+---+---+");
+            for(int x = 0; x < 4; x++)
+            {
+                if(_board.getMap()[x][y]._tileColor == TileColor.BLUE)      System.out.print("| " + _board.getMap()[x][y]._count + " ");
+                else if (_board.getMap()[x][y]._tileColor == TileColor.RED) System.out.print("| X ");
+                else                                 System.out.print("|   ");
+            }
+            System.out.println("|");
+        }
+        System.out.println("+---+---+---+---+");
     }
 
     private BoardTile[][] fillBoard(int mapSize) {
         // TODO: ACTUALLY GENERATE BOARD HERE
         int d = 30; // temp diameter for tiles
-        BoardTile[][] mapaPruebas = new BoardTile[mapSize][mapSize];
+        float probabilityLimit = 0.1f;
+        int blueCount;
+
+        BoardTile[][] generatedMap = new BoardTile[mapSize][mapSize];
+
+        for (int i = 0; i < mapSize; ++i) {
+            for (int j = 0; j < mapSize; ++j) {
+                Random rand = new Random();
+                float f = rand.nextFloat();
+
+                if (f >= probabilityLimit) { // grey
+                    generatedMap[i][j] = new BoardTile(-200 + i * 100, -200 + j * 100, d,
+                            TileColor.GREY, 0, new BoardPosition(i, j));
+                }
+                else {
+                    rand = new Random();
+                    blueCount = 1 + rand.nextInt(mapSize);
+                    generatedMap[i][j] = new BoardTile(-200 + i * 100, -200 + j * 100, d,
+                            TileColor.BLUE, blueCount, new BoardPosition(i, j));
+                }
+            }
+        }
+
+        for (BoardTile row[]:generatedMap) {
+            for (BoardTile tile: row) {
+                tile.setCoordOrigin(_coordOr);
+            }
+        }
+        return generatedMap;
+
+
+
+
+
+
+        /*BoardTile[][] mapaPruebas = new BoardTile[mapSize][mapSize];
         // Vector de bool para saber las casillas que relleno aleatoriamente de azules, y depués recorrer el resto para ponerlas en gris
         boolean rellenas [][] = new boolean[mapSize][mapSize];
 
@@ -71,9 +120,11 @@ public class PlayGameState implements GameState{
                 if(!rellenas[i][j])
                     mapaPruebas[i][j] = new BoardTile((i +1)*100,(j+1)*100, d, TileColor.GREY, 0, new BoardPosition(i,j));
             }
-        }
+        }*/
 
-        _board.setMap(mapaPruebas);
+
+
+        /*_board.setMap(mapaPruebas);
         _hints.updateMap(_board);
         while (!_hints.solveMap()){
             int x = (int)(Math.random()*(mapSize));
@@ -93,7 +144,7 @@ public class PlayGameState implements GameState{
             }
         }
 
-        return mapaPruebas;
+        return mapaPruebas;*/
     }
 
     @Override
