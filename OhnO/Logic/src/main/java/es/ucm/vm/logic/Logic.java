@@ -29,14 +29,14 @@ public class Logic implements es.ucm.vm.engine.Logic {
 
         // Init everything
         _cnv = new Rect (640, 0, 0, 480);
-        _clearColor = new Color(0,0,0,255);
+        _clearColor = new Color(255,255,255,255);
     } // Logic
 
     @Override
     public void initLogic() {
         // TODO: REPLACE WHEN WE HAVE A MENU, LOAD MENU INSTEAD
         _mapSize = 4;
-        setGameState(GameStates.PLAY);
+        setGameState(GameStates.MENU);
     }
 
     /**

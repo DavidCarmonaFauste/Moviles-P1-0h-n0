@@ -113,7 +113,7 @@ public class Board {
         for (int i = 0; i < _mapSize; i++) {
             for (int j = 0; j < _mapSize; j++) {
                 if (_map[i][j].isPressed(te.getX(), te.getY())) {
-                    _map[i][j].circleTileColor();
+                    _map[i][j].cycleTileColor();
 
                     for (int jj = 0; jj < _mapSize; jj++) {
                         if(_map[i][jj]._tileColor == TileColor.BLUE && _map[i][jj]._count != 0){

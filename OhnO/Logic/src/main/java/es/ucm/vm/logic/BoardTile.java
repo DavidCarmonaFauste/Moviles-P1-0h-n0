@@ -38,7 +38,7 @@ public class BoardTile extends GameObject{
         updateTileColor(tileC);
         updateCount(count);
         if (_tileColor == TileColor.BLUE) {
-            this._text = new Text(x, y, new Color(50,50,50,255), 30,
+            this._text = new Text(x, y, new Color(255,255,255,255), 30,
                     String.valueOf(count), false, Font.FONT_JOSEFIN_BOLD);
         }
         else if (_tileColor == TileColor.GREY) {
@@ -48,18 +48,37 @@ public class BoardTile extends GameObject{
         }
     }
 
+    /**
+     * Getter for the tile diameter
+     * @return (int) diameter of the tile
+     */
     public int getSize(){return _d;}
 
+    /**
+     * Clone method for deep copy of the tile object
+     * @return (BoardTile) a new board tile with the values initialized to the same things
+     * @throws CloneNotSupportedException
+     */
     protected Object clone() throws CloneNotSupportedException {
         BoardTile bt = new BoardTile(this._pos._x, this._pos._y, this._d, this._tileColor, this._count, new BoardPosition(this._boardPos._x, this._boardPos._y));
         return bt;
     }
 
+    /**
+     * Update function. In this case, it doesn't do anything
+     * @param t (double) Time elapsed
+     */
     @Override
     public void update(double t) {
         super.update(t);
     }
 
+    /**
+     * First it repositions and scales the object, then it draws it, restores the graphics component
+     * to its state before the transformations and then draws the extra components if any: text in
+     * case of a blue tile with counter, and calls the render of the grey tile's button
+     * @param g (Graphics) Graphics instance to paint it
+     */
     @Override
     public void render(Graphics g) {
         Rect o;
@@ -121,6 +140,11 @@ public class BoardTile extends GameObject{
         }
     }
 
+    /**
+     * Updates the count value depending on the value of the tile color. Intended for use only on
+     * constructors
+     * @param count
+     */
     public void updateCount(int count) {
         if (_tileColor == TileColor.BLUE) {
             this._count = count;
@@ -133,7 +157,11 @@ public class BoardTile extends GameObject{
         }
     }
 
-    public void circleTileColor(){
+    /**
+     * Used for interactable tiles. It changes the tile's color depending on its current color,
+     * in a circular manner
+     */
+    public void cycleTileColor(){
         if (this._count == 0) {
             switch (_tileColor) {
                 case GREY:
@@ -149,7 +177,7 @@ public class BoardTile extends GameObject{
         }
     }
 
-    public void backCicleTileColor(){
+    public void backCycleTileColor(){
         if (this._count == 0) {
             switch (_tileColor) {
                 case GREY:
@@ -163,12 +191,27 @@ public class BoardTile extends GameObject{
                     break;
             }
         }
-    }
-}
+    }// backCycleColor
+}// BoardTile
 
+
+
+
+/**
+ * Enum class that represents the possible states of a tile
+ */
 enum TileColor {GREY, RED, BLUE}
 
+
+
+
+/**
+ * Simple position class intended for board positioning and movement
+ */
 class BoardPosition {
+    /**
+     * Used to navigate the board
+     */
     public static final BoardPosition[] DIRECTIONS;
     static {
         DIRECTIONS = new BoardPosition[]{new BoardPosition(0, 1), new BoardPosition(0, -1), new BoardPosition(1, 0), new BoardPosition(-1, 0)};
@@ -190,19 +233,3 @@ class BoardPosition {
         return a._x == b._x && a._y == b._y;
     }
 }
-
-/*
-class Tile {
-    public TileColor _Tile_color;
-    public Coord _pos;
-}
-
-class CounterTile extends Tile {
-    public CounterTile(TileColor c, Coord pos, int count){
-        this._Tile_color = c;
-        this._pos = pos;
-        this._count = count;
-    }
-
-    public int _count;
-}*/

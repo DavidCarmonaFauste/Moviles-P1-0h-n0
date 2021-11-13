@@ -22,8 +22,7 @@ public abstract class GameObject {
      * and the rotation that the object will have. To make this generic, initializes _rot to 0.
      *
      * @param x (double) X coordinate.
-     * @param y (double) Y coordinate.
-     * @param c (int) Color.
+     * @param y (double) Y coordinate.ç
      */
     public GameObject(double x, double y){
         _pos = _initPos = new Vector2(x, y);
