@@ -45,7 +45,7 @@ public class Engine extends AbstractEngine implements Runnable, ComponentListene
         // Window values
         _width = gd.getDisplayMode().getWidth();
         _height = gd.getDisplayMode().getHeight();
-        String name = "Off the Line";
+        String name = "Oh-nO!";
 
         // Create the Window
         _win = new Window(_width, _height, name, this);

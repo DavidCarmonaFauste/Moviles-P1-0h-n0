@@ -14,6 +14,7 @@ public class BoardTile extends GameObject{
     private boolean _taken; // Flag to control if the player has taken this item
     private float _distanceCenter; // Distance to the center point
     private Text _text = null;
+    private Button _button = null;
 
     //---------------------------------------------------------------
     //----------------------Public Attributes------------------------
@@ -39,6 +40,11 @@ public class BoardTile extends GameObject{
         if (_tileColor == TileColor.BLUE) {
             this._text = new Text(x, y, new Color(50,50,50,255), 30,
                     String.valueOf(count), false, Font.FONT_JOSEFIN_BOLD);
+        }
+        else if (_tileColor == TileColor.GREY) {
+            this._button = new Button(x, y, d, d, new Color(0,0,0,100), 20,
+                    new Text(x, y, new Color(50,50,50,255), 30,
+                            "", false, Font.FONT_JOSEFIN_BOLD));
         }
     }
 
@@ -74,7 +80,11 @@ public class BoardTile extends GameObject{
         g.restore();
         if (_text != null) {
             this._text.setCoordOrigin(_coordOrigin);
-            _text.render(g);
+            this._text.render(g);
+        }
+        else if (_button != null) {
+            this._button.setCoordOrigin(_coordOrigin);
+            _button.render(g);
         }
     }
 
@@ -86,41 +96,9 @@ public class BoardTile extends GameObject{
      * @return Returns true if button is pressed, false if not
      */
     public boolean isPressed(int x, int y){
-        // If the cursor is inside the rectangle of the sprite.
-        double leftX, leftY;
-        double rightX, rightY;
+        if (this._button == null) return false;
 
-        leftX = _pos._x - (_d / 2);
-        leftY = _pos._y - (_d / 2);
-        rightX = _pos._x + (_d / 2);
-        rightY = _pos._y + (_d / 2);
-
-        // Translate to coordOriginPos
-
-        // x
-        if(x < _coordOrigin._x) {
-            x = (((int)_coordOrigin._x - x) * -1);
-        } // if
-        else {
-            x = (((int)_coordOrigin._x -((2 * (int)_coordOrigin._x) - x)));
-        } // else
-
-        // y
-        if(y < _coordOrigin._y) {
-            y = (((int)_coordOrigin._y - y));
-        } // if
-        else {
-            y = (((int)_coordOrigin._y -((2 * (int)_coordOrigin._y) - y)) * -1);
-        } // else
-
-        // Check inside button
-        if( ((x >= leftX) && (x < rightX))
-                && ((y >= leftY) && (y < rightY))) {
-            return true;
-        } // if
-        else{ // If not, return Button not Pressed
-            return false;
-        } // else
+        return this._button.isPressed(x, y);
     } // isPressed
 
     /**
