@@ -85,6 +85,7 @@ public class PlayGameState implements GameState{
         BoardTile[][] generatedMap;
 
         int tries = 0;
+        System.out.println("Cargando Nuevo nivel");
         do{
             tries = 0;
             generatedMap = new BoardTile[mapSize][mapSize];
@@ -107,7 +108,7 @@ public class PlayGameState implements GameState{
                         tileColor = TileColor.BLUE;
                     }
 
-                    generatedMap[i][j] = new BoardTile(step*(i - ((double)(mapSize - 1)/2)), step*(j - ((double)(mapSize- 1)/2)), d,
+                    generatedMap[i][j] = new BoardTile(step*(i - ((double)(mapSize - 1)/2)), step * (j - ((double)(mapSize- 1)/2)) * -1, d,
                             tileColor, blueCount, new BoardPosition(i, j));
                 }
             }
@@ -132,13 +133,14 @@ public class PlayGameState implements GameState{
                 int i = rand.nextInt(mapSize - 1);
                 rand = new Random();
                 int j = rand.nextInt(mapSize - 1);
-                generatedMap[i][j] = new BoardTile(step*(i - ((double)(mapSize -1)/2)), step*(j - ((double)(mapSize- 1)/2)),
+                generatedMap[i][j] = new BoardTile(step*(i - ((double)(mapSize -1)/2)), step*(j - ((double)(mapSize- 1)/2)) * -1,
                         d, tileColor, blueCount, new BoardPosition(i, j));
                 _board.setMap(generatedMap);
                 _hints.updateMap(_board);
             }
         }
-        while(tries > 50);
+        while(tries >= 50);
+        System.out.println("nivel cargado");
         for (BoardTile row[]:generatedMap) {
             for (BoardTile tile: row) {
                 tile.setCoordOrigin(_coordOr);

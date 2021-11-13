@@ -45,7 +45,7 @@ public class Hints {
                 {
                     case BLUE:
                         tryHintsOnBlue(t);
-                        if(t._count > 0 &&(checkTooMuchBlue(t) || checkTooMuchRed(t))) return false;
+                        if(t._count > 0 && (checkTooMuchBlue(t) || checkTooMuchRed(t))) return false;
                         break;
                     case GREY:
                         tryHintsOnGrey(t);
@@ -54,7 +54,7 @@ public class Hints {
             }
         }
         if(!_sameMap && !isSolved()){
-            solveMap();
+            _sameMap = !solveMap();
         }
         return !_sameMap;
     }
@@ -65,42 +65,21 @@ public class Hints {
         {
             for(BoardTile t : column)
             {
-                switch (t._tileColor)
-                {
-                    case BLUE:
-                        if(checkTooMuchBlue(t)) answer = Integer.toString(t._boardPos._x) + "x" + Integer.toString(t._boardPos._x) + " is seeing to much";
-                        break;
-                    case GREY:
+                if(t._count > 0) {
+                    switch (t._tileColor) {
+                        case BLUE:
+                            if (checkTooMuchBlue(t))
+                                return Integer.toString(t._boardPos._x) + "x" + Integer.toString(t._boardPos._y) + " is seeing to much";
+                            break;
+                        case GREY:
 
-                        break;
+                            break;
+                    }
                 }
             }
         }
-        answer = "Think more about the table";
-        return answer;
-    }
 
-    public void renderPrueba()
-    {
-        for(int y = 0; y < 4; y++)
-        {
-            System.out.println("+---+---+---+---+");
-            for(int x = 0; x < 4; x++)
-            {
-                switch (_board.getMap()[x][y]._tileColor){
-                    case RED:
-                        System.out.print("| X ");
-                        break;
-                    case BLUE:
-                        System.out.print("| " + _board.getMap()[x][y]._count + " ");
-                        break;
-                    default:
-                        System.out.print("|   ");
-                }
-            }
-            System.out.println("|");
-        }
-        System.out.println("+---+---+---+---+");
+        return "Think more about the table";
     }
 
     /**
