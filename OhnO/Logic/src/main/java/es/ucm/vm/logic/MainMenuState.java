@@ -7,6 +7,7 @@ import es.ucm.vm.engine.Color;
 import es.ucm.vm.engine.Font;
 import es.ucm.vm.engine.Graphics;
 import es.ucm.vm.engine.Input;
+import es.ucm.vm.engine.Rect;
 
 public class MainMenuState implements GameState {
     //---------------------------------------------------------------
@@ -17,8 +18,8 @@ public class MainMenuState implements GameState {
     int _posOrY; // Pos of coord origin Y
     Text _header;
     Text _description;
-    ArrayList<Text> _texts; // Array list with the different texts.
-
+    ArrayList<Button> _buttons; // Array list with the level buttons
+    int _d = 90;
     //---------------------------------------------------------------
     //--------------------------Constants----------------------------
     //---------------------------------------------------------------
@@ -51,12 +52,29 @@ public class MainMenuState implements GameState {
                 35, FREE_PLAY_DESCRIPTION, false, Font.FONT_JOSEFIN_BOLD);
         _description.setCoordOrigin(ors);
 
-        /*Text hdText =  new Text(-308, -116, _colorPicker.getWhite(),
-                35, "HARD MODE", false, Font.FONT_BUNGEE_REGULAR);
-        hdText.setCoordOrigin(ors);
-        _hard = new Button(-196, -110, 224, 29,
-                _colorPicker.getItemColor(), 10, hdText);
-        _hard.setCoordOrigin(ors);*/
+        // create level buttons
+        _buttons = new ArrayList<>();
+        int levels = 4;
+        Color white = new Color(255, 255, 255, 255);
+        Color blue = new Color(); blue.setBlue();
+        Color red = new Color(); red.setRed();
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 3; j++) {
+                Vector2 pos = new Vector2(j*100 - 100, - i*100);
+
+                Text levelText = new Text(pos._x, pos._y, white, 20, String.valueOf(levels), false, Font.FONT_JOSEFIN_BOLD);
+
+                Color buttonColor;
+                if (levels % 2 == 0) buttonColor = blue;
+                else buttonColor = red;
+
+                Button levelButton = new Button(pos._x, pos._y, _d, _d, buttonColor, 20, levelText);
+                levelButton.setCoordOrigin(ors);
+                _buttons.add(levelButton);
+
+                levels++;
+            }
+        }// create level buttons
     } // Constructor
 
     /**
@@ -74,18 +92,36 @@ public class MainMenuState implements GameState {
      */
     @Override
     public void render(Graphics g) {
-        g.save();
+        for (Button button: _buttons) {
+            drawCircle(g, button);
+            button.render(g);
+        }
 
-        /*// Render game title
-        for (int i = 0; i < _texts.size(); i++){
-            _texts.get(i).render(g);
-        } // for*/
+        g.save();
 
         _header.render(g);
         _description.render(g);
 
         g.restore();
     } // render
+
+    private void drawCircle(Graphics g, Button b) {
+        Rect o;
+        Rect n = null;
+        o = new Rect((int)(_d * ((double)3/4)), 0, 0, (int)(_d * ((double)3/4)));
+        n = g.scale(o, g.getCanvas());
+        // Set the color to paint the coin/item
+        g.setColor(b._c);
+        // Save the actual canvas transformation matrix
+        g.save();
+
+        g.translate((int) b._coordOrigin._x + (int) b._pos._x,
+                (int) b._coordOrigin._y + ((int) b._pos._y * (-1)));
+
+        g.fillCircle((int)n.getX() - n.getRight()/2, (int)n.getY() - n.getBottom()/2, n.getWidth());
+        // Reset canvas after drawing
+        g.restore();
+    }
 
     /**
      * Function to process the input received from the Engine.
@@ -100,13 +136,17 @@ public class MainMenuState implements GameState {
         while(ptr < e.size()){ // While list is not empty...
             Input.TouchEvent te = e.get(ptr); // Get touch event at pointers position
 
-            if (te.getType() == Input.TouchEvent.TouchType.CLICKED) {
-                /*if (_easy.isPressed(te.getX(), te.getY())) {
-                    _l.setGameState(Logic.GameStates.PLAY, 0);
-                } // if
-                else if(_hard.isPressed(te.getX(), te.getY())) {
-                    _l.setGameState(Logic.GameStates.PLAY, 1);
-                } // else if*/
+            if (te.getType() == Input.TouchEvent.TouchType.CLICKED || te.getType() == Input.TouchEvent.TouchType.PRESSED) {
+                int levelCount = 4;
+                for (Button button: _buttons) {
+                    if(button.isPressed(te.getX(), te.getY())) {
+                        System.out.println(levelCount);
+                        _l.setMapSize(levelCount);
+                        _l.setGameState(Logic.GameStates.PLAY);
+                        break;
+                    }
+                    levelCount++;
+                }
             } // if
             else if(te.getType() == Input.TouchEvent.TouchType.KEY_EXIT) {
                 _l.closeGame();

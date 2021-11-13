@@ -32,8 +32,9 @@ public class Button extends GameObject{
         _w = width;
         _h = height;
         _t = t;
+        _c = c;
         _lineThickness = thickness;
-        _debug = false;
+        _debug = true;
     } // Constructor
 
     /**

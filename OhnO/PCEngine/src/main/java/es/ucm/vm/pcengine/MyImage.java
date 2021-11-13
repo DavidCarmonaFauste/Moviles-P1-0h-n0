@@ -28,7 +28,6 @@ public class MyImage implements es.ucm.vm.engine.MyImage{
      */
     @Override
     public void render() {
-
         // check for nulls before trying to render
         if (_graphics != null && _image != null) {
             _graphics.drawImage(_image,_x,_y,_x + _sizeX, _y + _sizeY,

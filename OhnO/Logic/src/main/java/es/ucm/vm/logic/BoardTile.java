@@ -83,7 +83,7 @@ public class BoardTile extends GameObject{
     public void render(Graphics g) {
         Rect o;
         Rect n = null;
-        o = new Rect(_d/2, 0, 0, _d/2);
+        o = new Rect((int)(_d * ((double)3/4)), 0, 0, (int)(_d * ((double)3/4)));
         n = g.scale(o, g.getCanvas());
         // Set the color to paint the coin/item
         g.setColor(_c);

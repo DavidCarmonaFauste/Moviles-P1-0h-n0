@@ -34,8 +34,6 @@ public class Logic implements es.ucm.vm.engine.Logic {
 
     @Override
     public void initLogic() {
-        // TODO: REPLACE WHEN WE HAVE A MENU, LOAD MENU INSTEAD
-        _mapSize = 4;
         setGameState(GameStates.MENU);
     }
 

@@ -101,16 +101,16 @@ public class Board {
     }
 
     public void sendClickEvent(Input.TouchEvent te) {
-        /*for (BoardTile row[]: _map) {
+        for (BoardTile row[]: _map) {
             for (BoardTile tile: row) {
                 if (tile.isPressed(te.getX(), te.getY())) {
-                    tile.circleTileColor();
+                    tile.cycleTileColor();
                     return;
                 }
             }
-        }*/
+        }
 
-        for (int i = 0; i < _mapSize; i++) {
+        /*for (int i = 0; i < _mapSize; i++) {
             for (int j = 0; j < _mapSize; j++) {
                 if (_map[i][j].isPressed(te.getX(), te.getY())) {
                     _map[i][j].cycleTileColor();
@@ -128,6 +128,6 @@ public class Board {
                     return;
                 }
             }
-        }
+        }*/
     }
 }
