@@ -94,23 +94,49 @@ public class PlayGameState implements GameState{
         int d = (int)(step);
         // set the probability of a filled tile
         float probabilityLimit = 0.25f;
-
         // extra variables used in tile creation
         int blueCount = 0;
         TileColor tileColor = TileColor.GREY;
 
-        BoardTile[][] generatedMap = new BoardTile[mapSize][mapSize];
+        BoardTile[][] generatedMap;
 
-        for (int i = 0; i < mapSize; ++i) {
-            for (int j = 0; j < mapSize; ++j) {
+        int tries = 0;
+        do{
+            tries = 0;
+            blueCount = 0;
+            generatedMap = new BoardTile[mapSize][mapSize];
+            for (int i = 0; i < mapSize; ++i) {
+                for (int j = 0; j < mapSize; ++j) {
+                    Random rand = new Random();
+                    float f = rand.nextFloat();
+
+                    if (f >= probabilityLimit) { // grey
+                        tileColor = TileColor.GREY;
+                        blueCount = 0;
+                    }
+                    else if (f <= probabilityLimit/2) { // red
+                        tileColor = TileColor.RED;
+                        blueCount = -1;
+                    }
+                    else { // blue
+                        rand = new Random();
+                        blueCount = 1 + rand.nextInt(mapSize);
+                        tileColor = TileColor.BLUE;
+                    }
+
+                    generatedMap[i][j] = new BoardTile(step*i - (smallSide/4), step*j - (smallSide/4), d,
+                            tileColor, blueCount, new BoardPosition(i, j));
+                }
+            }
+
+            _board.setMap(generatedMap);
+            _hints.updateMap(_board);
+            while(!_hints.solveMap() && tries < 50)
+            {
+                tries++;
                 Random rand = new Random();
                 float f = rand.nextFloat();
-
-                if (f >= probabilityLimit) { // grey
-                    tileColor = TileColor.GREY;
-                    blueCount = 0;
-                }
-                else if (f <= probabilityLimit/2) { // red
+                if (f <= probabilityLimit/2) { // red
                     tileColor = TileColor.RED;
                     blueCount = -1;
                 }
@@ -119,42 +145,28 @@ public class PlayGameState implements GameState{
                     blueCount = 1 + rand.nextInt(mapSize);
                     tileColor = TileColor.BLUE;
                 }
-
-                generatedMap[i][j] = new BoardTile(step*i - (smallSide/4), step*j - (smallSide/4), d,
-                        tileColor, blueCount, new BoardPosition(i, j));
-            }
-        }
-
-        _board.setMap(generatedMap);
-        _hints.updateMap(_board);
-        while(!_hints.solveMap())
-        {
-            Random rand = new Random();
-            float f = rand.nextFloat();
-            if (f <= probabilityLimit/2) { // red
-                tileColor = TileColor.RED;
-                blueCount = -1;
-            }
-            else { // blue
                 rand = new Random();
-                blueCount = 1 + rand.nextInt(mapSize);
-                tileColor = TileColor.BLUE;
+                int i = rand.nextInt(mapSize - 1);
+                rand = new Random();
+                int j = rand.nextInt(mapSize - 1);
+                generatedMap[i][j] = new BoardTile(step*i - (smallSide/4), step*j - (smallSide/4),
+                        d, tileColor, blueCount, new BoardPosition(i, j));
+                _board.setMap(generatedMap);
+                _hints.updateMap(_board);
             }
-            rand = new Random();
-            int i = rand.nextInt(mapSize - 1);
-            rand = new Random();
-            int j = rand.nextInt(mapSize - 1);
-            generatedMap[i][j] = new BoardTile(step*i - (smallSide/4), step*j - (smallSide/4),
-                    d, tileColor, blueCount, new BoardPosition(i, j));
-            _board.setMap(generatedMap);
-            _hints.updateMap(_board);
         }
+        while(tries > 50);
         for (BoardTile row[]:generatedMap) {
             for (BoardTile tile: row) {
                 tile.setCoordOrigin(_coordOr);
             }
         }
-
+        _board.setButton(0, new BoardTile(step/2 - (smallSide / 4),                     -175, d, TileColor.RED, 0, new BoardPosition(0, 0)));
+        _board.setButton(1, new BoardTile(step/2 * (mapSize - 1) - (smallSide / 4),     -175, d, TileColor.BLUE, 0, new BoardPosition(0, 0)));
+        _board.setButton(2, new BoardTile(step * ((mapSize-1) - 0.5) - (smallSide / 4), -175, d, TileColor.GREY, 0, new BoardPosition(0, 0)));
+        for(int i = 0; i < 3; i++) {
+            _board.getButton(i).setCoordOrigin(_coordOr);
+        }
     }
 
     @Override
