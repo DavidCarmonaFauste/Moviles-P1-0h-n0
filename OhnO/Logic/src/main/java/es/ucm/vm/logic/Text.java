@@ -38,6 +38,10 @@ public class Text extends GameObject {
         _f = font;
     } // Constructor
 
+    public void changeTxt(String newTxt){
+        _t = newTxt;
+    }
+
     /**
      * Renders the text in the current position.
      *
@@ -46,12 +50,12 @@ public class Text extends GameObject {
     @Override
     public void render(Graphics g) {
 
-        int x = g.repositionX((int) _coordOrigin._x + (int) _pos._x);
-        int y = g.repositionY((int) _coordOrigin._y + ((int) _pos._y * (-1)));
+        int x = g.repositionX((int) _coordOrigin._x + (int) _pos._x - (_thickness/4)*_t.length());
+        int y = g.repositionY((int) _coordOrigin._y + ((int) _pos._y * (-1)) + (_thickness / 4));
 
         g.newFont(_f, g.repositionX(_thickness), _b);
         g.setColor(_c);
-        g.drawText(_t, g.getCanvas().getX() + x, g.getCanvas().getY() + y);
+        g.drawText(_t, g.getCanvas().getX() + x , g.getCanvas().getY() + y);
     } // render
 } // Text
 

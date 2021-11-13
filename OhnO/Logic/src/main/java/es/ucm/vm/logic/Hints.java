@@ -59,6 +59,26 @@ public class Hints {
         return !_sameMap;
     }
 
+    public String helpUser(){
+        String answer = new String();
+        for(BoardTile[] column : _board.getMap())
+        {
+            for(BoardTile t : column)
+            {
+                switch (t._tileColor)
+                {
+                    case BLUE:
+                        if(checkTooMuchBlue(t)) answer = Integer.toString(t._boardPos._x) + "x" + Integer.toString(t._boardPos._x) + " is seeing to much";
+                        break;
+                    case GREY:
+
+                        break;
+                }
+            }
+        }
+        answer = "Think more about the table";
+        return answer;
+    }
 
     public void renderPrueba()
     {

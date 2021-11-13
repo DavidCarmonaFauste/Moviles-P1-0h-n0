@@ -13,7 +13,6 @@ public class Board {
 
     Stack<BoardPosition> _lastMoves;
 
-    BoardTile _quit, _resetMove, _hint;
     /*
         b.render(g);*/
     public Board(int size)
@@ -36,6 +35,7 @@ public class Board {
             y = 0;
             x++;
         }
+
         return b;
     }
 
@@ -48,26 +48,31 @@ public class Board {
     {
         _map  = map;
     }
+    /*
+        public Text getTxt(){ return _hintsTxt; }
 
-    public BoardTile getButton(int i){
-        return (i == 0) ? _quit : (i == 1) ? _resetMove : _hint;
-    }
-    public void setButton(int i, BoardTile bt){
-        switch (i)
-        {
-            case 0:
-                _quit = bt;
-                break;
-            case 1:
-                _resetMove = bt;
-                break;
-            case 2:
-                _hint = bt;
-                break;
-            default:
-                break;
+        public void setTxt(Text txt) { _hintsTxt = txt; }
+
+        public BoardTile getButton(int i){
+            return (i == 0) ? _quit : (i == 1) ? _resetMove : _hint;
         }
-    }
+
+        public void setButton(int i, BoardTile bt){
+            switch (i)
+            {
+                case 0:
+                    _quit = bt;
+                    break;
+                case 1:
+                    _resetMove = bt;
+                    break;
+                case 2:
+                    _hint = bt;
+                    break;
+                default:
+                    break;
+            }
+        }*/
     public BoardTile[][] getMap()
     {
         return _map;
@@ -100,9 +105,6 @@ public class Board {
                 tile.render(g);
             }
         }
-        _quit.render(g);
-        _hint.render(g);
-        _resetMove.render(g);
     }
 
     public void sendClickEvent(Input.TouchEvent te) {
@@ -115,9 +117,5 @@ public class Board {
                 }
             }
         }
-
-        if(_quit.isPressed(te.getX(), te.getY())) removeLastMove();//por hacer
-        else if(_hint.isPressed(te.getX(), te.getY())) removeLastMove();//por hacer
-        else if (_resetMove.isPressed(te.getX(), te.getY())) removeLastMove();
     }
 }

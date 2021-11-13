@@ -17,11 +17,11 @@ public class PlayGameState implements GameState{
     Board _board;
     Hints _hints;
 
+    BoardTile _quit, _resetMove, _hintButton;
+    Text _hintsTxt;
     Vector2 _coordOr; // Coord origin
     int _coordOrX; // Coord origin X value
     int _coordOrY; // Coord origin Y value
-
-    Text _text;
 
     public PlayGameState(Logic l, int mapSize) {
         _l = l;
@@ -33,8 +33,6 @@ public class PlayGameState implements GameState{
         _coordOr = new Vector2(_coordOrX, _coordOrY);
 
         newMap(mapSize);
-        /*_text = new Text(0,0, new Color(100, 100, 100, 255), 30, "Hola", false, Font.FONT_JOSEFIN_BOLD);
-        _text.setCoordOrigin(_coordOr);*/
     }
 
     public void newMap(int mapSize) {
@@ -72,7 +70,7 @@ public class PlayGameState implements GameState{
         double step = 0, smallSide = 0;
         Rect canvasSize = _l.getCanvasSize();
         if (canvasSize.getHeight() < canvasSize.getWidth())
-            smallSide = canvasSize.getHeight();
+            smallSide = canvasSize.getHeight() * 0.8;
         else
             smallSide = canvasSize.getWidth();
         step = smallSide / (mapSize + 3);
@@ -89,7 +87,6 @@ public class PlayGameState implements GameState{
         int tries = 0;
         do{
             tries = 0;
-            blueCount = 0;
             generatedMap = new BoardTile[mapSize][mapSize];
             for (int i = 0; i < mapSize; ++i) {
                 for (int j = 0; j < mapSize; ++j) {
@@ -147,12 +144,19 @@ public class PlayGameState implements GameState{
                 tile.setCoordOrigin(_coordOr);
             }
         }
-        _board.setButton(0, new BoardTile(step/2 - (smallSide / 4),                     -190, d, TileColor.RED, 0, new BoardPosition(0, 0)));
-        _board.setButton(1, new BoardTile(step/2 * (mapSize - 1) - (smallSide / 4),     -190, d, TileColor.BLUE, 0, new BoardPosition(0, 0)));
-        _board.setButton(2, new BoardTile(step * ((mapSize-1) - 0.5) - (smallSide / 4), -190, d, TileColor.GREY, 0, new BoardPosition(0, 0)));
-        for(int i = 0; i < 3; i++) {
-            _board.getButton(i).setCoordOrigin(_coordOr);
-        }
+        _quit = (new BoardTile(step/2 - (smallSide / 4),                     -190, d, TileColor.GREY, 0, new BoardPosition(0, 0)));
+        _quit.setTxt("Q");
+        _quit.setCoordOrigin(_coordOr);
+        _resetMove = new BoardTile(step/2 * (mapSize - 1) - (smallSide / 4),     -190, d, TileColor.GREY, 0, new BoardPosition(0, 0));
+        _resetMove.setTxt("R");
+        _resetMove.setCoordOrigin(_coordOr);
+        _hintButton = new BoardTile(step * ((mapSize-1) - 0.5) - (smallSide / 4), -190, d, TileColor.GREY, 0, new BoardPosition(0, 0));
+        _hintButton.setTxt("H");
+        _hintButton.setCoordOrigin(_coordOr);
+
+        _hintsTxt = new Text(step/2 * (mapSize - 1) - (smallSide / 4), 200, new Color(50,50,50,255), d/2,
+                            Integer.toString(mapSize) + "x" + Integer.toString(mapSize), false, Font.FONT_JOSEFIN_BOLD);
+        _hintsTxt.setCoordOrigin(_coordOr);
     }
 
     @Override
@@ -180,8 +184,11 @@ public class PlayGameState implements GameState{
         g.clear(_color);
 
         _board.render(g);
+        _quit.render(g);
+        _hintButton.render(g);
+        _resetMove.render(g);
 
-        //_text.render(g);
+        _hintsTxt.render(g);
     }
 
     /**
@@ -202,6 +209,9 @@ public class PlayGameState implements GameState{
                 case CLICKED:
                 case PRESSED:
                     _board.sendClickEvent(te);
+                    if(_quit.isPressed(te.getX(), te.getY())) _board.removeLastMove();//por hacer
+                    else if(_hintButton.isPressed(te.getX(), te.getY())) _hintsTxt.changeTxt(_hints.helpUser());
+                    else if (_resetMove.isPressed(te.getX(), te.getY())) _board.removeLastMove();
                     break;
                 case KEY_RESTART:
                     _l.setMapSize(_board.getMapSize());
