@@ -50,7 +50,7 @@ public class Text extends GameObject {
         int y = g.repositionY((int) _coordOrigin._y + ((int) _pos._y * (-1)));
 
         // TODO: CHANGE LINE THICKNESS TO SOMETHING BETTER
-        g.newFont(_f, g.repositionX(10), _b);
+        g.newFont(_f, g.repositionX(40), _b);
         g.setColor(_c);
         g.drawText(_t, g.getCanvas().getX() + x, g.getCanvas().getY() + y);
     } // render

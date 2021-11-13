@@ -114,7 +114,7 @@ public class Graphics extends AbstractGraphics {
     @Override
     public void drawText(String text, int x, int y) {
         _font.setContents(text);
-        _font.setPosition(x, y);
+        _font.setPosition(x - (_font._fontSize - _font._fontSize / 4), y - _font._fontSize / 4);
         _font.render();
     }
 
