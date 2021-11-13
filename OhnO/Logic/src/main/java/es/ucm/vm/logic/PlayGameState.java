@@ -7,6 +7,7 @@ import es.ucm.vm.engine.Color;
 import es.ucm.vm.engine.Font;
 import es.ucm.vm.engine.Graphics;
 import es.ucm.vm.engine.Input;
+import es.ucm.vm.engine.Rect;
 import sun.rmi.runtime.Log;
 
 public class PlayGameState implements GameState{
@@ -81,9 +82,20 @@ public class PlayGameState implements GameState{
     *//*----------------------------------------------------*/
 
     private void fillBoard(int mapSize) {
-        // TODO: ACTUALLY GENERATE BOARD HERE
-        int d = 50; // temp diameter for tiles
+        // Calculate sizings used for tile placement
+        double step = 0, smallSide = 0;
+        Rect canvasSize = _l.getCanvasSize();
+        if (canvasSize.getHeight() < canvasSize.getWidth())
+            smallSide = canvasSize.getHeight();
+        else
+            smallSide = canvasSize.getWidth();
+        step = smallSide / (mapSize + 1);
+        // calculate diameter for tiles
+        int d = (int)(step);
+        // set the probability of a filled tile
         float probabilityLimit = 0.25f;
+
+        // extra variables used in tile creation
         int blueCount = 0;
         TileColor tileColor = TileColor.GREY;
 
@@ -108,7 +120,7 @@ public class PlayGameState implements GameState{
                     tileColor = TileColor.BLUE;
                 }
 
-                generatedMap[i][j] = new BoardTile(-100 + i * 50, -100 + j * 50, d,
+                generatedMap[i][j] = new BoardTile(step*i - (smallSide/4), step*j - (smallSide/4), d,
                         tileColor, blueCount, new BoardPosition(i, j));
             }
         }
@@ -132,7 +144,8 @@ public class PlayGameState implements GameState{
             int i = rand.nextInt(mapSize - 1);
             rand = new Random();
             int j = rand.nextInt(mapSize - 1);
-            generatedMap[i][j] = new BoardTile(-100 + i * 50, -100 + j * 50, d, tileColor, blueCount, new BoardPosition(i, j));
+            generatedMap[i][j] = new BoardTile(step*i - (smallSide/4), step*j - (smallSide/4),
+                    d, tileColor, blueCount, new BoardPosition(i, j));
             _board.setMap(generatedMap);
             _hints.updateMap(_board);
         }
@@ -141,58 +154,7 @@ public class PlayGameState implements GameState{
                 tile.setCoordOrigin(_coordOr);
             }
         }
-        /*BoardTile[][] mapaPruebas = new BoardTile[mapSize][mapSize];
-        // Vector de bool para saber las casillas que relleno aleatoriamente de azules, y depués recorrer el resto para ponerlas en gris
-        boolean rellenas [][] = new boolean[mapSize][mapSize];
 
-        for (int i = 0; i < rellenas.length; i++) {
-            for (int j = 0; j < rellenas[i].length; j++) {
-                rellenas[i][j] = false;
-            }
-        }
-
-        // Generación de 'mpaSize' casillas aleatorias azules con 'maxSize' números aleatorios
-        for (int i = 0; i < mapSize; i++){
-            int x = (int)(Math.random()*(mapSize));
-            int y = (int)(Math.random()*(mapSize));
-
-            rellenas[x][y] = true;
-
-            int count = (int)(Math.random()*(mapSize+1));
-
-            mapaPruebas[x][y] = new BoardTile((x +1)*100,(y+1)*100, d, TileColor.BLUE, count, new BoardPosition(x,y));
-        }
-
-        for (int i = 0; i < mapSize; i++) {
-            for (int j = 0; j < mapSize; j++) {
-                if(!rellenas[i][j])
-                    mapaPruebas[i][j] = new BoardTile((i +1)*100,(j+1)*100, d, TileColor.GREY, 0, new BoardPosition(i,j));
-            }
-        }*/
-
-
-
-        /*_board.setMap(mapaPruebas);
-        _hints.updateMap(_board);
-        while (!_hints.solveMap()){
-            int x = (int)(Math.random()*(mapSize));
-            int y = (int)(Math.random()*(mapSize));
-
-            rellenas[x-1][y-1] = true;
-
-            int count = (int)(Math.random()*(mapSize+1));
-
-            mapaPruebas[x][y] = new BoardTile((x +1)*100,(y+1)*100, d, TileColor.BLUE, count, new BoardPosition(x,y));
-        }
-
-
-        for (BoardTile row[]:mapaPruebas) {
-            for (BoardTile tile: row) {
-                tile.setCoordOrigin(_coordOr);
-            }
-        }
-
-        return mapaPruebas;*/
     }
 
     @Override

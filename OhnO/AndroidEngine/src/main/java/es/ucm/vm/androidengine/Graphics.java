@@ -6,7 +6,7 @@ import android.graphics.Paint;
 import android.view.SurfaceView;
 
 import es.ucm.vm.engine.AbstractGraphics;
-import es.ucm.vm.engine.Font;
+import es.ucm.vm.androidengine.Font;
 import es.ucm.vm.engine.Rect;
 import es.ucm.vm.engine.Color;
 
@@ -24,7 +24,7 @@ public class Graphics extends AbstractGraphics {
     Paint _pnt;
     Canvas _cnv;
     public es.ucm.vm.engine.Color _color;
-    es.ucm.vm.androidengine.Font _font;
+    Font _font;
 
     /**
      * Constructor. Receives and saves an instance of the SurfaceView to paint there later. Also
@@ -120,7 +120,14 @@ public class Graphics extends AbstractGraphics {
 
     @Override
     public Font newFont(String filename, int size, boolean isBold) {
-        return null;
+        _font = new Font();
+
+        _font.setView(_sView);
+        _font.setPaint(_pnt);
+        _font.setCanvas(_cnv);
+        _font.initializeFont(filename,size,_pnt.getColor(), isBold);
+
+        return _font;
     }
 
     /**

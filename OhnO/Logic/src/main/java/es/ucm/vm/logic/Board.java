@@ -104,7 +104,6 @@ public class Board {
         for (BoardTile row[]: _map) {
             for (BoardTile tile: row) {
                 if (tile.isPressed(te.getX(), te.getY())) {
-                    System.out.println("clicked tile");
                     tile.circleTileColor();
                     return;
                 }
