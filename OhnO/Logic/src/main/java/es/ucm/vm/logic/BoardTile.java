@@ -43,15 +43,16 @@ public class BoardTile extends GameObject{
         }
         else if (_tileColor == TileColor.GREY) {
             this._button = new Button(x, y, d, d, new Color(0,0,0,100), 20,
-                    new Text(x, y, new Color(50,50,50,255), 30,
+                    new Text(x, y, new Color(50,50,50,255), d/3,
                             "", false, Font.FONT_JOSEFIN_BOLD));
         }
     }
 
-    /**
-     * Getter for the tile diameter
-     * @return (int) diameter of the tile
-     */
+    public void setTxt(String newTxt){
+        if(_text == null) this._text = new Text(_pos._x, _pos._y, new Color(50,50,50,255), this._d/3, "", false, Font.FONT_JOSEFIN_BOLD);
+        this._text.changeTxt(newTxt);
+    }
+
     public int getSize(){return _d;}
 
     /**
@@ -101,7 +102,7 @@ public class BoardTile extends GameObject{
             this._text.setCoordOrigin(_coordOrigin);
             this._text.render(g);
         }
-        else if (_button != null) {
+        if (_button != null) {
             this._button.setCoordOrigin(_coordOrigin);
             _button.render(g);
         }
