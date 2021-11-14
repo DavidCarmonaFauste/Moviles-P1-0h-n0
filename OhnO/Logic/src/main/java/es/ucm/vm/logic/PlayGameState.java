@@ -196,13 +196,14 @@ public class PlayGameState implements GameState{
                 case CLICKED:
                 case PRESSED:
                     _board.sendClickEvent(te);
+                    _hints.updateMap(_board);
                     if(_quit.isPressed(te.getX(), te.getY()))
                         _l.closeGame();
                     else if(_hintButton.isPressed(te.getX(), te.getY())){
-                        _hints.updateMap(_board);
                         _hintsTxt.changeTxt(_hints.helpUser());
                     }
                     else if (_resetMove.isPressed(te.getX(), te.getY())) _board.removeLastMove();
+                    if(_hints.isSolved()) _hintsTxt.changeTxt("YOU WIN!!!");
                     break;
                 case KEY_RESTART:
                     _l.setMapSize(_board.getMapSize());

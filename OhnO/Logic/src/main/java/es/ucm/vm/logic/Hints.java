@@ -65,9 +65,9 @@ public class Hints {
         {
             for(BoardTile t : column)
             {
-                if(t._count > 0) {
-                    switch (t._tileColor) {
-                        case BLUE:
+                switch (t._tileColor) {
+                    case BLUE:
+                        if(t._count > 0) {
                             if (checkTooMuchBlue(t))
                                 return Integer.toString(t._boardPos._x) + "x" + Integer.toString(t._boardPos._y) + " is seeing to much";
                             if (checkTooMuchRed(t))
@@ -87,12 +87,12 @@ public class Hints {
                                             " need blue tiles at x:" + Integer.toString(dir._x) + " y:" + Integer.toString(dir._y);
                                 }
                             }
-                            break;
-                        case GREY:
+                        }
+                        break;
+                    case GREY:
                             if (checkIfRed(t))
                                 return Integer.toString(t._boardPos._x) + "x" + Integer.toString(t._boardPos._y) + " need to be red";
-                            break;
-                    }
+                    break;
                 }
             }
         }
@@ -226,12 +226,13 @@ public class Hints {
     }
 
     boolean isClosed(BoardTile t){
-        int lego = 0, free = 0;
+        int lego = 0, legos, free = 0;
         for(BoardPosition dir: DIRECTIONS)
         {
             if(!_board.offLimits(BoardPosition.add(t._boardPos, dir))) {
                 lego = _watcher.legolas(t._boardPos, dir, TileColor.RED);
-                if (lego == -1) return false;
+                legos = _watcher.legolas(t._boardPos, dir, TileColor.GREY);
+                if (lego == -1 && legos != -1) return false;
             }
         }
         return true;
