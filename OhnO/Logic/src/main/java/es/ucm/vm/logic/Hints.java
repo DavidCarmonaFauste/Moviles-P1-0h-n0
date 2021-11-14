@@ -71,7 +71,7 @@ public class Hints {
                             if (checkTooMuchBlue(t))
                                 return Integer.toString(t._boardPos._x) + "x" + Integer.toString(t._boardPos._y) + " is seeing to much";
                             if (checkTooMuchRed(t))
-                                return Integer.toString(t._boardPos._x) + "x" + Integer.toString(t._boardPos._y) + " is closed but need more blue tiles";
+                                return Integer.toString(t._boardPos._x) + "x" + Integer.toString(t._boardPos._y) + " is closed but needs more blue tiles";
                             if (checkIfRed(t))
                                 return Integer.toString(t._boardPos._x) + "x" + Integer.toString(t._boardPos._y) + " cannot be blue";
                             if(checkVisibleFulfilled(t) && !isClosed(t))
@@ -80,24 +80,24 @@ public class Hints {
                             {
                                 if (checkNoMoreBlue(t, dir) && _board.getMap()[t._boardPos._x + dir._x][t._boardPos._y + dir._y]._tileColor != TileColor.RED) {
                                     return Integer.toString(t._boardPos._x) + "x" + Integer.toString(t._boardPos._y) +
-                                                            " need be closed at x:" + Integer.toString(dir._x) + " y:" + Integer.toString(dir._y);
+                                                            " needs to be closed at x:" + Integer.toString(dir._x) + " y:" + Integer.toString(dir._y);
                                 }
                                 if (checkForcedBlue(t, dir) && _board.getMap()[t._boardPos._x + dir._x][t._boardPos._y + dir._y]._tileColor != TileColor.RED && !isClosed(t)) {
                                     return Integer.toString(t._boardPos._x) + "x" + Integer.toString(t._boardPos._y) +
-                                            " need blue tiles at x:" + Integer.toString(dir._x) + " y:" + Integer.toString(dir._y);
+                                            " needs blue tiles at x:" + Integer.toString(dir._x) + " y:" + Integer.toString(dir._y);
                                 }
                             }
                         }
                         break;
                     case GREY:
                             if (checkIfRed(t))
-                                return Integer.toString(t._boardPos._x) + "x" + Integer.toString(t._boardPos._y) + " need to be red";
+                                return Integer.toString(t._boardPos._x) + "x" + Integer.toString(t._boardPos._y) + " needs to be red";
                     break;
                 }
             }
         }
 
-        return "Think more about the table";
+        return "Think more about the board";
     }
 
     /**

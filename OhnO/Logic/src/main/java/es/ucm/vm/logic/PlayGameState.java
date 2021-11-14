@@ -6,6 +6,7 @@ import java.util.Random;
 import es.ucm.vm.engine.Color;
 import es.ucm.vm.engine.Font;
 import es.ucm.vm.engine.Graphics;
+import es.ucm.vm.engine.Image;
 import es.ucm.vm.engine.Input;
 import es.ucm.vm.engine.Rect;
 import sun.rmi.runtime.Log;
@@ -17,7 +18,7 @@ public class PlayGameState implements GameState{
     Board _board;
     Hints _hints;
 
-    BoardTile _quit, _resetMove, _hintButton;
+    Button _closeButton, _undoButton, _hintsButton;
     Text _hintsTxt;
     Vector2 _coordOr; // Coord origin
     int _coordOrX; // Coord origin X value
@@ -33,6 +34,26 @@ public class PlayGameState implements GameState{
         _coordOr = new Vector2(_coordOrX, _coordOrY);
 
         newMap(mapSize);
+
+        Color boundingBoxColor = new Color (50, 50,50, 100);
+
+        ImageObject closeImage = new ImageObject(-40, -_l.getCanvasSize().getHeight()/2.0 + 40, 25, 25, Image.IMAGE_CLOSE);
+        closeImage.setCoordOrigin(_coordOr);
+        _closeButton = new Button(-40, -_l.getCanvasSize().getHeight()/2.0 + 40, 25, 25,
+                boundingBoxColor, 10, null, closeImage);
+        _closeButton.setCoordOrigin(_coordOr);
+
+        ImageObject undoImage = new ImageObject(0, -_l.getCanvasSize().getHeight()/2.0 + 40, 25, 25, Image.IMAGE_HISTORY);
+        undoImage.setCoordOrigin(_coordOr);
+        _undoButton = new Button(0, -_l.getCanvasSize().getHeight()/2.0 + 40, 25, 25,
+                boundingBoxColor, 10, null, undoImage);
+        _undoButton.setCoordOrigin(_coordOr);
+
+        ImageObject hintImage = new ImageObject(40, -_l.getCanvasSize().getHeight()/2.0 + 40, 25, 25, Image.IMAGE_EYE);
+        hintImage.setCoordOrigin(_coordOr);
+        _hintsButton = new Button(40, -_l.getCanvasSize().getHeight()/2.0 + 40, 25, 25,
+                boundingBoxColor, 10, null,  hintImage);
+        _hintsButton.setCoordOrigin(_coordOr);
     }
 
     public void newMap(int mapSize) {
@@ -42,38 +63,17 @@ public class PlayGameState implements GameState{
     }
 
 
-
-    /*----------------------------------------------------*//*//y -> 0
-    mapaPruebas[0][0] = new BoardTile(100,100, d, TileColor.GREY, 0, new BoardPosition(0,0));
-    mapaPruebas[1][0] = new BoardTile(200, 100, d, TileColor.RED, 0, new BoardPosition(1,0));
-    mapaPruebas[2][0] = new BoardTile(300, 100, d, TileColor.GREY, 0, new BoardPosition(2,0));
-    mapaPruebas[3][0] = new BoardTile(400, 100, d, TileColor.GREY, 0, new BoardPosition(3,0));
-    *//*----------------------------------------------------*//*//y -> 1
-    mapaPruebas[0][1] = new BoardTile(100,200, d, TileColor.RED, 0, new BoardPosition(0,1));
-    mapaPruebas[1][1] = new BoardTile(200, 200, d, TileColor.GREY, 0, new BoardPosition(1,1));
-    mapaPruebas[2][1] = new BoardTile(300, 200, d, TileColor.BLUE, 2, new BoardPosition(2,1));
-    mapaPruebas[3][1] = new BoardTile(400, 200, d, TileColor.GREY, 0, new BoardPosition(3,1));
-    *//*----------------------------------------------------*//*//y -> 2
-    mapaPruebas[0][2] = new BoardTile(100, 300, d, TileColor.GREY, 0, new BoardPosition(0,2));
-    mapaPruebas[1][2] = new BoardTile(200, 300, d, TileColor.BLUE, 1, new BoardPosition(1,2));
-    mapaPruebas[2][2] = new BoardTile(300, 300, d, TileColor.GREY, 0, new BoardPosition(2,2));
-    mapaPruebas[3][2] = new BoardTile(400, 300, d, TileColor.GREY, 0, new BoardPosition(3,2));
-    *//*----------------------------------------------------*//*//y -> 3
-    mapaPruebas[0][3] = new BoardTile(100, 400, d, TileColor.GREY, 0, new BoardPosition(0,3));
-    mapaPruebas[1][3] = new BoardTile(200, 400, d, TileColor.GREY, 0, new BoardPosition(1,3));
-    mapaPruebas[2][3] = new BoardTile(300, 400, d, TileColor.BLUE, 2, new BoardPosition(2,3));
-    mapaPruebas[3][3] = new BoardTile(400, 400, d, TileColor.BLUE, 4, new BoardPosition(3,3));
-    *//*----------------------------------------------------*/
-
     private void fillBoard(int mapSize) {
         // Calculate sizings used for tile placement
         double step = 0, smallSide = 0;
-        Rect canvasSize = _l.getCanvasSize();
-        if (canvasSize.getHeight() < canvasSize.getWidth())
-            smallSide = canvasSize.getHeight() * 0.8;
+        int w = _l._eng.getWinWidth();
+        int h = _l._eng.getWinHeight();
+        if (_l._eng.getWinHeight() < _l._eng.getWinWidth())
+            smallSide = _l._eng.getWinHeight() * 0.8;
         else
-            smallSide = canvasSize.getWidth();
-        step = smallSide / (mapSize + 3);
+            smallSide = _l._eng.getWinWidth();
+        smallSide = _l._eng.getGraphics().reverseRepositionX((int)smallSide);
+        step = smallSide / (mapSize + 1.5);
         // calculate diameter for tiles
         int d = (int)(step);
         // set the probability of a filled tile
@@ -85,7 +85,7 @@ public class PlayGameState implements GameState{
         BoardTile[][] generatedMap;
 
         int tries = 0;
-        System.out.println("Cargando Nuevo nivel");
+        System.out.println("Generating new level");
         do{
             tries = 0;
             generatedMap = new BoardTile[mapSize][mapSize];
@@ -115,7 +115,7 @@ public class PlayGameState implements GameState{
 
             _board.setMap(generatedMap);
             _hints.updateMap(_board);
-            while(!_hints.solveMap() && tries < 50)
+            while(!_hints.solveMap() && tries < 15)
             {
                 tries++;
                 Random rand = new Random();
@@ -146,15 +146,25 @@ public class PlayGameState implements GameState{
                 tile.setCoordOrigin(_coordOr);
             }
         }
-        _quit = (new BoardTile(step/2 - (smallSide / 4),                     -190, d, TileColor.GREY, 0, new BoardPosition(0, 0)));
-        _quit.setTxt("Q");
-        _quit.setCoordOrigin(_coordOr);
-        _resetMove = new BoardTile(step/2 * (mapSize - 1) - (smallSide / 4),     -190, d, TileColor.GREY, 0, new BoardPosition(0, 0));
-        _resetMove.setTxt("R");
-        _resetMove.setCoordOrigin(_coordOr);
-        _hintButton = new BoardTile(step * ((mapSize-1) - 0.5) - (smallSide / 4), -190, d, TileColor.GREY, 0, new BoardPosition(0, 0));
-        _hintButton.setTxt("H");
-        _hintButton.setCoordOrigin(_coordOr);
+        Color boundingBoxColor = new Color (50, 50,50, 100);
+
+        ImageObject closeImage = new ImageObject(-40, 0, 25, 25, Image.IMAGE_CLOSE);
+        closeImage.setCoordOrigin(_coordOr);
+        _closeButton = new Button(-40, -smallSide/2.0 + 40, 25, 25,
+                boundingBoxColor, 10, null, closeImage);
+        _closeButton.setCoordOrigin(_coordOr);
+
+        ImageObject undoImage = new ImageObject(0, -smallSide/2.0 + 40, 25, 25, Image.IMAGE_HISTORY);
+        undoImage.setCoordOrigin(_coordOr);
+        _undoButton = new Button(0, -smallSide/2.0 + 40, 25, 25,
+                boundingBoxColor, 10, null, undoImage);
+        _undoButton.setCoordOrigin(_coordOr);
+
+        ImageObject hintImage = new ImageObject(40, -smallSide/2.0 + 40, 25, 25, Image.IMAGE_EYE);
+        hintImage.setCoordOrigin(_coordOr);
+        _hintsButton = new Button(40, -smallSide/2.0 + 40, 25, 25,
+                boundingBoxColor, 10, null,  hintImage);
+        _hintsButton.setCoordOrigin(_coordOr);
 
         _hintsTxt = new Text(step/2 * (mapSize - 1) - (smallSide / 4), 200, new Color(50,50,50,255), d/2,
                             Integer.toString(mapSize) + "x" + Integer.toString(mapSize), false, Font.FONT_JOSEFIN_BOLD);
@@ -163,7 +173,7 @@ public class PlayGameState implements GameState{
 
     @Override
     public void update(double t) {
-        System.out.println(_resetMove._c._a);
+        /*System.out.println(_resetMove._c._a);
         if(_hintButton._c._a < 255) {
             _hintButton._c._a += 250 * t;
             if(_hintButton._c._a > 255) _hintButton._c._a = 255;
@@ -175,7 +185,7 @@ public class PlayGameState implements GameState{
         if(_quit._c._a < 255) {
             _quit._c._a += 250 * t;
             if(_quit._c._a > 255) _quit._c._a = 255;
-        }
+        }*/
     }
 
     @Override
@@ -184,9 +194,9 @@ public class PlayGameState implements GameState{
         g.clear(_color);
 
         _board.render(g);
-        _quit.render(g);
-        _hintButton.render(g);
-        _resetMove.render(g);
+        _closeButton.render(g);
+        _undoButton.render(g);
+        _hintsButton.render(g);
 
         _hintsTxt.render(g);
     }
@@ -210,17 +220,16 @@ public class PlayGameState implements GameState{
                 case PRESSED:
                     _board.sendClickEvent(te);
                     _hints.updateMap(_board);
-                    if(_quit.isPressed(te.getX(), te.getY())) {
-                        _quit._c._a = 100;
+                    if(_closeButton.isPressed(te.getX(), te.getY())) {
+                        //_quit._c._a = 100;
                         _l.setGameState(Logic.GameStates.MENU);
                     }
-                        //_l.closeGame();
-                    else if(_hintButton.isPressed(te.getX(), te.getY())){
-                        _hintButton._c._a = 100;
+                    else if(_hintsButton.isPressed(te.getX(), te.getY())){
+                        //_hintButton._c._a = 100;
                         _hintsTxt.changeTxt(_hints.helpUser());
                     }
-                    else if (_resetMove.isPressed(te.getX(), te.getY())){
-                        _resetMove._c._a = 100;
+                    else if (_undoButton.isPressed(te.getX(), te.getY())){
+                        //_resetMove._c._a = 100;
                         _board.removeLastMove();
                     }
                     if(_hints.isSolved()) _hintsTxt.changeTxt("YOU WIN!!!");

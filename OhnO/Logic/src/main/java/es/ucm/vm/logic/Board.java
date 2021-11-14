@@ -48,31 +48,7 @@ public class Board {
     {
         _map  = map;
     }
-    /*
-        public Text getTxt(){ return _hintsTxt; }
 
-        public void setTxt(Text txt) { _hintsTxt = txt; }
-
-        public BoardTile getButton(int i){
-            return (i == 0) ? _quit : (i == 1) ? _resetMove : _hint;
-        }
-
-        public void setButton(int i, BoardTile bt){
-            switch (i)
-            {
-                case 0:
-                    _quit = bt;
-                    break;
-                case 1:
-                    _resetMove = bt;
-                    break;
-                case 2:
-                    _hint = bt;
-                    break;
-                default:
-                    break;
-            }
-        }*/
     public BoardTile[][] getMap()
     {
         return _map;
