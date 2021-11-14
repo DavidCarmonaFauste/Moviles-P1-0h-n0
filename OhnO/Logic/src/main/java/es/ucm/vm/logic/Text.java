@@ -8,13 +8,12 @@ import es.ucm.vm.engine.Graphics;
  * different parameters.
  */
 public class Text extends GameObject {
+    private boolean _b; // if the text is bold or not
+    private String _t; // text that will be displayed
+    private String _f; // path to the font file
 
-    private boolean _b;
-    private String _t;
-    private String _f;
-
-    int _thickness;
-    Color _c;
+    int _thickness; // thickness of the text line
+    Color _c; // color in which the text will be drawn
 
     /**
      * Constructor of Text GameObject. Creates a new Text object with all the parameters provided
@@ -53,7 +52,7 @@ public class Text extends GameObject {
         int x = g.repositionX((int) _coordOrigin._x + (int) _pos._x - (_thickness/4)*_t.length());
         int y = g.repositionY((int) _coordOrigin._y + ((int) _pos._y * (-1)) + (_thickness / 4));
 
-        g.newFont(_f, g.repositionX(_thickness), _b);
+        g.setUpFont(_f, g.repositionX(_thickness), _b);
         g.setColor(_c);
         g.drawText(_t, g.getCanvas().getX() + x , g.getCanvas().getY() + y);
     } // render

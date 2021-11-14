@@ -75,9 +75,13 @@ public interface Graphics {
 
     void fillCircle(int x, int y, int diameter);
 
+    Font setUpFont(String filename, int size, boolean isBold);
+
     void drawText(String text, int x, int y);
 
-    Font newFont(String filename, int size, boolean isBold);
+    Image setUpImage(String filename);
+
+    void drawImage(int x, int y);
 
     //------------------------------------------------------------------------
 

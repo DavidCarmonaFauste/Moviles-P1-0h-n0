@@ -163,21 +163,6 @@ public class PlayGameState implements GameState{
 
     @Override
     public void update(double t) {
-        //if (!_hints._sameMap)
-
-        /*
-        for(int y = 0; y < 4; y++)
-        {
-            System.out.println("+---+---+---+---+");
-            for(int x = 0; x < 4; x++)
-            {
-                if(_board.getMap()[x][y]._tileColor == TileColor.BLUE)      System.out.print("| " + _board.getMap()[x][y]._count + " ");
-                else if (_board.getMap()[x][y]._tileColor == TileColor.RED) System.out.print("| X ");
-                else                                 System.out.print("|   ");
-            }
-            System.out.println("|");
-        }
-        System.out.println("+---+---+---+---+");*/
     }
 
     @Override
@@ -194,8 +179,8 @@ public class PlayGameState implements GameState{
     }
 
     /**
-     * Process all input incoming form the Input class. If mouse clicked or screen touched, throw
-     * player to his right until it hits a new line or leaves the play zone.
+     * Process all input incoming form the Input class. Send mouse events to the buttons and exit
+     * event if the esc key is pressed
      *
      * @param e (List<Input.TouchEvent>) Event list taken from the Input class
      */
@@ -211,7 +196,8 @@ public class PlayGameState implements GameState{
                 case CLICKED:
                 case PRESSED:
                     _board.sendClickEvent(te);
-                    if(_quit.isPressed(te.getX(), te.getY())) _board.removeLastMove();//por hacer
+                    if(_quit.isPressed(te.getX(), te.getY()))
+                        _l.closeGame();
                     else if(_hintButton.isPressed(te.getX(), te.getY())){
                         _hints.updateMap(_board);
                         _hintsTxt.changeTxt(_hints.helpUser());

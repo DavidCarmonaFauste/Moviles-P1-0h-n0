@@ -25,6 +25,7 @@ public class Graphics extends AbstractGraphics {
     Canvas _cnv;
     public es.ucm.vm.engine.Color _color;
     Font _font;
+    Image _image;
 
     /**
      * Constructor. Receives and saves an instance of the SurfaceView to paint there later. Also
@@ -119,7 +120,7 @@ public class Graphics extends AbstractGraphics {
     }
 
     @Override
-    public Font newFont(String filename, int size, boolean isBold) {
+    public Font setUpFont(String filename, int size, boolean isBold) {
         _font = new Font();
 
         _font.setView(_sView);
@@ -128,6 +129,20 @@ public class Graphics extends AbstractGraphics {
         _font.initializeFont(filename,size,_pnt.getColor(), isBold);
 
         return _font;
+    }
+
+    @Override
+    public Image setUpImage(String filename) {
+        _image = new Image();
+
+        _image.initImage(filename);
+        return _image;
+    }
+
+    @Override
+    public void drawImage(int x, int y) {
+        _image.setPosition(x, y);
+        _image.render(this);
     }
 
     /**

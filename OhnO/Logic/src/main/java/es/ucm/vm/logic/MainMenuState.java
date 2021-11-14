@@ -6,6 +6,7 @@ import java.util.List;
 import es.ucm.vm.engine.Color;
 import es.ucm.vm.engine.Font;
 import es.ucm.vm.engine.Graphics;
+import es.ucm.vm.engine.Image;
 import es.ucm.vm.engine.Input;
 import es.ucm.vm.engine.Rect;
 
@@ -20,6 +21,8 @@ public class MainMenuState implements GameState {
     Text _description;
     ArrayList<Button> _buttons; // Array list with the level buttons
     int _d = 90;
+    ImageObject _imageObject;
+
     //---------------------------------------------------------------
     //--------------------------Constants----------------------------
     //---------------------------------------------------------------
@@ -43,12 +46,12 @@ public class MainMenuState implements GameState {
         //_texts = new ArrayList<Text>();
 
         // create header text
-        _header = new Text(-100, _l.getCanvasSize().getHeight()*((double)1/3), new Color(0,0,0,255),
+        _header = new Text(0, _l.getCanvasSize().getHeight()*((double)1/3), new Color(0,0,0,255),
                 55, FREE_PLAY, true, Font.FONT_JOSEFIN_BOLD);
         _header.setCoordOrigin(ors);
 
         // create description text
-        _description = new Text(-130, _l.getCanvasSize().height*((double)1/6), new Color(0,0,0,255),
+        _description = new Text(30, _l.getCanvasSize().height*((double)1/6), new Color(0,0,0,255),
                 35, FREE_PLAY_DESCRIPTION, false, Font.FONT_JOSEFIN_BOLD);
         _description.setCoordOrigin(ors);
 
@@ -75,6 +78,9 @@ public class MainMenuState implements GameState {
                 levels++;
             }
         }// create level buttons
+
+        _imageObject = new ImageObject(0, -_l.getCanvasSize().getHeight()/2 + 40, 25, 25, Image.IMAGE_CLOSE);
+        _imageObject.setCoordOrigin(ors);
     } // Constructor
 
     /**
@@ -97,6 +103,7 @@ public class MainMenuState implements GameState {
             button.render(g);
         }
 
+        _imageObject.render(g);
         g.save();
 
         _header.render(g);
