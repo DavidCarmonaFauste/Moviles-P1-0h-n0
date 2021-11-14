@@ -70,9 +70,27 @@ public class Hints {
                         case BLUE:
                             if (checkTooMuchBlue(t))
                                 return Integer.toString(t._boardPos._x) + "x" + Integer.toString(t._boardPos._y) + " is seeing to much";
+                            if (checkTooMuchRed(t))
+                                return Integer.toString(t._boardPos._x) + "x" + Integer.toString(t._boardPos._y) + " is closed but need more blue tiles";
+                            if (checkIfRed(t))
+                                return Integer.toString(t._boardPos._x) + "x" + Integer.toString(t._boardPos._y) + " cannot be blue";
+                            if(checkVisibleFulfilled(t) && !isClosed(t))
+                                return Integer.toString(t._boardPos._x) + "x" + Integer.toString(t._boardPos._y) + " can be closed with red tiles";
+                            for (BoardPosition dir: DIRECTIONS)
+                            {
+                                if (checkNoMoreBlue(t, dir) && _board.getMap()[t._boardPos._x + dir._x][t._boardPos._y + dir._y]._tileColor != TileColor.RED) {
+                                    return Integer.toString(t._boardPos._x) + "x" + Integer.toString(t._boardPos._y) +
+                                                            " need be closed at x:" + Integer.toString(dir._x) + " y:" + Integer.toString(dir._y);
+                                }
+                                if (checkForcedBlue(t, dir) && _board.getMap()[t._boardPos._x + dir._x][t._boardPos._y + dir._y]._tileColor != TileColor.RED && !isClosed(t)) {
+                                    return Integer.toString(t._boardPos._x) + "x" + Integer.toString(t._boardPos._y) +
+                                            " need blue tiles at x:" + Integer.toString(dir._x) + " y:" + Integer.toString(dir._y);
+                                }
+                            }
                             break;
                         case GREY:
-
+                            if (checkIfRed(t))
+                                return Integer.toString(t._boardPos._x) + "x" + Integer.toString(t._boardPos._y) + " need to be red";
                             break;
                     }
                 }
@@ -207,13 +225,17 @@ public class Hints {
         return counted;
     }
 
-    /*boolean validMapPosition(Coord point)
-    {
-        return  (point._y < _board.getMapSize()) &&
-                (point._y >= 0) &&
-                (point._x < _board.getMapSize()) &&
-                (point._x >= 0);
-    }*/
+    boolean isClosed(BoardTile t){
+        int lego = 0, free = 0;
+        for(BoardPosition dir: DIRECTIONS)
+        {
+            if(!_board.offLimits(BoardPosition.add(t._boardPos, dir))) {
+                lego = _watcher.legolas(t._boardPos, dir, TileColor.RED);
+                if (lego == -1) return false;
+            }
+        }
+        return true;
+    }
 
     // ---------------------------------------------------------------------------------------------
     //                                H I N T    M E T H O D S

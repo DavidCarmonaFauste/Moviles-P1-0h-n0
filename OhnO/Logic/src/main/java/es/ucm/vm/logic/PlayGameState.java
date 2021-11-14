@@ -212,7 +212,10 @@ public class PlayGameState implements GameState{
                 case PRESSED:
                     _board.sendClickEvent(te);
                     if(_quit.isPressed(te.getX(), te.getY())) _board.removeLastMove();//por hacer
-                    else if(_hintButton.isPressed(te.getX(), te.getY())) _hintsTxt.changeTxt(_hints.helpUser());
+                    else if(_hintButton.isPressed(te.getX(), te.getY())){
+                        _hints.updateMap(_board);
+                        _hintsTxt.changeTxt(_hints.helpUser());
+                    }
                     else if (_resetMove.isPressed(te.getX(), te.getY())) _board.removeLastMove();
                     break;
                 case KEY_RESTART:
