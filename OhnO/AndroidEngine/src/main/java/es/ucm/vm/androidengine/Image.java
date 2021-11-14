@@ -44,10 +44,10 @@ public class Image extends AbstractImage {
     @Override
     public void render(Graphics g) {
         Rect r = new Rect();
-        r.top = _x;
-        r.bottom = _x + _sizeX;
-        r.left = _y;
-        r.right = _y + _sizeY;
+        r.top = _y;
+        r.bottom = _y + _sizeY;
+        r.left = _x;
+        r.right = _x + _sizeX;
 
         es.ucm.vm.androidengine.Graphics aG = (es.ucm.vm.androidengine.Graphics)g;
         if(_fadeOut) {

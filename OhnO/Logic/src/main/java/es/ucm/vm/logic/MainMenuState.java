@@ -58,9 +58,9 @@ public class MainMenuState implements GameState {
         createLevelButtons();
 
         // create close button
-        ImageObject imageObject = new ImageObject(0, -_l.getCanvasSize().getHeight()/2 + 40, 25, 25, Image.IMAGE_CLOSE);
+        ImageObject imageObject = new ImageObject(0, -200, 25, 25, Image.IMAGE_CLOSE);
         imageObject.setCoordOrigin(_coordOrigin);
-        _closeButton = new Button(0, -_l.getCanvasSize().getHeight()/2 + 40, 25, 25, new Color(50,50,50,100),
+        _closeButton = new Button(0, -200, 25, 25, new Color(50,50,50,100),
                 10, null, imageObject);
         _closeButton.setCoordOrigin(_coordOrigin);
     } // Constructor
@@ -114,10 +114,8 @@ public class MainMenuState implements GameState {
             button.render(g);
         }
 
-        _closeButton.render(g);
-
         g.save();
-
+        _closeButton.render(g);
         _header.render(g);
         _description.render(g);
 

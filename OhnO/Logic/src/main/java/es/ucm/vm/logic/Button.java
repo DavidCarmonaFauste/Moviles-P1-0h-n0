@@ -37,7 +37,7 @@ public class Button extends GameObject{
         _image = image;
         _c = c;
         _lineThickness = thickness;
-        _debug = false;
+        _debug = true;
     } // Constructor
 
     /**

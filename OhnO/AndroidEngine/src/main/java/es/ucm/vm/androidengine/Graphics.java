@@ -109,7 +109,7 @@ public class Graphics extends AbstractGraphics {
     @Override
     public void fillCircle(int x, int y, int diameter) {
         _pnt.setStyle(Paint.Style.FILL);
-        _cnv.drawCircle(x, y, diameter/2, _pnt);
+        _cnv.drawCircle(x + diameter/2, y+diameter/2, diameter/2, _pnt);
     }
 
     @Override

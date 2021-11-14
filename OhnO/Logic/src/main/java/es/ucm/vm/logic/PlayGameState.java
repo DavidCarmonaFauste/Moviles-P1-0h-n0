@@ -34,26 +34,6 @@ public class PlayGameState implements GameState{
         _coordOr = new Vector2(_coordOrX, _coordOrY);
 
         newMap(mapSize);
-
-        Color boundingBoxColor = new Color (50, 50,50, 100);
-
-        ImageObject closeImage = new ImageObject(-40, -_l.getCanvasSize().getHeight()/2.0 + 40, 25, 25, Image.IMAGE_CLOSE);
-        closeImage.setCoordOrigin(_coordOr);
-        _closeButton = new Button(-40, -_l.getCanvasSize().getHeight()/2.0 + 40, 25, 25,
-                boundingBoxColor, 10, null, closeImage);
-        _closeButton.setCoordOrigin(_coordOr);
-
-        ImageObject undoImage = new ImageObject(0, -_l.getCanvasSize().getHeight()/2.0 + 40, 25, 25, Image.IMAGE_HISTORY);
-        undoImage.setCoordOrigin(_coordOr);
-        _undoButton = new Button(0, -_l.getCanvasSize().getHeight()/2.0 + 40, 25, 25,
-                boundingBoxColor, 10, null, undoImage);
-        _undoButton.setCoordOrigin(_coordOr);
-
-        ImageObject hintImage = new ImageObject(40, -_l.getCanvasSize().getHeight()/2.0 + 40, 25, 25, Image.IMAGE_EYE);
-        hintImage.setCoordOrigin(_coordOr);
-        _hintsButton = new Button(40, -_l.getCanvasSize().getHeight()/2.0 + 40, 25, 25,
-                boundingBoxColor, 10, null,  hintImage);
-        _hintsButton.setCoordOrigin(_coordOr);
     }
 
     public void newMap(int mapSize) {
@@ -65,13 +45,11 @@ public class PlayGameState implements GameState{
 
     private void fillBoard(int mapSize) {
         // Calculate sizings used for tile placement
-        double step = 0, smallSide = 0;
-        int w = _l._eng.getWinWidth();
-        int h = _l._eng.getWinHeight();
+        double step = 0, smallSide = 0, ogSmallSide;
         if (_l._eng.getWinHeight() < _l._eng.getWinWidth())
             smallSide = _l._eng.getWinHeight() * 0.8;
         else
-            smallSide = _l._eng.getWinWidth();
+            smallSide = _l._eng.getWinWidth() * 0.8;
         smallSide = _l._eng.getGraphics().reverseRepositionX((int)smallSide);
         step = smallSide / (mapSize + 1.5);
         // calculate diameter for tiles
@@ -115,7 +93,7 @@ public class PlayGameState implements GameState{
 
             _board.setMap(generatedMap);
             _hints.updateMap(_board);
-            while(!_hints.solveMap() && tries < 15)
+            while(!_hints.solveMap() && tries < 25)
             {
                 tries++;
                 Random rand = new Random();
@@ -140,33 +118,36 @@ public class PlayGameState implements GameState{
             }
         }
         while(tries >= 50);
-        System.out.println("nivel cargado");
+        System.out.println("Finished generating level");
         for (BoardTile row[]:generatedMap) {
             for (BoardTile tile: row) {
                 tile.setCoordOrigin(_coordOr);
             }
         }
-        Color boundingBoxColor = new Color (50, 50,50, 100);
 
-        ImageObject closeImage = new ImageObject(-40, 0, 25, 25, Image.IMAGE_CLOSE);
+        Color boundingBoxColor = new Color (50, 50,50, 100);
+        double buttonY = -smallSide/2;
+        int buttonSize = 30;
+
+        ImageObject closeImage = new ImageObject(-40, buttonY, buttonSize, buttonSize, Image.IMAGE_CLOSE);
         closeImage.setCoordOrigin(_coordOr);
-        _closeButton = new Button(-40, -smallSide/2.0 + 40, 25, 25,
+        _closeButton = new Button(-40, buttonY, buttonSize, buttonSize,
                 boundingBoxColor, 10, null, closeImage);
         _closeButton.setCoordOrigin(_coordOr);
 
-        ImageObject undoImage = new ImageObject(0, -smallSide/2.0 + 40, 25, 25, Image.IMAGE_HISTORY);
+        ImageObject undoImage = new ImageObject(0, buttonY, buttonSize, buttonSize, Image.IMAGE_HISTORY);
         undoImage.setCoordOrigin(_coordOr);
-        _undoButton = new Button(0, -smallSide/2.0 + 40, 25, 25,
+        _undoButton = new Button(0, buttonY, buttonSize, buttonSize,
                 boundingBoxColor, 10, null, undoImage);
         _undoButton.setCoordOrigin(_coordOr);
 
-        ImageObject hintImage = new ImageObject(40, -smallSide/2.0 + 40, 25, 25, Image.IMAGE_EYE);
+        ImageObject hintImage = new ImageObject(40, buttonY, buttonSize, buttonSize, Image.IMAGE_EYE);
         hintImage.setCoordOrigin(_coordOr);
-        _hintsButton = new Button(40, -smallSide/2.0 + 40, 25, 25,
+        _hintsButton = new Button(40, buttonY, buttonSize, buttonSize,
                 boundingBoxColor, 10, null,  hintImage);
         _hintsButton.setCoordOrigin(_coordOr);
 
-        _hintsTxt = new Text(step/2 * (mapSize - 1) - (smallSide / 4), 200, new Color(50,50,50,255), d/2,
+        _hintsTxt = new Text(step/2 * (mapSize - 1) - (smallSide / 4), smallSide/2, new Color(50,50,50,255), d/2,
                             Integer.toString(mapSize) + "x" + Integer.toString(mapSize), false, Font.FONT_JOSEFIN_BOLD);
         _hintsTxt.setCoordOrigin(_coordOr);
     }
