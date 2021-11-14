@@ -135,6 +135,7 @@ public class Graphics extends AbstractGraphics {
     public Image setUpImage(String filename) {
         _image = new Image();
 
+        _image.setAssetManager(_aMan);
         _image.initImage(filename);
         return _image;
     }

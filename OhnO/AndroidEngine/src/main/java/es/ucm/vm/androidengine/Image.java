@@ -1,9 +1,16 @@
 package es.ucm.vm.androidengine;
 
-import android.graphics.Paint;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 import es.ucm.vm.engine.AbstractImage;
 import es.ucm.vm.engine.Graphics;
@@ -11,6 +18,7 @@ import es.ucm.vm.engine.Graphics;
 public class Image extends AbstractImage {
 
     private Bitmap _bitmap = null;
+    private AssetManager _am = null;
 
     /**
      * Used to create a platform specific Image, in this case for Android platform
@@ -18,10 +26,14 @@ public class Image extends AbstractImage {
      */
     @Override
     public void initImage(String filename) {
-        _bitmap = BitmapFactory.decodeFile(filename);
-
-        if(_bitmap == null) {
-            System.err.println("Error loading font");
+        // load image
+        try {
+            // get input stream
+            InputStream ims = _am.open(filename);
+            _bitmap = BitmapFactory.decodeStream(ims);
+            ims.close();
+        }
+        catch(IOException ex) {
             return;
         }
     }
@@ -39,5 +51,9 @@ public class Image extends AbstractImage {
 
         es.ucm.vm.androidengine.Graphics aG = (es.ucm.vm.androidengine.Graphics)g;
         aG._cnv.drawBitmap(_bitmap,null, r, aG._pnt);
+    }
+
+    public void setAssetManager(AssetManager am) {
+        _am = am;
     }
 }

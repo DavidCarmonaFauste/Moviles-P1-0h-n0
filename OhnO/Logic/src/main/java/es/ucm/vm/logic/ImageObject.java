@@ -31,6 +31,5 @@ public class ImageObject extends GameObject{
         _image = g.setUpImage(_f);
         _image.setSize(sizeX, sizeY);
         g.drawImage(x + g.getCanvas().getX() - sizeX/2, y + g.getCanvas().getY() - sizeY/2);
-        //g.drawText(_t, g.getCanvas().getX() + x , g.getCanvas().getY() + y);
     }
 }
