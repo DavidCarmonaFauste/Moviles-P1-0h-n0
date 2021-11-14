@@ -50,7 +50,14 @@ public class Image extends AbstractImage {
         r.right = _y + _sizeY;
 
         es.ucm.vm.androidengine.Graphics aG = (es.ucm.vm.androidengine.Graphics)g;
-        aG._cnv.drawBitmap(_bitmap,null, r, aG._pnt);
+        if(_fadeOut) {
+            aG._pnt.setAlpha((_alpha / 100) * 255);
+            if(_alpha > 0)
+                _alpha--;
+            else _fadeOut = false;
+        }
+        aG._cnv.drawBitmap(_bitmap, null, r, aG._pnt);
+        aG._pnt.setAlpha(255);
     }
 
     public void setAssetManager(AssetManager am) {
