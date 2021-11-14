@@ -14,7 +14,7 @@ public class Logic implements es.ucm.vm.engine.Logic {
     GameState _currentGameState; // Current GameState instance
     PlayGameState _pgs = null; // PlayGameState to use its different functions
 
-    protected enum GameStates {PLAY, MENU, RESET} // Enum with the different type of GameStates.
+    protected enum GameStates {PLAY, MENU} // Enum with the different type of GameStates.
 
     int _mapSize;
 

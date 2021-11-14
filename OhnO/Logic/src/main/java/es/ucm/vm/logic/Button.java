@@ -13,8 +13,9 @@ public class Button extends GameObject{
     //---------------------------------------------------------------
     private int _w, _h; // Width and Height
     private boolean _debug;
-    private Text _t;
     private int _lineThickness;
+    private Text _text;
+    private ImageObject _image;
 
     /**
      * Button constructor. Creates the new button and sets it's parameters.
@@ -23,15 +24,17 @@ public class Button extends GameObject{
      * @param y (double) Y Position.
      * @param width (int) Width of the button Rect.
      * @param height (int) Height of the button Rect.
-     * @param c (VDMColor) Color to set for debugging rectangle.
+     * @param c (Color) Color to set for debugging rectangle.
      * @param thickness (int) Thickness.
-     * @param t (Text) Text associated to the Button.
+     * @param t (Text) Text associated to the Button. (can be null)
+     * @param image (ImageObject) Image object associated to the Button. (can be null)
      */
-    public Button(double x, double y, int width, int height, Color c, int thickness, Text t) {
+    public Button(double x, double y, int width, int height, Color c, int thickness, Text t, ImageObject image) {
         super(x, y);
         _w = width;
         _h = height;
-        _t = t;
+        _text = t;
+        _image = image;
         _c = c;
         _lineThickness = thickness;
         _debug = false;
@@ -48,39 +51,38 @@ public class Button extends GameObject{
         // for debug only
         // This is just for debugging the dimensions of the button.
         if(_debug) {
-            Rect o = new Rect(_w, 0, 0, _h);
-            Rect n = g.scale(o, g.getCanvas());
-
-            g.setColor(_c);
-            // Save actual canvas Transformation matrix
-            g.save();
-
-            Vector2 v = new Vector2((int) _coordOrigin._x + (int) _pos._x,
-                    (int) _coordOrigin._y + ((int) _pos._y * (-1)));
-
-            // Change transformation matrix
-            g.translate((int) _coordOrigin._x + (int) _pos._x,
-                    (int) _coordOrigin._y + ((int) _pos._y * (-1)));
-
-            // Draw square
-            g.drawLine(-n.width / 2, -n.height / 2,
-                    n.width / 2, -n.height / 2, _lineThickness);
-            g.drawLine(-n.width / 2, -n.height / 2,
-                    -n.width / 2, n.height / 2, _lineThickness);
-            g.drawLine(n.width / 2, -n.height / 2,
-                    n.width / 2, n.height / 2, _lineThickness);
-            g.drawLine(-n.width / 2, n.height / 2,
-                    n.width / 2, n.height / 2, _lineThickness);
-
-            // Reset canvas after drawing
-            g.restore();
+            drawBoundingBox(g);
         } // if
 
-        if (_t._coordOrigin == null) {
-            _t.setCoordOrigin(_coordOrigin);
-        }
-        _t.render(g);
+        tryRenderingText(g);
+        tryRenderingImage(g);
     } // render
+
+    /**
+     * Checks if the text is null before trying to render it. It also checks if the text object has
+     * the coordOrigin variable set, and sets it if not
+     * @param g (Graphics) graphics instance to perform all the drawing
+     */
+    private void tryRenderingText(Graphics g) {
+        if (_text == null) return;
+        if (_text._coordOrigin == null) {
+            _text.setCoordOrigin(_coordOrigin);
+        }
+        _text.render(g);
+    }
+
+    /**
+     * Checks if the image is null before trying to render it. It also checks if the text object has
+     * the coordOrigin variable set, and sets it if not
+     * @param g (Graphics) graphics instance to perform all the drawing
+     */
+    private void tryRenderingImage(Graphics g) {
+        if (_image == null) return;
+        if (_image._coordOrigin == null) {
+            _image.setCoordOrigin(_coordOrigin);
+        }
+        _image.render(g);
+    }
 
     /**
      * Use this to debug the button dimensions.
@@ -90,6 +92,40 @@ public class Button extends GameObject{
     public void toggleDebug(boolean debug) {
         _debug = debug;
     } // toggleDebug
+
+    /**
+     * Auxiliary method that draws a box around the perimeter of the button
+     * Only called if the button is in debug mode
+     * @param g (Graphics) graphics instance to perform all the drawing
+     */
+    private void drawBoundingBox(Graphics g) {
+        Rect o = new Rect(_w, 0, 0, _h);
+        Rect n = g.scale(o, g.getCanvas());
+
+        g.setColor(_c);
+        // Save actual canvas Transformation matrix
+        g.save();
+
+        Vector2 v = new Vector2((int) _coordOrigin._x + (int) _pos._x,
+                (int) _coordOrigin._y + ((int) _pos._y * (-1)));
+
+        // Change transformation matrix
+        g.translate((int) _coordOrigin._x + (int) _pos._x,
+                (int) _coordOrigin._y + ((int) _pos._y * (-1)));
+
+        // Draw square
+        g.drawLine(-n.width / 2, -n.height / 2,
+                n.width / 2, -n.height / 2, _lineThickness);
+        g.drawLine(-n.width / 2, -n.height / 2,
+                -n.width / 2, n.height / 2, _lineThickness);
+        g.drawLine(n.width / 2, -n.height / 2,
+                n.width / 2, n.height / 2, _lineThickness);
+        g.drawLine(-n.width / 2, n.height / 2,
+                n.width / 2, n.height / 2, _lineThickness);
+
+        // Reset canvas after drawing
+        g.restore();
+    }
 
     /**
      * Function that checks if a button is pressed. Returns true when that happens, false if not.
@@ -103,13 +139,12 @@ public class Button extends GameObject{
         double leftX, leftY;
         double rightX, rightY;
 
-        leftX = _pos._x - (_w / 2);
-        leftY = _pos._y - (_h / 2);
-        rightX = _pos._x + (_w / 2);
-        rightY = _pos._y + (_h / 2);
+        leftX = _pos._x - ((double)_w / 2);
+        leftY = _pos._y - ((double)_h / 2);
+        rightX = _pos._x + ((double)_w / 2);
+        rightY = _pos._y + ((double)_h / 2);
 
         // Translate to coordOriginPos
-
         // x
         if(x < _coordOrigin._x) {
             x = (((int)_coordOrigin._x - x) * -1);

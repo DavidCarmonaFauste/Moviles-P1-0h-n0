@@ -17,11 +17,12 @@ public class MainMenuState implements GameState {
     Logic _l; // For changing gamestate
     int _posOrX; // Pos of coord origin X
     int _posOrY; // Pos of coord origin Y
+    Vector2 _coordOrigin;
     Text _header;
     Text _description;
     ArrayList<Button> _buttons; // Array list with the level buttons
     int _d = 90;
-    ImageObject _imageObject;
+    Button _closeButton;
 
     //---------------------------------------------------------------
     //--------------------------Constants----------------------------
@@ -41,20 +42,33 @@ public class MainMenuState implements GameState {
         _posOrY = _l._cnv.height/2;
         _posOrX = _l._cnv.width/2;
 
-        Vector2 ors = new Vector2(_posOrX, _posOrY);
-
-        //_texts = new ArrayList<Text>();
+        _coordOrigin = new Vector2(_posOrX, _posOrY);
 
         // create header text
         _header = new Text(0, _l.getCanvasSize().getHeight()*((double)1/3), new Color(0,0,0,255),
                 55, FREE_PLAY, true, Font.FONT_JOSEFIN_BOLD);
-        _header.setCoordOrigin(ors);
+        _header.setCoordOrigin(_coordOrigin);
 
         // create description text
         _description = new Text(30, _l.getCanvasSize().height*((double)1/6), new Color(0,0,0,255),
                 35, FREE_PLAY_DESCRIPTION, false, Font.FONT_JOSEFIN_BOLD);
-        _description.setCoordOrigin(ors);
+        _description.setCoordOrigin(_coordOrigin);
 
+        // create level buttons
+        createLevelButtons();
+
+        // create close button
+        ImageObject imageObject = new ImageObject(0, -_l.getCanvasSize().getHeight()/2 + 40, 25, 25, Image.IMAGE_CLOSE);
+        imageObject.setCoordOrigin(_coordOrigin);
+        _closeButton = new Button(0, -_l.getCanvasSize().getHeight()/2 + 40, 25, 25, new Color(50,50,50,100),
+                10, null, imageObject);
+        _closeButton.setCoordOrigin(_coordOrigin);
+    } // Constructor
+
+    /**
+     * Auxiliary method that creates and places the level buttons
+     */
+    private void createLevelButtons() {
         // create level buttons
         _buttons = new ArrayList<>();
         int levels = 4;
@@ -71,17 +85,14 @@ public class MainMenuState implements GameState {
                 if (levels % 2 == 0) buttonColor = blue;
                 else buttonColor = red;
 
-                Button levelButton = new Button(pos._x, pos._y, _d, _d, buttonColor, 20, levelText);
-                levelButton.setCoordOrigin(ors);
+                Button levelButton = new Button(pos._x, pos._y, _d, _d, buttonColor, 20, levelText,null);
+                levelButton.setCoordOrigin(_coordOrigin);
                 _buttons.add(levelButton);
 
                 levels++;
             }
         }// create level buttons
-
-        _imageObject = new ImageObject(0, -_l.getCanvasSize().getHeight()/2 + 40, 25, 25, Image.IMAGE_CLOSE);
-        _imageObject.setCoordOrigin(ors);
-    } // Constructor
+    }
 
     /**
      * Update. In this screen is only to fit the Interface requirements.
@@ -99,11 +110,12 @@ public class MainMenuState implements GameState {
     @Override
     public void render(Graphics g) {
         for (Button button: _buttons) {
-            drawCircle(g, button);
+            drawLevelButtons(g, button);
             button.render(g);
         }
 
-        _imageObject.render(g);
+        _closeButton.render(g);
+
         g.save();
 
         _header.render(g);
@@ -112,7 +124,7 @@ public class MainMenuState implements GameState {
         g.restore();
     } // render
 
-    private void drawCircle(Graphics g, Button b) {
+    private void drawLevelButtons(Graphics g, Button b) {
         Rect o;
         Rect n = null;
         o = new Rect((int)(_d * ((double)3/4)), 0, 0, (int)(_d * ((double)3/4)));
@@ -144,6 +156,9 @@ public class MainMenuState implements GameState {
             Input.TouchEvent te = e.get(ptr); // Get touch event at pointers position
 
             if (te.getType() == Input.TouchEvent.TouchType.CLICKED || te.getType() == Input.TouchEvent.TouchType.PRESSED) {
+                if (_closeButton.isPressed(te.getX(), te.getY())) {
+                    _l.closeGame();
+                }
                 int levelCount = 4;
                 for (Button button: _buttons) {
                     if(button.isPressed(te.getX(), te.getY())) {
@@ -153,8 +168,8 @@ public class MainMenuState implements GameState {
                         break;
                     }
                     levelCount++;
-                }
-            } // if
+                } // foreach _buttons
+            } // if CLICKED || PRESSED
             else if(te.getType() == Input.TouchEvent.TouchType.KEY_EXIT) {
                 _l.closeGame();
             } // else if

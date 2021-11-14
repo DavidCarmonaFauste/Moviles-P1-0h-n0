@@ -44,8 +44,7 @@ public class BoardTile extends GameObject{
         }
         else if (_tileColor == TileColor.GREY) {
             this._button = new Button(x, y, d, d, new Color(0,0,0,100), 20,
-                    new Text(x, y, new Color(50,50,50,255), d/3,
-                            "", false, Font.FONT_JOSEFIN_BOLD));
+                    null, null);
         }
     }
 
