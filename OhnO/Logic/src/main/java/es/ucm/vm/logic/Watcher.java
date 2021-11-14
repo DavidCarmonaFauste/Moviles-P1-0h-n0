@@ -1,5 +1,8 @@
 package es.ucm.vm.logic;
 
+/**
+ * Class with functions that can count tiles and return useful information
+ */
 public class Watcher {
     Board _board;
 
@@ -7,6 +10,13 @@ public class Watcher {
         _board = b;
     }
 
+    /**
+     * As long as the board contains the "watched" color in the direction given, it keeps counting
+     * @param pos (BoardPosition) Starting position
+     * @param dir (BoardPosition) Direction
+     * @param watching (TileColor) one of the three tile colors
+     * @return (int) how many tiles of that color are in a consecutive line
+     */
     public int gimli(BoardPosition pos, BoardPosition dir, TileColor watching)
     {
         int counted = 0;
@@ -23,6 +33,14 @@ public class Watcher {
         return counted;
     }
 
+    /**
+     * It keeps counting in a direction as long as the tiles aren't of the "watched" color or the map
+     * isn't over
+     * @param pos (BoardPosition) Starting position
+     * @param dir (BoardPosition) Direction
+     * @param watching (TileColor) One of the three tile colors
+     * @return (int) How many tiles there are between the starting position and the first "watched" tile
+     */
     public int legolas(BoardPosition pos, BoardPosition dir, TileColor watching)
     {
         int _free = 0;

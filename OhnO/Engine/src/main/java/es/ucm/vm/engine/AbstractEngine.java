@@ -1,5 +1,8 @@
 package es.ucm.vm.engine;
 
+/**
+ * Abstract Engine with all common methods and variables that both platforms will use
+ */
 public abstract class AbstractEngine implements Engine {
     // ENGINE VARS
     protected Graphics _g;

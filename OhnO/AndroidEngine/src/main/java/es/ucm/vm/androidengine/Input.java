@@ -7,9 +7,13 @@ import java.util.ArrayList;
 
 import es.ucm.vm.engine.AbstractInput;
 
+/**
+ * Android implementation of the Input class. Manages screen touch events and stores them as multiplatform
+ * events
+ */
 public class Input extends AbstractInput implements es.ucm.vm.engine.Input, View.OnTouchListener {
     //---------------------------------------------------------------
-    //----------------------Private Atributes------------------------
+    //---------------------Private Attributes------------------------
     //---------------------------------------------------------------
     Graphics _g;
 

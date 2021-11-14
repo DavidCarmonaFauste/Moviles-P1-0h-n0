@@ -2,21 +2,31 @@ package es.ucm.vm.logic;
 
 import static es.ucm.vm.logic.BoardPosition.DIRECTIONS;
 
+/**
+ * Class that contains all the hint methods that, applied to a board, allow us to solve it.
+ */
 public class Hints {
     public Watcher _watcher;
     Board _board;
     BoardPosition _auxPos;
     public boolean _sameMap = false;
 
+    /**
+     * Constructor. Takes a board and creates a Watcher utility for its use inside hint methods
+     * @param b (Board) board we want to apply hints to
+     */
     public Hints(Board b)
     {
-            //_board = (Board) b.clone();
             _board = new Board(b.getMapSize());
             updateMap(b);
             _watcher = new Watcher(_board);
             _auxPos = new BoardPosition(0, 0);
     }
 
+    /**
+     * Performs a deep copy of the board to update the internal _board
+     * @param b (Board) new board we want to copy
+     */
     public void updateMap(Board b)
     {
         try {
@@ -34,6 +44,10 @@ public class Hints {
         }
     }
 
+    /**
+     * Uses the Hint methods to solve a map and modify it to be solved.
+     * @return (boolean) false if the map could not be solved, true if the given map is solvable
+     */
     public boolean solveMap()
     {
         _sameMap = true;
@@ -59,6 +73,10 @@ public class Hints {
         return !_sameMap;
     }
 
+    /**
+     * Uses the hint methods to display a string with a hint depending on what can be done
+     * @return (String) string with the helper hint
+     */
     public String helpUser(){
         String answer = new String();
         for(BoardTile[] column : _board.getMap())
@@ -133,6 +151,10 @@ public class Hints {
         return true;
     }
 
+    /**
+     * Checks a tile for grey-specific hints
+     * @param t (BoardTile) tile we want to check
+     */
     void tryHintsOnGrey(BoardTile t)
     {
         // HINT 5   --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
@@ -225,6 +247,11 @@ public class Hints {
         return counted;
     }
 
+    /**
+     * Aux function that checks if a tile is closed off
+     * @param t (BoardTile) tile we want to check
+     * @return (boolean) true if it is closed, false if not
+     */
     boolean isClosed(BoardTile t){
         int lego = 0, legos, free = 0;
         for(BoardPosition dir: DIRECTIONS)
@@ -278,7 +305,13 @@ public class Hints {
         return  c._count < counted;
     }
 
-    //Si no ponemos un punto azul en alguna celda vacía, entonces es imposible alcanzar el número
+    /**
+     * Hint that checks if there is mandatory to put a blue tile, or else the count number wouldn't
+     * be able to be achieved
+     * @param c (BoardTile) tile we want to check
+     * @param dir (BoardPosition) direction we're checking in
+     * @return (boolean) true if it needs a forced blue
+     */
     public boolean checkForcedBlue(BoardTile c, BoardPosition dir) {
         int _free = 0;
         BoardPosition _newPos = BoardPosition.add(c._boardPos, dir);
@@ -306,44 +339,45 @@ public class Hints {
         return _free < c._count;
     }
 
-    //Un número tiene más casillas azules visibles de las que debería.
+    /**
+     * Checks if a tile has too much blue surrounding it
+     * @param c (BoardTile) tile we want to check
+     * @return (boolean) true if there is too much blue
+     */
     public boolean checkTooMuchBlue(BoardTile c) {
         int counted = countVisibleBlue(c);
 
         return c._count < counted;
     }
 
-    // Un número tiene una cantidad insuficiente de casillas azules visibles y sin embargo
-    //ya está cerrada (no puede ampliarse más por culpa de paredes)
+    /**
+     * Checks if a tile has too much red surrounding it: it doesn't see enough blue tiles
+     * @param c (BoardTile) tile we want to check
+     * @return (boolean) true if there is too much red
+     */
     public boolean checkTooMuchRed(BoardTile c) {
         int free = 0, lego = 0;
 
-        //for (BoardPosition dir: DIRECTIONS)
-        //{
-            //free += _watcher.legolas(c._boardPos, dir, TileColor.RED);
-            lego = _watcher.legolas(c._boardPos, new BoardPosition(0, 1), TileColor.RED);
-            free += (lego == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(0, 1))._y : lego;
-            lego = _watcher.legolas(c._boardPos, new BoardPosition(1, 0), TileColor.RED);
-            free += (lego == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(1, 0))._x : lego;
-            lego = _watcher.legolas(c._boardPos, new BoardPosition(0, -1), TileColor.RED);
-            free += (lego == -1) ? c._boardPos._y : lego;
-            lego = _watcher.legolas(c._boardPos, new BoardPosition(-1, 0), TileColor.RED);
-            free += (lego == -1) ? c._boardPos._x : lego;
-        //}
+        lego = _watcher.legolas(c._boardPos, new BoardPosition(0, 1), TileColor.RED);
+        free += (lego == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(0, 1))._y : lego;
+        lego = _watcher.legolas(c._boardPos, new BoardPosition(1, 0), TileColor.RED);
+        free += (lego == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(1, 0))._x : lego;
+        lego = _watcher.legolas(c._boardPos, new BoardPosition(0, -1), TileColor.RED);
+        free += (lego == -1) ? c._boardPos._y : lego;
+        lego = _watcher.legolas(c._boardPos, new BoardPosition(-1, 0), TileColor.RED);
+        free += (lego == -1) ? c._boardPos._x : lego;
 
         return c._count > free;
     }
 
-    // Si una celda está vacía y cerrada y no ve ninguna celda azul, entonces es pared (todos
-    //los puntos azules deben ver al menos a otro)
+    /**
+     * Checks if a tile should be red (if a tile doesn't see any blue tiles, it has to be red)
+     * @param c (BoardTile) tile we want to check
+     * @return (boolean) true if the tile has to be red
+     */
     public boolean checkIfRed(BoardTile c) {
         int free = 0, lego = 0;
 
-        /*for (Coord dir: Coord.DIRECTIONS)
-        {
-            lego = _rorschach.legolas(c._pos, dir, Color.RED);
-            free += (lego == -1)? _rorschach.getMapSize() - Coord.add(c._pos, dir) : lego;
-        }*/
         lego = _watcher.legolas(c._boardPos, new BoardPosition(0, 1), TileColor.RED);
         free += (lego == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(0, 1))._y : lego;
         lego = _watcher.legolas(c._boardPos, new BoardPosition(1, 0), TileColor.RED);
@@ -356,8 +390,7 @@ public class Hints {
         return free <= 0;
     }
 
-    // En sentido opuesto, si hay una celda punto puesta por el usuario que está cerrada
-    //y no ve a ninguna otra, entonces se trata de un error por el mismo motivo
+
     public boolean checkWrongBlue() {
         return false;
     }

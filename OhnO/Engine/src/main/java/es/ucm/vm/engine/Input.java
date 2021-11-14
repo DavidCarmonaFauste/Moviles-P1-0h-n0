@@ -2,6 +2,9 @@ package es.ucm.vm.engine;
 
 import java.util.List;
 
+/**
+ * Interface for the Input methods of both platforms and the subclass for the Touch Events
+ */
 public interface Input {
     class TouchEvent{
         public enum TouchType{

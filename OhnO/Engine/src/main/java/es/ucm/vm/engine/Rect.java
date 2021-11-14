@@ -1,5 +1,8 @@
 package es.ucm.vm.engine;
 
+/**
+ * Utility class that provides a Rect functionality and methods to get its different values
+ */
 public class Rect {
     // Pixel where it begins
     int _right;

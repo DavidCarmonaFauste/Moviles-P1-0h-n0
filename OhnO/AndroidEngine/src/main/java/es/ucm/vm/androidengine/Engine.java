@@ -11,6 +11,10 @@ import java.io.InputStream;
 import es.ucm.vm.engine.AbstractEngine;
 import es.ucm.vm.engine.Color;
 
+/**
+ * Platform specific instance of Engine, that is in charge of the visual elements for android such
+ * as drawing, managing the android window, etc
+ */
 public class Engine extends AbstractEngine implements Runnable {
     //---------------------------------------------------------------
     //---------------------Private Attributes------------------------

@@ -37,7 +37,7 @@ public class Button extends GameObject{
         _image = image;
         _c = c;
         _lineThickness = thickness;
-        _debug = true;
+        _debug = false;
     } // Constructor
 
     /**
@@ -49,7 +49,6 @@ public class Button extends GameObject{
     @Override
     public void render(Graphics g) {
         // for debug only
-        // This is just for debugging the dimensions of the button.
         if(_debug) {
             drawBoundingBox(g);
         } // if

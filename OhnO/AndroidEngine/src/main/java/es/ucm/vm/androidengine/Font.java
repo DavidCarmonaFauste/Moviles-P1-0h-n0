@@ -5,6 +5,10 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.view.View;
 
+/**
+ * Platform specific instance of the utility class Font. It's in charge of the platform specific
+ * actions such as loading from a file or calling the correct render methods
+ */
 public class Font implements es.ucm.vm.engine.Font {
     /**
      * Font object

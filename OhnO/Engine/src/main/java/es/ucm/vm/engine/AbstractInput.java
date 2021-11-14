@@ -3,6 +3,9 @@ package es.ucm.vm.engine;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Abstract Input class with all the common methods and variables that both platforms will use
+ */
 public abstract class AbstractInput implements Input {
     //---------------------------------------------------------------
     //--------------------Protected Atributes------------------------

@@ -154,19 +154,6 @@ public class PlayGameState implements GameState{
 
     @Override
     public void update(double t) {
-        /*System.out.println(_resetMove._c._a);
-        if(_hintButton._c._a < 255) {
-            _hintButton._c._a += 250 * t;
-            if(_hintButton._c._a > 255) _hintButton._c._a = 255;
-        }
-        if(_resetMove._c._a < 255) {
-            _resetMove._c._a += 250 * t;
-            if(_resetMove._c._a > 255) _resetMove._c._a = 255;
-        }
-        if(_quit._c._a < 255) {
-            _quit._c._a += 250 * t;
-            if(_quit._c._a > 255) _quit._c._a = 255;
-        }*/
     }
 
     @Override
@@ -199,18 +186,17 @@ public class PlayGameState implements GameState{
             switch(te.getType()){
                 case CLICKED:
                 case PRESSED:
+                    int x = te.getX();
+                    int y = te.getY();
                     _board.sendClickEvent(te);
                     _hints.updateMap(_board);
-                    if(_closeButton.isPressed(te.getX(), te.getY())) {
-                        //_quit._c._a = 100;
+                    if(_closeButton.isPressed(x, y)) {
                         _l.setGameState(Logic.GameStates.MENU);
                     }
-                    else if(_hintsButton.isPressed(te.getX(), te.getY())){
-                        //_hintButton._c._a = 100;
+                    else if(_hintsButton.isPressed(x, y)){
                         _hintsTxt.changeTxt(_hints.helpUser());
                     }
-                    else if (_undoButton.isPressed(te.getX(), te.getY())){
-                        //_resetMove._c._a = 100;
+                    else if (_undoButton.isPressed(x,y)){
                         _board.removeLastMove();
                     }
                     if(_hints.isSolved()) _hintsTxt.changeTxt("YOU WIN!!!");

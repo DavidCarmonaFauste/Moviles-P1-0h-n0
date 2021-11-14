@@ -61,7 +61,7 @@ public class Graphics extends AbstractGraphics {
      */
     @Override
     public void clear(Color color) {
-// Set color
+        // Set color
         setColor(color);
 
         // Paint screen
@@ -70,6 +70,10 @@ public class Graphics extends AbstractGraphics {
                 _pnt);
     }
 
+    /**
+     * Sets the color of the Paint component to the one provided
+     * @param color (Color) Color to set for drawing
+     */
     @Override
     public void setColor(Color color) {
         int c = android.graphics.Color.argb(color._a, color._r, color._g, color._b);
@@ -106,12 +110,25 @@ public class Graphics extends AbstractGraphics {
         _cnv.drawRect(temp, _pnt);
     }
 
+    /**
+     * Android implementation of the fillCircle method. Uses the Android API to paint a circle
+     * @param x (int) x position for rendering
+     * @param y (int) y position for rendering
+     * @param diameter (int) diameter of the circle
+     */
     @Override
     public void fillCircle(int x, int y, int diameter) {
         _pnt.setStyle(Paint.Style.FILL);
-        _cnv.drawCircle(x + diameter/2, y+diameter/2, diameter/2, _pnt);
+        _cnv.drawCircle(x + (int)(diameter/2), y+(int)(diameter/2), (int)(diameter/2), _pnt);
     }
 
+    /**
+     * Android implementation of the drawText method. It should be called only after setting up the font.
+     * It sets up a string of text and a position and renders the string
+     * @param text (String) text we want to render
+     * @param x (int) Position for rendering
+     * @param y (int) Position for rendering
+     */
     @Override
     public void drawText(String text, int x, int y) {
         _font.setContents(text);
@@ -119,6 +136,14 @@ public class Graphics extends AbstractGraphics {
         _font.render();
     }
 
+    /**
+     * Android specific implementation of the method setUpFont. It uses the Android Font implementation
+     * to load a font from the assets folder into a Font instance
+     * @param filename (String) path of the assets folder font
+     * @param size (int) Size of the font for rendering purposes
+     * @param isBold (boolean) If the font will be rendered as bold or not
+     * @return (Font) Android Font with all data set up
+     */
     @Override
     public Font setUpFont(String filename, int size, boolean isBold) {
         _font = new Font();
@@ -131,6 +156,12 @@ public class Graphics extends AbstractGraphics {
         return _font;
     }
 
+    /**
+     * Android specific implementation of the setUpImageMethod. Uses the Android Image class to
+     * load an image from the assets folder
+     * @param filename (String)  path of the assets folder image
+     * @return (Image) Android Image with all data set up
+     */
     @Override
     public Image setUpImage(String filename) {
         _image = new Image();
@@ -140,6 +171,12 @@ public class Graphics extends AbstractGraphics {
         return _image;
     }
 
+    /**
+     * Android specific implementation of the drawImage method. It uses the Android Image class
+     * and sends it the render instruction
+     * @param x
+     * @param y
+     */
     @Override
     public void drawImage(int x, int y) {
         _image.setPosition(x, y);

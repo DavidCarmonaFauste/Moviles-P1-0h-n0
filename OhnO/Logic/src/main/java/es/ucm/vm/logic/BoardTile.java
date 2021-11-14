@@ -6,7 +6,9 @@ import es.ucm.vm.engine.Font;
 import es.ucm.vm.engine.Graphics;
 import es.ucm.vm.engine.Rect;
 
-
+/**
+ * Class used to represent a board tile. Manages its own rendering and input
+ */
 public class BoardTile extends GameObject{
     //---------------------------------------------------------------
     //---------------------Private Attributes------------------------
@@ -32,6 +34,17 @@ public class BoardTile extends GameObject{
      * @param x         (double) X coordinate.
      * @param y         (double) Y coordinate.
      */
+
+    /**
+     * Constructor of the GameObject. Creates a new GameObject and assigns the position, the color
+     * and the rotation that the object will have. To make this generic, initializes _rot to 0.
+     * @param x (double) X coordinate.
+     * @param y (double) Y coordinate.
+     * @param d (int) diameter of the tile
+     * @param tileC (TileColor) color of the tile (blue, red or grey)
+     * @param count (int) in case of a blue counter tile, how many blues it sees
+     * @param bPos (BoardPosition) Position inside the Board class map
+     */
     public BoardTile(double x, double y, int d, TileColor tileC, int count, BoardPosition bPos) {
         super(x, y);
         this._d = d;
@@ -48,11 +61,19 @@ public class BoardTile extends GameObject{
         }
     }
 
+    /**
+     * Sets the text of the tile to something different
+     * @param newTxt (String) string that we want to set
+     */
     public void setTxt(String newTxt){
         if(_text == null) this._text = new Text(_pos._x, _pos._y, new Color(50,50,50,255), this._d/3, "", false, Font.FONT_JOSEFIN_BOLD);
         this._text.changeTxt(newTxt);
     }
 
+    /**
+     * Getter for the tile diameter
+     * @return (int) _d
+     */
     public int getSize(){return _d;}
 
     /**
@@ -178,6 +199,9 @@ public class BoardTile extends GameObject{
         }
     }
 
+    /**
+     * Cycles through the colors of the tile in the opposite order, used to undo
+     */
     public void backCycleTileColor(){
         if (this._count == 0) {
             switch (_tileColor) {

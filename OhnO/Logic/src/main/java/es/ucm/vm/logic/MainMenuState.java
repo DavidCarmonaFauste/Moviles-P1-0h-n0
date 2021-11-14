@@ -156,6 +156,7 @@ public class MainMenuState implements GameState {
             if (te.getType() == Input.TouchEvent.TouchType.CLICKED || te.getType() == Input.TouchEvent.TouchType.PRESSED) {
                 if (_closeButton.isPressed(te.getX(), te.getY())) {
                     _l.closeGame();
+                    return;
                 }
                 int levelCount = 4;
                 for (Button button: _buttons) {

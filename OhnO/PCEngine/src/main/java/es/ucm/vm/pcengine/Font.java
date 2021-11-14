@@ -5,6 +5,9 @@ import java.awt.Graphics;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+/**
+ * PC implementeation of the Font class for file loading and platform specific rendering
+ */
 public class Font implements es.ucm.vm.engine.Font {
     /**
      * Font object

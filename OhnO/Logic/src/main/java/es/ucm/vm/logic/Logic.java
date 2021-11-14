@@ -4,9 +4,12 @@ import es.ucm.vm.engine.Color;
 import es.ucm.vm.engine.Engine;
 import es.ucm.vm.engine.Rect;
 
+/**
+ * Controls the basic game core such as delegating the render/update methods to the game states
+ */
 public class Logic implements es.ucm.vm.engine.Logic {
     //---------------------------------------------------------------
-    //----------------------Private Atributes------------------------
+    //---------------------Private Attributes------------------------
     //---------------------------------------------------------------
     Engine _eng; // Instance of Engine for loading levels and resources.
     Rect _cnv; // Surface to paint current GameState.
@@ -71,10 +74,18 @@ public class Logic implements es.ucm.vm.engine.Logic {
         _currentGameState.render(_eng.getGraphics());
     } // render
 
+    /**
+     * Sets the size of the board (ending with a size*size board)
+     * @param size (int) dimension of the board
+     */
     public void setMapSize(int size) {
         _mapSize = size;
     }
 
+    /**
+     * Used to change gamestate
+     * @param gs (GameState) next game state we want to run
+     */
     public void setGameState(GameStates gs) {
         if (gs == GameStates.PLAY) {
             _currentGameState = new PlayGameState(this, _mapSize);

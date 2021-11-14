@@ -7,14 +7,19 @@ import es.ucm.vm.engine.Font;
 import es.ucm.vm.engine.Graphics;
 import es.ucm.vm.engine.Input;
 
+/**
+ * Class that stores the board tiles, and the one that iterates through them on render and input calls
+ */
 public class Board {
     private BoardTile[][] _map;
     private int _mapSize = 0;
 
     Stack<BoardPosition> _lastMoves;
 
-    /*
-        b.render(g);*/
+    /**
+     * Constructor. Takes in the size and creates an empty container for the BoardTiles
+     * @param size (int) size of the board
+     */
     public Board(int size)
     {
         this._map = new BoardTile[size][size];
@@ -22,6 +27,11 @@ public class Board {
         _lastMoves = new Stack<BoardPosition>();
     }
 
+    /**
+     * Clone method for deep copy of Board class
+     * @return (Board) new deep copy of the object
+     * @throws CloneNotSupportedException
+     */
     protected Object clone() throws CloneNotSupportedException {
         Board b = new Board(this.getMapSize());
 
@@ -39,26 +49,47 @@ public class Board {
         return b;
     }
 
+    /**
+     * Setter for the map size
+     * @param size (int) new map size to store
+     */
     public void setMapSize(int size)
     {
         _mapSize = size;
     }
 
+    /**
+     * Sets the stored map to the one provided
+     * @param map (BoardTile[][]) new map to store
+     */
     public void setMap(BoardTile[][] map)
     {
         _map  = map;
     }
 
+    /**
+     * Getter for the whole tile matrix
+     * @return (BoardTile[][]) _map
+     */
     public BoardTile[][] getMap()
     {
         return _map;
     }
 
+    /**
+     * Getter for the map size
+     * @return (int) _mapSize
+     */
     public int getMapSize()
     {
         return _mapSize;
     }
 
+    /**
+     * Checks if a board position is off limits or not
+     * @param pos (BoardPosition) position to check
+     * @return (boolean) true if the position is invalid, false if the position is valid
+     */
     public boolean offLimits(BoardPosition pos)
     {
         return (pos._x < 0 ||
@@ -68,6 +99,9 @@ public class Board {
 
     }
 
+    /**
+     * Used to undo board changes
+     */
     public void removeLastMove(){
         if(!_lastMoves.isEmpty()) {
             BoardPosition bp = _lastMoves.pop();
@@ -75,6 +109,10 @@ public class Board {
         }
     }
 
+    /**
+     * Iterates through the board tiles and calls their render method
+     * @param g (Graphics) Graphics instance to perform rendering
+     */
     public void render(Graphics g) {
         for (BoardTile row[]: _map) {
             for (BoardTile tile: row) {
@@ -83,6 +121,11 @@ public class Board {
         }
     }
 
+    /**
+     * Sends the click event to the tiles in the board and stops when one of them returns true or
+     * when there are no more tiles to iterate
+     * @param te (TouchEvent) event with the click information
+     */
     public void sendClickEvent(Input.TouchEvent te) {
         for (BoardTile row[]: _map) {
             for (BoardTile tile: row) {

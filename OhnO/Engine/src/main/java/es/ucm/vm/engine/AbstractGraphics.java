@@ -1,5 +1,8 @@
 package es.ucm.vm.engine;
 
+/**
+ * Abstract Graphics class with all the common methods and variables that both platforms will use
+ */
 public abstract class AbstractGraphics implements Graphics {
     // Canvas
     public Rect _can;

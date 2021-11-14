@@ -1,5 +1,8 @@
 package es.ucm.vm.engine;
 
+/**
+ * Interface for the Graphic methods of both platforms
+ */
 public interface Graphics {
     //-----------------------------Canvas-------------------------------------
 
