@@ -104,7 +104,7 @@ public class Engine extends AbstractEngine implements Runnable {
                     break;
                 } // try
                 catch(InterruptedException ie) {
-                    HandleException((Exception) ie);
+                    System.out.println((Exception) ie);
                 } // catch
             } // while
         } // if

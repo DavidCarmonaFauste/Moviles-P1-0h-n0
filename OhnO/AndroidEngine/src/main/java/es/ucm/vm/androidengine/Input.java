@@ -57,8 +57,8 @@ public class Input extends AbstractInput implements es.ucm.vm.engine.Input, View
                 // Check if it is in canvas
                 if(_g.isInCanvas((int)motionEvent.getX(), (int)motionEvent.getY())){
                     // If it is in canvas, reposition coordinates to place them in canvas.
-                    x = _g.reverseRepositionX((int)motionEvent.getX() - _g.getCanvas().getX());
-                    y = _g.reverseRepositionY((int)motionEvent.getY() - _g.getCanvas().getY());
+                    x = _g.screenToLogicX((int)motionEvent.getX() - _g.getCanvas().getX());
+                    y = _g.screenToLogicY((int)motionEvent.getY() - _g.getCanvas().getY());
                 }
                 else{
                     // If not, don't reposition, is not very important because it won't be processed
@@ -79,8 +79,8 @@ public class Input extends AbstractInput implements es.ucm.vm.engine.Input, View
                 // Check if it is in canvas
                 if(_g.isInCanvas((int)motionEvent.getX(), (int)motionEvent.getY())){
                     // If it is in canvas, reposition coordinates to place them in canvas.
-                    x = _g.reverseRepositionX((int)motionEvent.getX() - _g.getCanvas().getX());
-                    y = _g.reverseRepositionY((int)motionEvent.getY() - _g.getCanvas().getY());
+                    x = _g.screenToLogicX((int)motionEvent.getX() - _g.getCanvas().getX());
+                    y = _g.screenToLogicY((int)motionEvent.getY() - _g.getCanvas().getY());
                 }
                 else{
                     // If not, don't reposition, is not very important because it won't be processed

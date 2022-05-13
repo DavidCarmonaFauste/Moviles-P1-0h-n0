@@ -6,8 +6,6 @@ import android.graphics.Paint;
 import android.view.SurfaceView;
 
 import es.ucm.vm.engine.AbstractGraphics;
-import es.ucm.vm.androidengine.Font;
-import es.ucm.vm.engine.Rect;
 import es.ucm.vm.engine.Color;
 
 /**
@@ -232,8 +230,8 @@ public class Graphics extends AbstractGraphics {
      */
     @Override
     public void translate(int x, int y) {
-        x = _can.getX() + repositionX(x);
-        y = _can.getY() + repositionY(y);
+        x = _can.getX() + logicToScreenX(x);
+        y = _can.getY() + logicToScreenY(y);
 
         _cnv.translate(x, y);
     } // translate

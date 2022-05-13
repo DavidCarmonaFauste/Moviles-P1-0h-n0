@@ -49,10 +49,10 @@ public class Text extends GameObject {
     @Override
     public void render(Graphics g) {
 
-        int x = g.repositionX((int) _coordOrigin._x + (int) _pos._x - (_thickness/4)*_t.length());
-        int y = g.repositionY((int) _coordOrigin._y + ((int) _pos._y * (-1)) + (_thickness / 4));
+        int x = g.logicToScreenX((int) _coordOrigin._x + (int) _pos._x - (_thickness/4)*_t.length());
+        int y = g.logicToScreenY((int) _coordOrigin._y + ((int) _pos._y * (-1)) + (_thickness / 4));
 
-        g.setUpFont(_f, g.repositionX(_thickness), _b);
+        g.setUpFont(_f, g.logicToScreenX(_thickness), _b);
         g.setColor(_c);
         g.drawText(_t, g.getCanvas().getX() + x , g.getCanvas().getY() + y);
     } // render

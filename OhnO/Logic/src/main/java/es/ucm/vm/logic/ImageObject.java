@@ -23,10 +23,10 @@ public class ImageObject extends GameObject{
 
     @Override
     public void render(Graphics g) {
-        int x = g.repositionX((int) _coordOrigin._x + (int) _pos._x);
-        int y = g.repositionY((int) _coordOrigin._y + ((int) _pos._y * (-1)));
-        int sizeX = g.repositionX(_sizeX);
-        int sizeY = g.repositionX(_sizeY);
+        int x = g.logicToScreenX((int) _coordOrigin._x + (int) _pos._x);
+        int y = g.logicToScreenY((int) _coordOrigin._y + ((int) _pos._y * (-1)));
+        int sizeX = g.logicToScreenX(_sizeX);
+        int sizeY = g.logicToScreenX(_sizeY);
 
         _image = g.setUpImage(_f);
         _image.setSize(sizeX, sizeY);

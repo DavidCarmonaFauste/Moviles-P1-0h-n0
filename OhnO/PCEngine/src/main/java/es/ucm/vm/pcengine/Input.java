@@ -6,20 +6,19 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
-import java.util.List;
 
 import es.ucm.vm.engine.AbstractInput;
 
 public class Input extends AbstractInput implements es.ucm.vm.engine.Input, MouseListener, KeyListener, MouseMotionListener {
     //---------------------------------------------------------------
-    //----------------------Private Atributes------------------------
+    //----------------------Private Attributes-----------------------
     //---------------------------------------------------------------
 
     // Instance of Graphics for checking position
     Graphics _g;
 
     //---------------------------------------------------------------
-    //----------------------Private Atributes------------------------
+    //----------------------Private Attributes-----------------------
     //---------------------------------------------------------------
 
     /**
@@ -115,8 +114,8 @@ public class Input extends AbstractInput implements es.ucm.vm.engine.Input, Mous
             int x, y;
 
             if(_g.isInCanvas(mouseEvent.getX(), mouseEvent.getY())){
-                x = _g.reverseRepositionX(mouseEvent.getX() - _g.getCanvas().getX());
-                y = _g.reverseRepositionY(mouseEvent.getY() - _g.getCanvas().getY());
+                x = _g.screenToLogicX(mouseEvent.getX() - _g.getCanvas().getX());
+                y = _g.screenToLogicY(mouseEvent.getY() - _g.getCanvas().getY());
             } // if
             else{
                 x = mouseEvent.getX();

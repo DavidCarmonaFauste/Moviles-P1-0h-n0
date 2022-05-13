@@ -8,8 +8,6 @@ import es.ucm.vm.engine.Font;
 import es.ucm.vm.engine.Graphics;
 import es.ucm.vm.engine.Image;
 import es.ucm.vm.engine.Input;
-import es.ucm.vm.engine.Rect;
-import sun.rmi.runtime.Log;
 
 public class PlayGameState implements GameState{
     Logic _l; // For changing gamestate
@@ -50,7 +48,7 @@ public class PlayGameState implements GameState{
             smallSide = _l._eng.getWinHeight() * 0.8;
         else
             smallSide = _l._eng.getWinWidth() * 0.8;
-        smallSide = _l._eng.getGraphics().reverseRepositionX((int)smallSide);
+        smallSide = _l._eng.getGraphics().screenToLogicX((int)smallSide);
         step = smallSide / (mapSize + 1.5);
         // calculate diameter for tiles
         int d = (int)(step);

@@ -203,8 +203,8 @@ public class Graphics extends AbstractGraphics {
     @Override
     public void translate(int x, int y) {
         try {
-            x = _can.getX() + repositionX(x);
-            y = _can.getY() + repositionY(y);
+            x = _can.getX() + logicToScreenX(x);
+            y = _can.getY() + logicToScreenY(y);
 
             (_win.getJGraphics()).translate(x, y);
         } // try

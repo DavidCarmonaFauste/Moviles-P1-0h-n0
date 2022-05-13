@@ -40,7 +40,7 @@ public class Hints {
                 x++;
             }
         } catch (Exception e){
-
+            // todo handle exception
         }
     }
 

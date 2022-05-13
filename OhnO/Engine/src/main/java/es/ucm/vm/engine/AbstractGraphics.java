@@ -114,7 +114,7 @@ public abstract class AbstractGraphics implements Graphics {
      * @param x X coordinate in logic reference.
      * @return X coordinate in physical reference.
      */
-    public int repositionX(int x) {
+    public int logicToScreenX(int x) {
         return (x * _can.getWidth()) / _refCan.getWidth();
     } // repositionX
 
@@ -124,7 +124,7 @@ public abstract class AbstractGraphics implements Graphics {
      * @param y Y coordinate in logic reference.
      * @return Y coordinate in physical reference.
      */
-    public int repositionY(int y) {
+    public int logicToScreenY(int y) {
         return (y * _can.getHeight()) / _refCan.getHeight();
     } // repositionY
 
@@ -134,7 +134,7 @@ public abstract class AbstractGraphics implements Graphics {
      * @param x X coordinate in physical reference
      * @return X coordinate in logic reference.
      */
-    public int reverseRepositionX(int x) {
+    public int screenToLogicX(int x) {
         return (x * _refCan.getWidth()) / _can.getWidth();
     } // reverseRepositionX
 
@@ -144,7 +144,7 @@ public abstract class AbstractGraphics implements Graphics {
      * @param y Y coordinate in physical reference.
      * @return Y coordinate in logic reference
      */
-    public int reverseRepositionY(int y) {
+    public int screenToLogicY(int y) {
         return (y * _refCan.getHeight()) / _can.getHeight();
     } // reverseRepositionY
 
