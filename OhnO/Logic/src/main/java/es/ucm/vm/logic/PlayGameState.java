@@ -91,7 +91,7 @@ public class PlayGameState implements GameState{
 
             _board.setMap(generatedMap);
             _hints.updateMap(_board);
-            while(!_hints.solveMap() && tries < 25)
+            while(!_hints.solveMap() && tries < 15)
             {
                 tries++;
                 Random rand = new Random();
@@ -115,7 +115,7 @@ public class PlayGameState implements GameState{
                 _hints.updateMap(_board);
             }
         }
-        while(tries >= 50);
+        while(tries >= 15);
         System.out.println("Finished generating level");
         for (BoardTile row[]:generatedMap) {
             for (BoardTile tile: row) {

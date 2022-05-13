@@ -68,9 +68,9 @@ public class Hints {
             }
         }
         if(!_sameMap && !isSolved()){
-            _sameMap = !solveMap();
+            return solveMap();
         }
-        return !_sameMap;
+        return isSolved();
     }
 
     /**
