@@ -9,9 +9,4 @@ public interface Image {
     String IMAGE_HISTORY = "sprites/history.png";
     String IMAGE_LOCK = "sprites/lock.png";
     String IMAGE_Q42 = "sprites/q42.png";
-
-    public void initImage(String filename);
-    public void render(Graphics g);
-    public void setPosition(int x, int y);
-    public void setSize(int x, int y);
 }

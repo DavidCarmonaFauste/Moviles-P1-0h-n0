@@ -132,9 +132,9 @@ public class Graphics extends AbstractGraphics {
     }
 
     @Override
-    public Image setUpImage(String filename) {
+    public Image setUpImage(String filename, int sizeX, int sizeY) {
         _image = new Image();
-
+        _image.setSize(sizeX, sizeY);
         _image.initImage(filename);
 
         return _image;

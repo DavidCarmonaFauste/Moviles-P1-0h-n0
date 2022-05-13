@@ -17,11 +17,10 @@ public abstract class AbstractImage implements Image {
      * @param x (int) horizontal value
      * @param y (int) vertical value
      */
-    @Override
     public void setPosition(int x, int y) {
         _x = x;
         _y = y;
-    } // setPosition
+    }
 
     /**
      * Set size of the image.
@@ -29,9 +28,12 @@ public abstract class AbstractImage implements Image {
      * @param x (int) horizontal value
      * @param y (int) vertical value
      */
-    @Override
     public void setSize(int x, int y) {
         _sizeX = x;
         _sizeY = y;
     }
+
+    public void initImage(String filename){}
+    public void render(Graphics g){}
+
 }

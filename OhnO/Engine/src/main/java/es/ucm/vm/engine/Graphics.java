@@ -82,7 +82,7 @@ public interface Graphics {
 
     void drawText(String text, int x, int y);
 
-    Image setUpImage(String filename);
+    Image setUpImage(String filename, int x,int y);
 
     void drawImage(int x, int y);
 

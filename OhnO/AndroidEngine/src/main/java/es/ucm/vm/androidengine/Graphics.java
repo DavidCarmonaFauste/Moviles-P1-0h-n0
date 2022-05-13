@@ -156,14 +156,17 @@ public class Graphics extends AbstractGraphics {
 
     /**
      * Android specific implementation of the setUpImageMethod. Uses the Android Image class to
-     * load an image from the assets folder
+     * load an image from the assets folder and sets the size of the image
      * @param filename (String)  path of the assets folder image
+     * @param sizeX (int)  size of the image (horizontal)
+     * @param sizeY (int)  size of the image (vertical)
      * @return (Image) Android Image with all data set up
      */
     @Override
-    public Image setUpImage(String filename) {
+    public Image setUpImage(String filename, int sizeX, int sizeY) {
         _image = new Image();
 
+        _image.setSize(sizeX, sizeY);
         _image.setAssetManager(_aMan);
         _image.initImage(filename);
         return _image;

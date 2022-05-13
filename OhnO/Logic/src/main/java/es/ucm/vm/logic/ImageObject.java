@@ -28,8 +28,7 @@ public class ImageObject extends GameObject{
         int sizeX = g.logicToScreenX(_sizeX);
         int sizeY = g.logicToScreenX(_sizeY);
 
-        _image = g.setUpImage(_f);
-        _image.setSize(sizeX, sizeY);
+        _image = g.setUpImage(_f, sizeX, sizeY);
         g.drawImage(x + g.getCanvas().getX() - sizeX/2, y + g.getCanvas().getY() - sizeY/2);
     }
 }
