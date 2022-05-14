@@ -5,6 +5,7 @@ import java.util.List;
 
 import es.ucm.vm.engine.Color;
 import es.ucm.vm.engine.Font;
+import es.ucm.vm.engine.GameState;
 import es.ucm.vm.engine.Graphics;
 import es.ucm.vm.engine.Image;
 import es.ucm.vm.engine.Input;
@@ -12,16 +13,19 @@ import es.ucm.vm.engine.Rect;
 
 public class MainMenuState implements GameState {
     //---------------------------------------------------------------
-    //----------------------Private Atributes------------------------
+    //----------------------Private Attributes-----------------------
     //---------------------------------------------------------------
     Logic _l; // For changing gamestate
+
     int _posOrX; // Pos of coord origin X
     int _posOrY; // Pos of coord origin Y
     Vector2 _coordOrigin;
+
     Text _header;
     Text _description;
+
     ArrayList<Button> _buttons; // Array list with the level buttons
-    int _d = 90;
+    int _diameter = 90;
     Button _closeButton;
 
     //---------------------------------------------------------------
@@ -29,12 +33,13 @@ public class MainMenuState implements GameState {
     //---------------------------------------------------------------
     final String FREE_PLAY = "Free play";
     final String FREE_PLAY_DESCRIPTION = "Select a size to play...";
+    final Color _clearColor  = new Color(255,255,255,255);
 
     /**
      * Constructor of the MainMenuState. Creates the different texts and positions them in the
      * screen to show the info. It also creates the different buttons needed to begin the game.
      *
-     * @param l
+     * @param l logic instance, used for checks regarding common values like screen dimensions f.e.
      */
     public MainMenuState(Logic l) {
         _l = l;
@@ -85,7 +90,7 @@ public class MainMenuState implements GameState {
                 if (levels % 2 == 0) buttonColor = blue;
                 else buttonColor = red;
 
-                Button levelButton = new Button(pos._x, pos._y, _d, _d, buttonColor, 20, levelText,null);
+                Button levelButton = new Button(pos._x, pos._y, _diameter, _diameter, buttonColor, 20, levelText,null);
                 levelButton.setCoordOrigin(_coordOrigin);
                 _buttons.add(levelButton);
 
@@ -93,6 +98,12 @@ public class MainMenuState implements GameState {
             }
         }// create level buttons
     }
+
+    @Override
+    public Rect getCanvasSize() {
+        return _l.getCanvasSize();
+    }
+
 
     /**
      * Update. In this screen is only to fit the Interface requirements.
@@ -109,6 +120,8 @@ public class MainMenuState implements GameState {
      */
     @Override
     public void render(Graphics g) {
+        g.clear(_clearColor);
+
         for (Button button: _buttons) {
             drawLevelButtons(g, button);
             button.render(g);
@@ -123,10 +136,8 @@ public class MainMenuState implements GameState {
     } // render
 
     private void drawLevelButtons(Graphics g, Button b) {
-        Rect o;
-        Rect n = null;
-        o = new Rect((int)(_d * ((double)3/4)), 0, 0, (int)(_d * ((double)3/4)));
-        n = g.scale(o, g.getCanvas());
+        Rect o = new Rect((int)(_diameter * ((double)3/4)), 0, 0, (int)(_diameter * ((double)3/4)));
+        Rect n = g.scale(o, g.getCanvas());
         // Set the color to paint the coin/item
         g.setColor(b._c);
         // Save the actual canvas transformation matrix
@@ -135,7 +146,7 @@ public class MainMenuState implements GameState {
         g.translate((int) b._coordOrigin._x + (int) b._pos._x,
                 (int) b._coordOrigin._y + ((int) b._pos._y * (-1)));
 
-        g.fillCircle((int)n.getX() - n.getRight()/2, (int)n.getY() - n.getBottom()/2, n.getWidth());
+        g.fillCircle(n.getX() - n.getRight()/2, n.getY() - n.getBottom()/2, n.getWidth());
         // Reset canvas after drawing
         g.restore();
     }

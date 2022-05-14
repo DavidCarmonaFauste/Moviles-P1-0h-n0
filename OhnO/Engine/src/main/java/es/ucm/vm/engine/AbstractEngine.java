@@ -7,8 +7,8 @@ public abstract class AbstractEngine implements Engine {
     // ENGINE VARS
     protected Graphics _g;
     protected Input _ip;
-    protected Logic _l;
-    protected Logic _tempLogic;
+    protected GameState _gs;
+    protected GameState _tempGS;
 
     // TIME AND FRAMES
     protected long _lastFrameTime;
@@ -23,7 +23,7 @@ public abstract class AbstractEngine implements Engine {
      * anything else.
      */
     public void resize(){
-        if(_l != null) {
+        if(_gs != null) {
             Rect temp;
             Rect temp2;
 
@@ -32,7 +32,7 @@ public abstract class AbstractEngine implements Engine {
             temp2 = new Rect(getWinWidth(), 0, 0, getWinHeight());
 
             // Get Logic's canvas
-            temp = _l.getCanvasSize();
+            temp = _gs.getCanvasSize();
 
             // Resize the Logic's canvas with that reference
             _g.setCanvasSize(temp, temp2);
@@ -43,35 +43,28 @@ public abstract class AbstractEngine implements Engine {
     } // resize
 
     /**
-     * Function to save an instance of the logic and call all it's functions (update, render, handle
-     * Input, etc.)
+     * Saves the given game state, to be properly set up next time the engine
+     * does a loop
      *
-     * @param l (Logic) Instance of Logic
+     * @param gs current logic's game state
      */
     @Override
-    public void setLogic(Logic l) {
-        _tempLogic = l;
-    } // setLogic
+    public void saveGameState(GameState gs) {
+        _tempGS = gs;
+    }
 
-    /**
-     * Function called when a change in Logic has happened. Resets everything to meet the Logic's
-     * conditions.
-     */
-    @Override
-    public void resetLogic(){
-        // Checking that _tempLogic is truly null to avoid callings from other objects.
-        if(_tempLogic != null) {
-            _l = _tempLogic;
+    protected void setGameState() {
+        if (_tempGS != null) {
+            _gs = _tempGS;
 
-            _g.setReferenceCanvas(_l.getCanvasSize());
-
-            _l.initLogic();
+            _g.setReferenceCanvas(_gs.getCanvasSize());
 
             resize();
 
-            _tempLogic = null;
-        } // if
-    } // resetLogic
+            _tempGS = null;
+        }
+    }
+
 
     /**
      * Returns the instance of Graphics when needed to draw or making calculations.
@@ -80,18 +73,8 @@ public abstract class AbstractEngine implements Engine {
      */
     @Override
     public Graphics getGraphics() {
-        return (Graphics)_g;
+        return _g;
     } // getGraphics
-
-    /**
-     * Return Input Instance when needed for processing Input and etc.
-     *
-     * @return (Input) Input instance saved here.
-     */
-    @Override
-    public Input getInput() {
-        return (Input)_ip;
-    } // getInput
 
     /**
      * Function to close and terminate the game.
@@ -105,8 +88,10 @@ public abstract class AbstractEngine implements Engine {
      * Update method. Is called once per frame and updates the logic with the elapsedTime value.
      */
     protected void update(){
-        if(_l != null) {
-            _l.update(_elapsedTime);
+        if(_gs != null) {
+            //_l.update(_elapsedTime);
+            _gs.processInput(_ip.getTouchEvents());
+            _gs.update(_elapsedTime);
         } // if
     } // update
 }

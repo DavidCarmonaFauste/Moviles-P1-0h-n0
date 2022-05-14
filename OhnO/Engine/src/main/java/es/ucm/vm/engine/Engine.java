@@ -8,13 +8,9 @@ import java.io.InputStream;
 public interface Engine {
     Graphics getGraphics();
 
-    Input getInput();
-
     InputStream openInputStream(String filename);
 
-    void setLogic(Logic l);
-
-    void resetLogic();
+    void saveGameState(GameState gs);
 
     void HandleException(Exception e);
 

@@ -31,10 +31,13 @@ public class MainActivity extends AppCompatActivity {
 
         _eng = new Engine(this);
         _log = new Logic(_eng); // Must receive Engine
-
-        _eng.setLogic(_log);
-
         _log.initLogic();
+
+        //_eng.setLogic(_log);
+
+        _eng.saveGameState(_log.getGameState());
+
+        //_log.initLogic();
 
         setContentView(_eng.getView());
     }

@@ -5,13 +5,17 @@ import java.util.Random;
 
 import es.ucm.vm.engine.Color;
 import es.ucm.vm.engine.Font;
+import es.ucm.vm.engine.GameState;
 import es.ucm.vm.engine.Graphics;
 import es.ucm.vm.engine.Image;
 import es.ucm.vm.engine.Input;
+import es.ucm.vm.engine.Rect;
 
-public class PlayGameState implements GameState{
+public class PlayGameState implements GameState {
+    //---------------------------------------------------------------
+    //----------------------Private Attributes-----------------------
+    //---------------------------------------------------------------
     Logic _l; // For changing gamestate
-    Color _color;
 
     Board _board;
     Hints _hints;
@@ -22,9 +26,13 @@ public class PlayGameState implements GameState{
     int _coordOrX; // Coord origin X value
     int _coordOrY; // Coord origin Y value
 
+    //---------------------------------------------------------------
+    //--------------------------Constants----------------------------
+    //---------------------------------------------------------------
+    final Color _clearColor  = new Color(255,255,255,255);
+
     public PlayGameState(Logic l, int mapSize) {
         _l = l;
-        _color = new Color();
 
         _coordOrX = _l._cnv.width/2;
         _coordOrY = _l._cnv.height/2;
@@ -42,7 +50,7 @@ public class PlayGameState implements GameState{
 
 
     private void fillBoard(int mapSize) {
-        // Calculate sizings used for tile placement
+        // Calculate size, used for tile placement
         double step = 0, smallSide = 0, ogSmallSide;
         if (_l._eng.getWinHeight() < _l._eng.getWinWidth())
             smallSide = _l._eng.getWinHeight() * 0.8;
@@ -146,9 +154,15 @@ public class PlayGameState implements GameState{
         _hintsButton.setCoordOrigin(_coordOr);
 
         _hintsTxt = new Text(step/2 * (mapSize - 1) - (smallSide / 4), smallSide/2, new Color(50,50,50,255), d/2,
-                            Integer.toString(mapSize) + "x" + Integer.toString(mapSize), false, Font.FONT_JOSEFIN_BOLD);
+                            (mapSize) + "x" + (mapSize), false, Font.FONT_JOSEFIN_BOLD);
         _hintsTxt.setCoordOrigin(_coordOr);
     }
+
+    @Override
+    public Rect getCanvasSize() {
+        return _l.getCanvasSize();
+    }
+
 
     @Override
     public void update(double t) {
@@ -156,8 +170,7 @@ public class PlayGameState implements GameState{
 
     @Override
     public void render(Graphics g) {
-        _color.setWhite();
-        g.clear(_color);
+        g.clear(_clearColor);
 
         _board.render(g);
         _closeButton.render(g);

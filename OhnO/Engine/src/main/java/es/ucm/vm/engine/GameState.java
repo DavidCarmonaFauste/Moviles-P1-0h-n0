@@ -1,4 +1,4 @@
-package es.ucm.vm.logic;
+package es.ucm.vm.engine;
 
 import java.util.List;
 
@@ -10,12 +10,14 @@ import es.ucm.vm.engine.Input;
  * Input, update and render.
  */
 public interface GameState {
+    Rect getCanvasSize();
+
     /**
      * Updates all GameObjects in this State with the time passed since the las update.
      *
      * @param t (double) Time elapsed since the last frame.
      */
-    public void update(double t);// update
+    void update(double t);// update
 
     /**
      * Renders all GameObjects in their specific locations. Receives an instance of Graphics
@@ -23,12 +25,12 @@ public interface GameState {
      *
      * @param g (Graphics) Instance of Graphics
      */
-    public void render(Graphics g); // render
+    void render(Graphics g); // render
 
     /**
      * Method that processes the Input received from the Logic.
      *
      * @param e (List<Input.TouchEvent>) Event list taken from the Input class
      */
-    public void processInput (List<Input.TouchEvent> e); // processInput
+    void processInput (List<Input.TouchEvent> e); // processInput
 } // GameState

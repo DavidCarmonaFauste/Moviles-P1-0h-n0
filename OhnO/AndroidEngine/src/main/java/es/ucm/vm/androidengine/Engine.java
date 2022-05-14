@@ -200,10 +200,7 @@ public class Engine extends AbstractEngine implements Runnable {
         // Start the frame
         ((Graphics)_g).startFrame(c);
 
-        ((Graphics) _g)._color.setWhite();
-        _g.clear(((Graphics) _g)._color);
-
-        _l.render();
+        _gs.render(_g);
 
         // Show the new information
         _win.getSurfaceHolder().unlockCanvasAndPost(c);
@@ -226,8 +223,8 @@ public class Engine extends AbstractEngine implements Runnable {
 
         // Loop
         while(_running){
-            if(_tempLogic != null) {
-                resetLogic();
+            if(_tempGS != null) {
+                setGameState();
             } // if
 
             // Update
@@ -237,7 +234,6 @@ public class Engine extends AbstractEngine implements Runnable {
             _lastFrameTime = _currentTime;
             _elapsedTime = (double) _nanoElapsedTime / 1.0E9;
 
-            //processInput();
             resize();
 
             // Update

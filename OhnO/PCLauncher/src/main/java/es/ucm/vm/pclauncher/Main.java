@@ -25,9 +25,12 @@ public class Main {
 
         // Unify Engine and Logic
         Logic _log = new Logic(_eng);
+        _log.initLogic();
 
         // Set logic in engine for update calls
-        _eng.setLogic(_log);
+        //_eng.setLogic(_log);
+
+        _eng.saveGameState(_log.getGameState());
 
         _eng.setFPS(FPS);
 
