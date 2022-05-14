@@ -51,19 +51,19 @@ public class MainMenuState implements GameState {
 
         // create header text
         _header = new Text(0, _l.getCanvasSize().getHeight()*((double)1/3), new Color(0,0,0,255),
-                55, FREE_PLAY, true, Font.FONT_JOSEFIN_BOLD);
+                55, FREE_PLAY, true, FONT_JOSEFIN_BOLD);
         _header.setCoordOrigin(_coordOrigin);
 
         // create description text
         _description = new Text(30, _l.getCanvasSize().height*((double)1/6), new Color(0,0,0,255),
-                35, FREE_PLAY_DESCRIPTION, false, Font.FONT_JOSEFIN_BOLD);
+                35, FREE_PLAY_DESCRIPTION, false, FONT_JOSEFIN_BOLD);
         _description.setCoordOrigin(_coordOrigin);
 
         // create level buttons
         createLevelButtons();
 
         // create close button
-        ImageObject imageObject = new ImageObject(0, -200, 25, 25, Image.IMAGE_CLOSE);
+        ImageObject imageObject = new ImageObject(0, -200, 25, 25, IMAGE_CLOSE);
         imageObject.setCoordOrigin(_coordOrigin);
         _closeButton = new Button(0, -200, 25, 25, new Color(50,50,50,100),
                 10, null, imageObject);
@@ -84,7 +84,7 @@ public class MainMenuState implements GameState {
             for (int j = 0; j < 3; j++) {
                 Vector2 pos = new Vector2(j*100 - 100, - i*100);
 
-                Text levelText = new Text(pos._x, pos._y, white, 20, String.valueOf(levels), false, Font.FONT_JOSEFIN_BOLD);
+                Text levelText = new Text(pos._x, pos._y, white, 20, String.valueOf(levels), false, FONT_JOSEFIN_BOLD);
 
                 Color buttonColor;
                 if (levels % 2 == 0) buttonColor = blue;

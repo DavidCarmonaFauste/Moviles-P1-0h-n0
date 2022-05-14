@@ -13,6 +13,7 @@ public class BoardTile extends GameObject{
     //---------------------------------------------------------------
     //---------------------Private Attributes------------------------
     //---------------------------------------------------------------
+    private String FONT_JOSEFIN_BOLD = "fonts/JosefinSans-Bold.ttf";
     private double _cD; // Current diameter
     private boolean _taken; // Flag to control if the player has taken this item
     private float _distanceCenter; // Distance to the center point
@@ -53,7 +54,7 @@ public class BoardTile extends GameObject{
         updateCount(count);
         if (_tileColor == TileColor.BLUE) {
             this._text = new Text(x, y, new Color(255,255,255,255), 30,
-                    String.valueOf(count), false, Font.FONT_JOSEFIN_BOLD);
+                    String.valueOf(count), false, FONT_JOSEFIN_BOLD);
         }
         else if (_tileColor == TileColor.GREY) {
             this._button = new Button(x, y, d, d, new Color(0,0,0,100), 20,
@@ -66,7 +67,7 @@ public class BoardTile extends GameObject{
      * @param newTxt (String) string that we want to set
      */
     public void setTxt(String newTxt){
-        if(_text == null) this._text = new Text(_pos._x, _pos._y, new Color(50,50,50,255), this._d/3, "", false, Font.FONT_JOSEFIN_BOLD);
+        if(_text == null) this._text = new Text(_pos._x, _pos._y, new Color(50,50,50,255), this._d/3, "", false, FONT_JOSEFIN_BOLD);
         this._text.changeTxt(newTxt);
     }
 

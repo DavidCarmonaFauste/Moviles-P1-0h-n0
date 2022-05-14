@@ -19,7 +19,6 @@ public class PlayGameState implements GameState {
 
     Board _board;
     Hints _hints;
-
     Button _closeButton, _undoButton, _hintsButton;
     Text _hintsTxt;
     Vector2 _coordOr; // Coord origin
@@ -135,26 +134,27 @@ public class PlayGameState implements GameState {
         double buttonY = -smallSide/2;
         int buttonSize = 30;
 
-        ImageObject closeImage = new ImageObject(-40, buttonY, buttonSize, buttonSize, Image.IMAGE_CLOSE);
+        ImageObject closeImage = new ImageObject(-40, buttonY, buttonSize, buttonSize, IMAGE_CLOSE);
         closeImage.setCoordOrigin(_coordOr);
         _closeButton = new Button(-40, buttonY, buttonSize, buttonSize,
                 boundingBoxColor, 10, null, closeImage);
         _closeButton.setCoordOrigin(_coordOr);
 
-        ImageObject undoImage = new ImageObject(0, buttonY, buttonSize, buttonSize, Image.IMAGE_HISTORY);
+        ImageObject undoImage = new ImageObject(0, buttonY, buttonSize, buttonSize, IMAGE_HISTORY);
         undoImage.setCoordOrigin(_coordOr);
         _undoButton = new Button(0, buttonY, buttonSize, buttonSize,
                 boundingBoxColor, 10, null, undoImage);
         _undoButton.setCoordOrigin(_coordOr);
 
-        ImageObject hintImage = new ImageObject(40, buttonY, buttonSize, buttonSize, Image.IMAGE_EYE);
+        ImageObject hintImage = new ImageObject(40, buttonY, buttonSize, buttonSize, IMAGE_EYE);
         hintImage.setCoordOrigin(_coordOr);
         _hintsButton = new Button(40, buttonY, buttonSize, buttonSize,
                 boundingBoxColor, 10, null,  hintImage);
         _hintsButton.setCoordOrigin(_coordOr);
 
         _hintsTxt = new Text(step/2 * (mapSize - 1) - (smallSide / 4), smallSide/2, new Color(50,50,50,255), d/2,
-                            (mapSize) + "x" + (mapSize), false, Font.FONT_JOSEFIN_BOLD);
+                            (mapSize) + "x" + (mapSize), false, FONT_JOSEFIN_BOLD);
+
         _hintsTxt.setCoordOrigin(_coordOr);
     }
 

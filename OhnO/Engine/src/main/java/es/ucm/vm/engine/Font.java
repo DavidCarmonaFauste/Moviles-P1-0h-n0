@@ -4,8 +4,7 @@ package es.ucm.vm.engine;
  * Base class for the font functionality of the game. Contains shared attributes and functionality
  */
 public interface Font {
-    String FONT_JOSEFIN_BOLD = "fonts/JosefinSans-Bold.ttf";
-    String FONT_MOLLE_REGULAR = "fonts/Molle-Regular.ttf";
+
 
     /**
      * Creates a platform specific instance of a font object with the supplied data
