@@ -146,7 +146,7 @@ public class Hints {
             for(BoardTile t : column) {
                 if(t._tileColor == TileColor.GREY) return false;
                 if(t._tileColor == TileColor.BLUE)
-                    if(checkIfRed(t)) return false;
+                    if(checkIfRed(t) || checkTooMuchBlue(t)) return false;
             }
         }
         return true;

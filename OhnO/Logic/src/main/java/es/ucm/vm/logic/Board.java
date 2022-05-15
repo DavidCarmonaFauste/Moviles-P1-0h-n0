@@ -10,7 +10,7 @@ import es.ucm.vm.engine.Input;
  */
 public class Board {
     private BoardTile[][] _map;
-    private int _mapSize = 0;
+    private int _mapSize;
 
     Stack<BoardPosition> _lastMoves;
 
@@ -28,7 +28,7 @@ public class Board {
     /**
      * Clone method for deep copy of Board class
      * @return (Board) new deep copy of the object
-     * @throws CloneNotSupportedException
+     * @throws CloneNotSupportedException (Exception) will be throw if the object cannot be cloned
      */
     protected Object clone() throws CloneNotSupportedException {
         Board b = new Board(this.getMapSize());
@@ -112,7 +112,7 @@ public class Board {
      * @param g (Graphics) Graphics instance to perform rendering
      */
     public void render(Graphics g) {
-        for (BoardTile row[]: _map) {
+        for (BoardTile[] row : _map) {
             for (BoardTile tile: row) {
                 tile.render(g);
             }
@@ -125,7 +125,7 @@ public class Board {
      * @param te (TouchEvent) event with the click information
      */
     public void sendClickEvent(Input.TouchEvent te) {
-        for (BoardTile row[]: _map) {
+        for (BoardTile[] row : _map) {
             for (BoardTile tile: row) {
                 if (tile.isPressed(te.getX(), te.getY())) {
                     _lastMoves.push(tile._boardPos);
