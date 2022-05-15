@@ -10,6 +10,9 @@ import es.ucm.vm.engine.Input;
  * Input, update and render.
  */
 public interface GameState {
+    //---------------------------------------------------------------
+    //--------------------------Constants----------------------------
+    //---------------------------------------------------------------
     String IMAGE_CLOSE = "sprites/close.png";
     String IMAGE_EYE = "sprites/eye.png";
     String IMAGE_HISTORY = "sprites/history.png";
@@ -17,7 +20,12 @@ public interface GameState {
     String IMAGE_Q42 = "sprites/q42.png";
     String FONT_JOSEFIN_BOLD = "fonts/JosefinSans-Bold.ttf";
     String FONT_MOLLE_REGULAR = "fonts/Molle-Regular.ttf";
-    
+
+    /**
+     * Gets a Rect with the logical canvas size
+     *
+     * @return (Rect) logic canvas dimensions
+     */
     Rect getCanvasSize();
 
     /**

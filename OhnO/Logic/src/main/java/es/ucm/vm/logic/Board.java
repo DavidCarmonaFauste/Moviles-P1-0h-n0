@@ -2,8 +2,6 @@ package es.ucm.vm.logic;
 
 import java.util.Stack;
 
-import es.ucm.vm.engine.Color;
-import es.ucm.vm.engine.Font;
 import es.ucm.vm.engine.Graphics;
 import es.ucm.vm.engine.Input;
 

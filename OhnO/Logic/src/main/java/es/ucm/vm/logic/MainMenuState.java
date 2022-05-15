@@ -99,6 +99,11 @@ public class MainMenuState implements GameState {
         }// create level buttons
     }
 
+    /**
+     * Gets a Rect with the logical canvas size
+     *
+     * @return (Rect) logic canvas dimensions
+     */
     @Override
     public Rect getCanvasSize() {
         return _l.getCanvasSize();
@@ -135,10 +140,18 @@ public class MainMenuState implements GameState {
         g.restore();
     } // render
 
+    /**
+     * Auxiliary function used to draw the "select map size" button circles. Since they don't
+     * use a image, their graphics are drawn before the actual rendering of the button. In this
+     * case that rendering only would draw the text
+     *
+     * @param g (Graphics) used for rendering purposes
+     * @param b (Button) uses button data like color and position to draw the circle
+     */
     private void drawLevelButtons(Graphics g, Button b) {
         Rect o = new Rect((int)(_diameter * ((double)3/4)), 0, 0, (int)(_diameter * ((double)3/4)));
         Rect n = g.scale(o, g.getCanvas());
-        // Set the color to paint the coin/item
+        // Set the color to paint the button
         g.setColor(b._c);
         // Save the actual canvas transformation matrix
         g.save();
@@ -147,6 +160,7 @@ public class MainMenuState implements GameState {
                 (int) b._coordOrigin._y + ((int) b._pos._y * (-1)));
 
         g.fillCircle(n.getX() - n.getRight()/2, n.getY() - n.getBottom()/2, n.getWidth());
+
         // Reset canvas after drawing
         g.restore();
     }

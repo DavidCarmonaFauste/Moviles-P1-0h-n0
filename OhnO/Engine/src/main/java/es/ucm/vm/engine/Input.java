@@ -19,7 +19,7 @@ public interface Input {
             KEY_RESTART
         }
 
-        // Private Atributes --------------------
+        // Private Attributes --------------------
         // Position X and Y
         int _x, _y;
         /**

@@ -30,6 +30,13 @@ public class PlayGameState implements GameState {
     //---------------------------------------------------------------
     final Color _clearColor  = new Color(255,255,255,255);
 
+    /**
+     * Starts up the play state by setting up the logic sizes of the canvas
+     * and creating a new map to play
+     *
+     * @param l (Logic) used to set logical canvas sizes
+     * @param mapSize (int) how big the board will be
+     */
     public PlayGameState(Logic l, int mapSize) {
         _l = l;
 
@@ -41,33 +48,32 @@ public class PlayGameState implements GameState {
         newMap(mapSize);
     }
 
-    public void newMap(int mapSize) {
+    /**
+     * Creates new board and hint objects, and populates the board
+     *
+     * @param mapSize (int) how many tiles big is the map
+     */
+    private void newMap(int mapSize) {
         _board = new Board(mapSize);
         _hints = new Hints(_board);
         fillBoard(mapSize);
     }
 
-
-    private void fillBoard(int mapSize) {
-        // Calculate size, used for tile placement
-        double step = 0, smallSide = 0, ogSmallSide;
-        if (_l._eng.getWinHeight() < _l._eng.getWinWidth())
-            smallSide = _l._eng.getWinHeight() * 0.8;
-        else
-            smallSide = _l._eng.getWinWidth() * 0.8;
-        smallSide = _l._eng.getGraphics().screenToLogicX((int)smallSide);
-        step = smallSide / (mapSize + 1.5);
-        // calculate diameter for tiles
-        int d = (int)(step);
-        // set the probability of a filled tile
-        float probabilityLimit = 0.25f;
-        // extra variables used in tile creation
-        int blueCount = 0;
-        TileColor tileColor = TileColor.GREY;
-
+    /**
+     * Creates the actual map tiles (red, blue or grey) by randomly placing them and keeping
+     * a map that can be solved (using the hint mechanics for those checks). When it's done
+     * it sets up that tile data into the board for later use
+     *
+     * @param mapSize (int) how many tiles wide is the map
+     * @param probabilityLimit (float) probability of a filled tile
+     * @param step (double) diameter of a tile, used for tile placement and sizing
+     */
+    private void generateLevel(int mapSize, float probabilityLimit, double step) {
         BoardTile[][] generatedMap;
-
+        TileColor tileColor = TileColor.GREY;
         int tries = 0;
+        int blueCount = 0;
+
         System.out.println("Generating new level");
         do{
             tries = 0;
@@ -91,7 +97,8 @@ public class PlayGameState implements GameState {
                         tileColor = TileColor.BLUE;
                     }
 
-                    generatedMap[i][j] = new BoardTile(step*(i - ((double)(mapSize - 1)/2)), step * (j - ((double)(mapSize- 1)/2)) * -1, d,
+                    generatedMap[i][j] = new BoardTile(step*(i - ((double)(mapSize - 1)/2)),
+                            step * (j - ((double)(mapSize- 1)/2)) * -1, (int)(step),
                             tileColor, blueCount, new BoardPosition(i, j));
                 }
             }
@@ -116,8 +123,9 @@ public class PlayGameState implements GameState {
                 int i = rand.nextInt(mapSize - 1);
                 rand = new Random();
                 int j = rand.nextInt(mapSize - 1);
-                generatedMap[i][j] = new BoardTile(step*(i - ((double)(mapSize -1)/2)), step*(j - ((double)(mapSize- 1)/2)) * -1,
-                        d, tileColor, blueCount, new BoardPosition(i, j));
+                generatedMap[i][j] = new BoardTile(step*(i - ((double)(mapSize -1)/2)),
+                        step*(j - ((double)(mapSize- 1)/2)) * -1, (int)(step), tileColor,
+                        blueCount, new BoardPosition(i, j));
                 _board.setMap(generatedMap);
                 _hints.updateMap(_board);
             }
@@ -129,7 +137,16 @@ public class PlayGameState implements GameState {
                 tile.setCoordOrigin(_coordOr);
             }
         }
+    }
 
+    /**
+     * Creates and sets all the buttons on the play scene
+     *
+     * @param mapSize (int) how many tiles wide is the map
+     * @param step (double) diameter of a tile, used for placement and sizing
+     * @param smallSide (double) shortened screen width or length, depending which one is smaller
+     */
+    private void generateButtons(int mapSize, double step, double smallSide) {
         Color boundingBoxColor = new Color (50, 50,50, 100);
         double buttonY = -smallSide/2;
         int buttonSize = 30;
@@ -152,22 +169,66 @@ public class PlayGameState implements GameState {
                 boundingBoxColor, 10, null,  hintImage);
         _hintsButton.setCoordOrigin(_coordOr);
 
-        _hintsTxt = new Text(step/2 * (mapSize - 1) - (smallSide / 4), smallSide/2, new Color(50,50,50,255), d/2,
-                            (mapSize) + "x" + (mapSize), false, FONT_JOSEFIN_BOLD);
+        _hintsTxt = new Text(step/2 * (mapSize - 1) - (smallSide / 4), smallSide/2,
+                new Color(50,50,50,255), (int)(step)/2,
+                (mapSize) + "x" + (mapSize), false, FONT_JOSEFIN_BOLD);
 
         _hintsTxt.setCoordOrigin(_coordOr);
     }
 
+    /**
+     * Populates the board and the buttons for the play scene, depending on the size of the map
+     *
+     * @param mapSize (int) how many tiles wide is the map
+     */
+    private void fillBoard(int mapSize) {
+        // Calculate size, used for tile placement
+        double step = 0, smallSide = 0;
+
+        if (_l._eng.getWinHeight() < _l._eng.getWinWidth())
+            smallSide = _l._eng.getWinHeight() * 0.8;
+        else
+            smallSide = _l._eng.getWinWidth() * 0.8;
+        smallSide = _l._eng.getGraphics().screenToLogicX((int)smallSide);
+
+        // calculate diameter for tiles
+        step = smallSide / (mapSize + 1.5);
+        // set the probability of a filled tile
+        float probabilityLimit = 0.25f;
+
+        // generate and assign the tiles to the map
+        generateLevel(mapSize, probabilityLimit, step);
+
+        // generate play scene buttons
+        generateButtons(mapSize, step, smallSide);
+    }
+
+    /**
+     * Gets a Rect with the logical canvas size
+     *
+     * @return (Rect) logic canvas dimensions
+     */
     @Override
     public Rect getCanvasSize() {
         return _l.getCanvasSize();
     }
 
 
+    /**
+     * Update. In this screen is only to fit the Interface requirements.
+     *
+     * @param t (double) Time elapsed since the last frame.
+     */
     @Override
     public void update(double t) {
     }
 
+    /**
+     * Renders all GameObjects in their specific locations. Receives an instance of Graphics
+     * to call the drawing methods.
+     *
+     * @param g (Graphics) Instance of Graphics
+     */
     @Override
     public void render(Graphics g) {
         g.clear(_clearColor);
