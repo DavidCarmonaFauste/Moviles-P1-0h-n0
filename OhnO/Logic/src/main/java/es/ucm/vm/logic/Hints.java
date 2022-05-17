@@ -43,7 +43,20 @@ public class Hints {
             // todo handle exception
         }
     }
-
+    public void renderPrueba(){
+        for (int y = 0; y <  _board.getMapSize(); y++) {
+            System.out.println("+---+---+---+---+");
+            for (int x = 0; x <  _board.getMapSize(); x++) {
+                if (_board.getMap()[x][y]._tileColor == TileColor.BLUE)
+                    System.out.print("| " + _board.getMap()[x][y]._count + " ");
+                else if (_board.getMap()[x][y]._tileColor == TileColor.RED)
+                    System.out.print("| X ");
+                else System.out.print("|   ");
+            }
+            System.out.println("|");
+        }
+        System.out.println("+---+---+---+---+");
+    }
     /**
      * Uses the Hint methods to solve a map and modify it to be solved.
      * @return (boolean) false if the map could not be solved, true if the given map is solvable
@@ -67,10 +80,40 @@ public class Hints {
                 }
             }
         }
-        if(!_sameMap && !isSolved()){
+        if(!_sameMap && !isValid()){
             return solveMap();
         }
-        return isSolved();
+
+        return isValid();
+    }
+
+    public boolean colorTileIsValid(BoardTile t){
+
+        if(t._boardPos._x == 0 && t._boardPos._y == 0) return true;
+        //si es gris da igual
+        if(t._tileColor == TileColor.GREY)
+            return true;
+        //is blue or gray now a valid color?
+        if(t._tileColor == TileColor.BLUE)
+            if (checkTooMuchBlue(t) || checkTooMuchRed(t)) return false;
+
+        if(t._tileColor != TileColor.RED)
+            if(checkIfRed(t)) return false;
+        //see if the last constructed map will be destroyed by this tile
+        int init_X = Math.max(t._boardPos._x- _board.getMapSize(), 0);
+        int init_Y = Math.max(t._boardPos._y- _board.getMapSize(), 0);
+        for(int y = init_Y; y <= t._boardPos._y; y++){
+            for(int x = init_X; x < _board.getMapSize() && y <= t._boardPos._y; x++)
+            {
+                BoardTile actual_Tile = _board.getMap()[x][y];
+                if(t._tileColor == TileColor.BLUE && actual_Tile._tileColor == TileColor.BLUE)
+                    if(checkTooMuchBlue(actual_Tile)) return false;
+                if(actual_Tile._tileColor == TileColor.BLUE)
+                    if(checkTooMuchRed(actual_Tile)) return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -146,7 +189,19 @@ public class Hints {
             for(BoardTile t : column) {
                 if(t._tileColor == TileColor.GREY) return false;
                 if(t._tileColor == TileColor.BLUE)
-                    if(checkIfRed(t) || checkTooMuchBlue(t)) return false;
+                    if(t._count > 0) { if(checkTooMuchBlue(t)) return false; }
+                    else if(checkIfRed(t)) return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isValid(){
+        for(BoardTile[] column : _board.getMap())
+        {
+            for(BoardTile t : column) {
+                if(t._tileColor == TileColor.BLUE && t._count > 0)
+                    if(!checkVisibleFulfilled(t)) return false;
             }
         }
         return true;
