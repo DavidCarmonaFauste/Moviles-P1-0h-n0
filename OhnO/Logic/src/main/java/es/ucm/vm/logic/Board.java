@@ -22,7 +22,7 @@ public class Board {
     {
         this._map = new BoardTile[size][size];
         this._mapSize = size;
-        _lastMoves = new Stack<BoardPosition>();
+        _lastMoves = new Stack<>();
     }
 
     /**

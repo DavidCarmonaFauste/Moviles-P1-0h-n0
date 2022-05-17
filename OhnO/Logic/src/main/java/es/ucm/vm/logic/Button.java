@@ -11,11 +11,12 @@ public class Button extends GameObject{
     //---------------------------------------------------------------
     //----------------------Private Atributes------------------------
     //---------------------------------------------------------------
-    private int _w, _h; // Width and Height
+    private final int _w;
+    private final int _h; // Width and Height
     private boolean _debug;
-    private int _lineThickness;
-    private Text _text;
-    private ImageObject _image;
+    private final int _lineThickness;
+    private final Text _text;
+    private final ImageObject _image;
 
     /**
      * Button constructor. Creates the new button and sets it's parameters.
@@ -105,8 +106,8 @@ public class Button extends GameObject{
         // Save actual canvas Transformation matrix
         g.save();
 
-        Vector2 v = new Vector2((int) _coordOrigin._x + (int) _pos._x,
-                (int) _coordOrigin._y + ((int) _pos._y * (-1)));
+        /*Vector2 v = new Vector2((int) _coordOrigin._x + (int) _pos._x,
+                (int) _coordOrigin._y + ((int) _pos._y * (-1)));*/
 
         // Change transformation matrix
         g.translate((int) _coordOrigin._x + (int) _pos._x,
@@ -161,13 +162,11 @@ public class Button extends GameObject{
         } // else
 
         // Check inside button
-        if( ((x >= leftX) && (x < rightX))
-                && ((y >= leftY) && (y < rightY))) {
-            return true;
-        } // if
-        else{ // If not, return Button not Pressed
-            return false;
-        } // else
+        // if
+        // If not, return Button not Pressed
+        // else
+        return ((x >= leftX) && (x < rightX))
+                && ((y >= leftY) && (y < rightY));
     } // isPressed
 } // Button
 

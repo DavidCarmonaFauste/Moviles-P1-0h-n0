@@ -11,7 +11,7 @@ public class BoardTile extends GameObject{
     //---------------------------------------------------------------
     //---------------------Private Attributes------------------------
     //---------------------------------------------------------------
-    private String FONT_JOSEFIN_BOLD = "fonts/JosefinSans-Bold.ttf";
+    private final String FONT_JOSEFIN_BOLD = "fonts/JosefinSans-Bold.ttf";
     private double _cD; // Current diameter
     private boolean _taken; // Flag to control if the player has taken this item
     private float _distanceCenter; // Distance to the center point
@@ -25,14 +25,6 @@ public class BoardTile extends GameObject{
     public TileColor _tileColor;
     public int _count = -1; // -1 is the counter by default and the one given to red tiles
     BoardPosition _boardPos;
-
-    /**
-     * Constructor of the GameObject. Creates a new GameObject and assigns the position, the color
-     * and the rotation that the object will have. To make this generic, initializes _rot to 0.
-     *
-     * @param x         (double) X coordinate.
-     * @param y         (double) Y coordinate.
-     */
 
     /**
      * Constructor of the GameObject. Creates a new GameObject and assigns the position, the color
@@ -81,8 +73,7 @@ public class BoardTile extends GameObject{
      * @throws CloneNotSupportedException
      */
     protected Object clone() throws CloneNotSupportedException {
-        BoardTile bt = new BoardTile(this._pos._x, this._pos._y, this._d, this._tileColor, this._count, new BoardPosition(this._boardPos._x, this._boardPos._y));
-        return bt;
+        return new BoardTile(this._pos._x, this._pos._y, this._d, this._tileColor, this._count, new BoardPosition(this._boardPos._x, this._boardPos._y));
     }
 
     /**
@@ -103,7 +94,7 @@ public class BoardTile extends GameObject{
     @Override
     public void render(Graphics g) {
         Rect o;
-        Rect n = null;
+        Rect n;
         o = new Rect((int)(_d * ((double)3/4)), 0, 0, (int)(_d * ((double)3/4)));
         n = g.scale(o, g.getCanvas());
         // Set the color to paint the coin/item
@@ -164,7 +155,7 @@ public class BoardTile extends GameObject{
     /**
      * Updates the count value depending on the value of the tile color. Intended for use only on
      * constructors
-     * @param count
+     * @param count number of tiles that should see (by color)
      */
     public void updateCount(int count) {
         if (_tileColor == TileColor.BLUE) {

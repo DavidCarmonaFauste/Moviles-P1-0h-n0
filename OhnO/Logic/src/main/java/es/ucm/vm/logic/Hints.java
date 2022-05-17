@@ -171,7 +171,7 @@ public class Hints {
                 if(t._tileColor == TileColor.BLUE && t._count == 0) {
                     for (BoardPosition dir: DIRECTIONS)
                     {
-                        t._count += _watcher.gimli(t._boardPos, dir, TileColor.BLUE);
+                        t._count += _watcher.tilesInfFrontOf(t._boardPos, dir, TileColor.BLUE);
                     }
                 }
             }
@@ -250,7 +250,7 @@ public class Hints {
             for (BoardPosition dir: DIRECTIONS)
             {
                 if (checkForcedBlue(t, dir)) {
-                    int blueCount = _watcher.gimli(t._boardPos, dir, TileColor.BLUE);
+                    int blueCount = _watcher.tilesInfFrontOf(t._boardPos, dir, TileColor.BLUE);
                     _auxPos._x = (dir._x * blueCount) + dir._x + t._boardPos._x;
                     _auxPos._y = (dir._y * blueCount) + dir._y + t._boardPos._y;
                     if(!_board.offLimits(_auxPos))
@@ -275,7 +275,7 @@ public class Hints {
             int blueCount;
             for (BoardPosition dir: DIRECTIONS)
             {
-                blueCount = _watcher.gimli(t._boardPos, dir, TileColor.BLUE);
+                blueCount = _watcher.tilesInfFrontOf(t._boardPos, dir, TileColor.BLUE);
                 _auxPos._x = (dir._x * blueCount) + dir._x + t._boardPos._x;
                 _auxPos._y = (dir._y * blueCount) + dir._y + t._boardPos._y;
                 if(!_board.offLimits(_auxPos) && _board.getMap()[_auxPos._x][_auxPos._y]._tileColor == TileColor.GREY)
@@ -297,7 +297,7 @@ public class Hints {
         int counted = 0;
         for (BoardPosition dir: DIRECTIONS)
         {
-            counted += _watcher.gimli(t._boardPos, dir, TileColor.BLUE);
+            counted += _watcher.tilesInfFrontOf(t._boardPos, dir, TileColor.BLUE);
         }
 
         return counted;
@@ -313,8 +313,8 @@ public class Hints {
         for(BoardPosition dir: DIRECTIONS)
         {
             if(!_board.offLimits(BoardPosition.add(t._boardPos, dir))) {
-                lego = _watcher.legolas(t._boardPos, dir, TileColor.RED);
-                legos = _watcher.legolas(t._boardPos, dir, TileColor.GREY);
+                lego = _watcher.closerTile(t._boardPos, dir, TileColor.RED);
+                legos = _watcher.closerTile(t._boardPos, dir, TileColor.GREY);
                 if (lego == -1 && legos != -1) return false;
             }
         }
@@ -375,20 +375,20 @@ public class Hints {
 
         int leg;
         if(!BoardPosition.compare(dir, new BoardPosition(0, 1))){
-            leg = _watcher.legolas(c._boardPos, new BoardPosition(0, 1), TileColor.RED);
+            leg = _watcher.closerTile(c._boardPos, new BoardPosition(0, 1), TileColor.RED);
             _free += (leg == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(0, 1))._y : leg;
 
         }
         if(!BoardPosition.compare(dir, new BoardPosition(1, 0))){
-            leg = _watcher.legolas(c._boardPos, new BoardPosition(1, 0), TileColor.RED);
+            leg = _watcher.closerTile(c._boardPos, new BoardPosition(1, 0), TileColor.RED);
             _free += (leg == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(1, 0))._x : leg;
         }
         if(!BoardPosition.compare(dir, new BoardPosition(0, -1))) {
-            leg = _watcher.legolas(c._boardPos, new BoardPosition(0, -1), TileColor.RED);
+            leg = _watcher.closerTile(c._boardPos, new BoardPosition(0, -1), TileColor.RED);
             _free += (leg == -1) ? c._boardPos._y : leg;
         }
         if(!BoardPosition.compare(dir, new BoardPosition(-1, 0))){
-            leg = _watcher.legolas(c._boardPos, new BoardPosition(-1, 0), TileColor.RED);
+            leg = _watcher.closerTile(c._boardPos, new BoardPosition(-1, 0), TileColor.RED);
             _free += (leg == -1) ? c._boardPos._x : leg;
         }
 
@@ -414,13 +414,13 @@ public class Hints {
     public boolean checkTooMuchRed(BoardTile c) {
         int free = 0, lego;
 
-        lego = _watcher.legolas(c._boardPos, new BoardPosition(0, 1), TileColor.RED);
+        lego = _watcher.closerTile(c._boardPos, new BoardPosition(0, 1), TileColor.RED);
         free += (lego == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(0, 1))._y : lego;
-        lego = _watcher.legolas(c._boardPos, new BoardPosition(1, 0), TileColor.RED);
+        lego = _watcher.closerTile(c._boardPos, new BoardPosition(1, 0), TileColor.RED);
         free += (lego == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(1, 0))._x : lego;
-        lego = _watcher.legolas(c._boardPos, new BoardPosition(0, -1), TileColor.RED);
+        lego = _watcher.closerTile(c._boardPos, new BoardPosition(0, -1), TileColor.RED);
         free += (lego == -1) ? c._boardPos._y : lego;
-        lego = _watcher.legolas(c._boardPos, new BoardPosition(-1, 0), TileColor.RED);
+        lego = _watcher.closerTile(c._boardPos, new BoardPosition(-1, 0), TileColor.RED);
         free += (lego == -1) ? c._boardPos._x : lego;
 
         return c._count > free;
@@ -434,13 +434,13 @@ public class Hints {
     public boolean checkIfRed(BoardTile c) {
         int free = 0, lego;
 
-        lego = _watcher.legolas(c._boardPos, new BoardPosition(0, 1), TileColor.RED);
+        lego = _watcher.closerTile(c._boardPos, new BoardPosition(0, 1), TileColor.RED);
         free += (lego == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(0, 1))._y : lego;
-        lego = _watcher.legolas(c._boardPos, new BoardPosition(1, 0), TileColor.RED);
+        lego = _watcher.closerTile(c._boardPos, new BoardPosition(1, 0), TileColor.RED);
         free += (lego == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(1, 0))._x : lego;
-        lego = _watcher.legolas(c._boardPos, new BoardPosition(0, -1), TileColor.RED);
+        lego = _watcher.closerTile(c._boardPos, new BoardPosition(0, -1), TileColor.RED);
         free += (lego == -1) ? c._boardPos._y : lego;
-        lego = _watcher.legolas(c._boardPos, new BoardPosition(-1, 0), TileColor.RED);
+        lego = _watcher.closerTile(c._boardPos, new BoardPosition(-1, 0), TileColor.RED);
         free += (lego == -1) ? c._boardPos._x : lego;
 
         return free <= 0;
