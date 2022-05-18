@@ -73,7 +73,7 @@ public class PlayGameState implements GameState {
         TileColor tileColor;
         //int tries = 0;
         int blueCount;
-
+        int blueInMap = 0, redInMap = 0, greyInMap = 0;
         System.out.println("Generating new level");
         do{
         //tries = 0;
@@ -90,16 +90,19 @@ public class PlayGameState implements GameState {
                 Random rand = new Random();
                 float f = rand.nextFloat();
 
-                if (f >= probabilityLimit) { // grey
+                if (f >= probabilityLimit && greyInMap <= blueInMap / 1.5) { // grey
                     tileColor = TileColor.GREY;
                     blueCount = 0;
-                } else if (f <= probabilityLimit / 4) { // red
+                    greyInMap++;
+                } else if ((f <= probabilityLimit / 4 || greyInMap > blueInMap) &&  redInMap <= blueInMap/2) { // red
                     tileColor = TileColor.RED;
                     blueCount = -1;
+                    redInMap++;
                 } else { // blue
                     rand = new Random();
                     blueCount = 1 + rand.nextInt(mapSize);
                     tileColor = TileColor.BLUE;
+                    blueInMap++;
                 }
                 generatedMap[i][j] = new BoardTile(step * (i - ((double) (mapSize - 1) / 2)),
                         step * (j - ((double) (mapSize - 1) / 2)) * -1, (int) (step),
@@ -117,7 +120,8 @@ public class PlayGameState implements GameState {
                             tileColor = TileColor.BLUE;
                             rand = new Random();
                             blueCount = 1 + rand.nextInt(mapSize);
-
+                            redInMap--;
+                            blueInMap++;
                             generatedMap[i][j] = new BoardTile(step * (i - ((double) (mapSize - 1) / 2)),
                                     step * (j - ((double) (mapSize - 1) / 2)) * -1, (int) (step),
                                     tileColor, blueCount, new BoardPosition(i, j));
@@ -126,7 +130,8 @@ public class PlayGameState implements GameState {
                         else if (generatedMap[i][j]._tileColor == TileColor.BLUE && !changeDone) {
                             tileColor = TileColor.RED;
                             blueCount = -1;
-
+                            blueInMap--;
+                            redInMap++;
                             generatedMap[i][j] = new BoardTile(step * (i - ((double) (mapSize - 1) / 2)),
                                     step * (j - ((double) (mapSize - 1) / 2)) * -1, (int) (step),
                                     tileColor, blueCount, new BoardPosition(i, j));
@@ -136,6 +141,7 @@ public class PlayGameState implements GameState {
                             //si no puede ser de ningún color reconstruimos
                             i = 0;
                             j = 0;
+                            blueInMap = 0; redInMap = 0; greyInMap = 0;
                             for (int x = 0; x < mapSize; ++x) {
                                 for (int y = 0; y < mapSize; ++y) {
                                     generatedMap[x][y] = new BoardTile(step * (x - ((double) (mapSize - 1) / 2)),
@@ -220,7 +226,7 @@ public class PlayGameState implements GameState {
         // calculate diameter for tiles
         step = smallSide / (mapSize + 1.5);
         // set the probability of a filled tile
-        float probabilityLimit = 0.5f;
+        float probabilityLimit = 0.25f;
 
         // generate and assign the tiles to the map
         generateLevel(mapSize, probabilityLimit, step);
