@@ -17,7 +17,7 @@ public class Watcher {
      * @param watching (TileColor) one of the three tile colors
      * @return (int) how many tiles of that color are in a consecutive line
      */
-    public int tilesInfFrontOf(BoardPosition pos, BoardPosition dir, TileColor watching)
+    public int tilesInfFrontOfRecursive(BoardPosition pos, BoardPosition dir, TileColor watching)
     {
         int counted = 0;
         BoardPosition _newPos = BoardPosition.add(pos, dir);
@@ -27,8 +27,21 @@ public class Watcher {
             if(_board.getMap()[_newPos._x][_newPos._y]._tileColor == watching)
             {
                 counted++;
-                counted += tilesInfFrontOf(_newPos, dir, watching);
+                counted += tilesInfFrontOfRecursive(_newPos, dir, watching);
             }
+        }
+        return counted;
+    }
+
+    public int tilesInfFrontOf(BoardPosition pos, BoardPosition dir, TileColor watching)
+    {
+        int counted = 0;
+        BoardPosition _newPos = BoardPosition.add(pos, dir);
+
+        while(!_board.offLimits(_newPos) && _board.getMap()[_newPos._x][_newPos._y]._tileColor == watching)
+        {
+            counted++;
+            _newPos = BoardPosition.add(_newPos, dir);
         }
         return counted;
     }
@@ -41,7 +54,7 @@ public class Watcher {
      * @param watching (TileColor) One of the three tile colors
      * @return (int) How many tiles there are between the starting position and the first "watched" tile
      */
-    public int closerTile(BoardPosition pos, BoardPosition dir, TileColor watching)
+    public int closerTileRecursive(BoardPosition pos, BoardPosition dir, TileColor watching)
     {
         int _free = 0;
         BoardPosition _newPos = BoardPosition.add(pos, dir);
@@ -51,12 +64,24 @@ public class Watcher {
             if(_board.getMap()[_newPos._x][_newPos._y]._tileColor != watching)
             {
                 _free++;
-                int l = closerTile(_newPos, dir, watching);
+                int l = closerTileRecursive(_newPos, dir, watching);
                 if(l == -1) return -1;
                 else _free += l;
             }
             return _free;
         }
         return  -1;
+    }
+
+    public int closerTile(BoardPosition pos, BoardPosition dir, TileColor watching) {
+        int _free = 0;
+        BoardPosition _newPos = BoardPosition.add(pos, dir);
+
+        while (!_board.offLimits(_newPos) && _board.getMap()[_newPos._x][_newPos._y]._tileColor != watching) {
+            _free++;
+            _newPos = BoardPosition.add(_newPos, dir);
+        }
+        if (_free == 0) return -1;
+        return _free;
     }
 }
