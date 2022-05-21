@@ -176,11 +176,10 @@ public class PlayGameState implements GameState {
      *
      * @param mapSize   (int) how many tiles wide is the map
      * @param step      (double) diameter of a tile, used for placement and sizing
-     * @param smallSide (double) shortened screen width or length, depending which one is smaller
      */
-    private void generateButtons(int mapSize, double step, double smallSide) {
+    private void generateButtons(int mapSize, double step) {
         Color boundingBoxColor = new Color(50, 50, 50, 100);
-        double buttonY = -smallSide / 2;
+        double buttonY = -200; // a bit less than half the height of the logical canvas height
         int buttonSize = 30;
 
         ImageObject closeImage = new ImageObject(-40, buttonY, buttonSize, buttonSize, IMAGE_CLOSE);
@@ -201,7 +200,7 @@ public class PlayGameState implements GameState {
                 boundingBoxColor, 10, null, hintImage);
         _hintsButton.setCoordOrigin(_coordOr);
 
-        _hintsTxt = new Text(step / 2 * (mapSize - 1) - (smallSide / 4), smallSide / 2,
+        _hintsTxt = new Text(step / 2 * (mapSize - 1) + (buttonY / 2), -buttonY,
                 new Color(50, 50, 50, 255), (int) (step) / 2,
                 (mapSize) + "x" + (mapSize), false, FONT_JOSEFIN_BOLD);
 
@@ -232,7 +231,7 @@ public class PlayGameState implements GameState {
         generateLevel(mapSize, probabilityLimit, step);
 
         // generate play scene buttons
-        generateButtons(mapSize, step, smallSide);
+        generateButtons(mapSize, step);
     }
 
     /**

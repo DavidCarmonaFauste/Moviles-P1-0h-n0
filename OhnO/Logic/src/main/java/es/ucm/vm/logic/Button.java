@@ -5,7 +5,7 @@ import es.ucm.vm.engine.Graphics;
 import es.ucm.vm.engine.Rect;
 
 /**
- * Button object to create an interactable object in the scene.
+ * Button object to create an interactive object in the scene.
  */
 public class Button extends GameObject{
     //---------------------------------------------------------------
@@ -147,7 +147,7 @@ public class Button extends GameObject{
         // Translate to coordOriginPos
         // x
         if(x < _coordOrigin._x) {
-            x = (((int)_coordOrigin._x - x) * -1);
+            x = -((int)_coordOrigin._x - x);
         } // if
         else {
             x = (((int)_coordOrigin._x -((2 * (int)_coordOrigin._x) - x)));
@@ -161,10 +161,6 @@ public class Button extends GameObject{
             y = (((int)_coordOrigin._y -((2 * (int)_coordOrigin._y) - y)) * -1);
         } // else
 
-        // Check inside button
-        // if
-        // If not, return Button not Pressed
-        // else
         return ((x >= leftX) && (x < rightX))
                 && ((y >= leftY) && (y < rightY));
     } // isPressed

@@ -44,18 +44,18 @@ public class MainMenuState implements GameState {
     public MainMenuState(Logic l) {
         _l = l;
 
+        // set the coordinate origin to the center of the logical canvas
         _posOrY = _l._cnv.height/2;
         _posOrX = _l._cnv.width/2;
-
         _coordOrigin = new Vector2(_posOrX, _posOrY);
 
         // create header text
-        _header = new Text(0, _l.getCanvasSize().getHeight()*((double)1/3), new Color(0,0,0,255),
+        _header = new Text(0, _l._cnv.height *((double)1/3), new Color(0,0,0,255),
                 55, FREE_PLAY, true, FONT_JOSEFIN_BOLD);
         _header.setCoordOrigin(_coordOrigin);
 
         // create description text
-        _description = new Text(30, _l.getCanvasSize().height*((double)1/6), new Color(0,0,0,255),
+        _description = new Text(30, _l._cnv.height *((double)1/6), new Color(0,0,0,255),
                 35, FREE_PLAY_DESCRIPTION, false, FONT_JOSEFIN_BOLD);
         _description.setCoordOrigin(_coordOrigin);
 
