@@ -1,7 +1,10 @@
 package es.ucm.vm.logic;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.Stack;
 
 import es.ucm.vm.engine.Color;
 //import es.ucm.vm.engine.Font;
@@ -68,6 +71,7 @@ public class PlayGameState implements GameState {
      * @param probabilityLimit (float) probability of a filled tile
      * @param step             (double) diameter of a tile, used for tile placement and sizing
      */
+
     private void generateLevel(int mapSize, float probabilityLimit, double step) {
         BoardTile[][] generatedMap;
         TileColor tileColor;
@@ -75,98 +79,160 @@ public class PlayGameState implements GameState {
         int blueCount;
         int blueInMap = 0, redInMap = 0, greyInMap = 0;
         System.out.println("Generating new level");
-        do{
-        //tries = 0;
         generatedMap = new BoardTile[mapSize][mapSize];
         for (int i = 0; i < mapSize; ++i) {
             for (int j = 0; j < mapSize; ++j) {
                 generatedMap[i][j] = new BoardTile(step * (i - ((double) (mapSize - 1) / 2)),
                         step * (j - ((double) (mapSize - 1) / 2)) * -1, (int) (step),
-                        TileColor.GREY, 0, new BoardPosition(i, j));
+                        TileColor.BLUE, 0, new BoardPosition(i, j));
             }
         }
-        for (int i = 0; i < mapSize; ++i) {
-            for (int j = 0; j < mapSize; ++j) {
-                Random rand = new Random();
-                float f = rand.nextFloat();
 
-                if (f >= probabilityLimit && greyInMap <= blueInMap / 1.5) { // grey
-                    tileColor = TileColor.GREY;
-                    blueCount = 0;
-                    greyInMap++;
-                } else if ((f <= probabilityLimit / 4 || greyInMap > blueInMap) &&  redInMap <= blueInMap/2) { // red
-                    tileColor = TileColor.RED;
-                    blueCount = -1;
-                    redInMap++;
-                } else { // blue
-                    rand = new Random();
-                    blueCount = 1 + rand.nextInt(mapSize);
-                    tileColor = TileColor.BLUE;
-                    blueInMap++;
-                }
-                generatedMap[i][j] = new BoardTile(step * (i - ((double) (mapSize - 1) / 2)),
-                        step * (j - ((double) (mapSize - 1) / 2)) * -1, (int) (step),
-                        tileColor, blueCount, new BoardPosition(i, j));
-
-                _board.setMap(generatedMap);
-                _hints.updateMap(_board);
-                boolean triying = true, changeDone = false;
-                while (triying) {
-                    if (_hints.colorTileIsValid(generatedMap[i][j])) {
-                        //generatedMap[i][j] = new_Tile;
-                        triying = false;
-                    } else {
-                        if (generatedMap[i][j]._tileColor == TileColor.RED && !changeDone) {
-                            tileColor = TileColor.BLUE;
-                            rand = new Random();
-                            blueCount = 1 + rand.nextInt(mapSize);
-                            redInMap--;
-                            blueInMap++;
-                            generatedMap[i][j] = new BoardTile(step * (i - ((double) (mapSize - 1) / 2)),
-                                    step * (j - ((double) (mapSize - 1) / 2)) * -1, (int) (step),
-                                    tileColor, blueCount, new BoardPosition(i, j));
-                            changeDone = true;
-                        }
-                        else if (generatedMap[i][j]._tileColor == TileColor.BLUE && !changeDone) {
-                            tileColor = TileColor.RED;
-                            blueCount = -1;
-                            blueInMap--;
-                            redInMap++;
-                            generatedMap[i][j] = new BoardTile(step * (i - ((double) (mapSize - 1) / 2)),
-                                    step * (j - ((double) (mapSize - 1) / 2)) * -1, (int) (step),
-                                    tileColor, blueCount, new BoardPosition(i, j));
-                            changeDone = true;
-                        }
-                        else {
-                            //si no puede ser de ningún color reconstruimos
-                            i = 0;
-                            j = 0;
-                            blueInMap = 0; redInMap = 0; greyInMap = 0;
-                            for (int x = 0; x < mapSize; ++x) {
-                                for (int y = 0; y < mapSize; ++y) {
-                                    generatedMap[x][y] = new BoardTile(step * (x - ((double) (mapSize - 1) / 2)),
-                                            step * (y - ((double) (mapSize - 1) / 2)) * -1, (int) (step),
-                                            TileColor.GREY, 0, new BoardPosition(x, y));
-                                }
-                            }
-                            triying = false;
-                        }
-
-                        _board.setMap(generatedMap);
-                        _hints.updateMap(_board);
-                    }
-                }
-
-
-            }
-        }
         _board.setMap(generatedMap);
         _hints.updateMap(_board);
-    }while(!_hints.solveMap());
+        _hints.newSolveMap(_board, false);
+        _hints.updateMap(_board);
+
+        boolean tryAgain = true;
+        int attempts = 0;
+        BoardTile tile;
+        int maxAllowed = _board.getMapSize();
+
+        while (tryAgain && attempts++ < 99) {
+            tryAgain = false;
+            Stack<BoardTile> maxTiles = new Stack<BoardTile>();
+
+            for(BoardTile[] column : _board.getMap())
+            {
+                for(BoardTile t : column)
+                {
+                    if (t._count > maxAllowed) {
+                        maxTiles.push(t);
+                    }
+                }
+            }
+            Collections.shuffle(maxTiles, new Random());
+
+            for (int i = 0; i < maxTiles.size(); i++) {
+                tile = maxTiles.pop();
+                if (tile._count > maxAllowed) {
+                    int min = 1, max = maxAllowed;
+                    Stack<BoardTile> cuts = new Stack<BoardTile>();
+                    BoardTile cut = null, firstCut = null;
+
+                    for (BoardPosition dir : BoardPosition.DIRECTIONS) {
+                        int distance = 0;
+                        if(_board.getTileInDir(tile, dir) != null) {
+                            for (BoardTile nextTile = _board.getTileInDir(tile, dir); nextTile._tileColor != TileColor.RED; nextTile = _board.getTileInDir(nextTile, dir)) {
+                                distance++;
+                                if (distance >= min && distance <= max)
+                                    cuts.push(tile);
+                                if (_board.getTileInDir(nextTile, dir) == null)
+                                    break;
+                            }
+                        }
+                    }
+                    Collections.shuffle(cuts, new Random());
+
+                    while (cut == null && cuts.size() > 0) {
+                        cut = cuts.pop();
+                        if (firstCut == null)
+                            firstCut = cut;
+                    }
+                    if (cut == null)
+                        cut = firstCut;
+                    if (cut != null) {
+                        generatedMap[cut._boardPos._x][cut._boardPos._y] = new BoardTile(step * (cut._boardPos._x - ((double) (mapSize - 1) / 2)),
+                                        step * (cut._boardPos._y - ((double) (mapSize - 1) / 2)) * -1, (int) (step),
+                                        TileColor.RED, -1, new BoardPosition(cut._boardPos._x, cut._boardPos._y));
+                        for (int z = 0; z < mapSize; ++z) {
+                            for (int j = 0; j < mapSize; ++j) {
+                                if(generatedMap[z][j]._tileColor != TileColor.RED) {
+                                    generatedMap[z][j] = new BoardTile(step * (z - ((double) (mapSize - 1) / 2)),
+                                            step * (j - ((double) (mapSize - 1) / 2)) * -1, (int) (step),
+                                            TileColor.BLUE, 0, new BoardPosition(z, j));
+                                }
+                            }
+                        }
+                        _board.setMap(generatedMap);
+                        _hints.updateMap(_board);
+                        //_hints.renderPrueba();
+                        _hints.newSolveMap(_board, false);
+                        _hints.updateMap(_board);
+                        //_hints.renderPrueba();
+                        tryAgain = true;
+                    }
+                    /*
+                    else {
+                        console.log('no cut found for', tile.x, tile.y, tile.value, cuts, min, max);
+                    }*/
+                    break;
+                }
+            }
+        }
+
+        tryAgain = true;
+        attempts = 0;
+        tile = null;
+        int walls = 0, minWalls = _board.getMapSize() - 1;
+        Stack<BoardTile> pool = new Stack<BoardTile>();
+
+        //save('full');
+        // get the tile set as a shuffled pool
+        for(BoardTile[] column : _board.getMap())
+        {
+            for(BoardTile t : column) {
+                pool.push(t);
+                if (t._tileColor == TileColor.RED)
+                    walls++;
+            }
+        }
+
+        Collections.shuffle(pool, new Random());
+        _hints.updateMap(_board);
+        while (tryAgain && !pool.isEmpty() && attempts++ < 99) {
+            tryAgain = false;
+            //save(1);
+
+            // only use the pool for x,y coordinates, but retrieve the tile again because it has been rebuilt
+            tile = pool.pop();
+            //tile = tiles[getIndex(tempTile.x, tempTile.y)];
+            boolean isWall = tile._tileColor == TileColor.RED;
+
+            // make sure there is a minimum of walls
+            if (isWall && walls <= minWalls) continue;
+            TileColor lastColor = TileColor.GREY;
+            int lastValue = 0;
+            switch (tile._tileColor)
+            {
+                case BLUE : lastColor = TileColor.BLUE; lastValue = tile._count; break;
+                case RED : lastColor = TileColor.RED; lastValue = -1; break;
+            }
+            tile.updateTileColor(TileColor.GREY);
+            tile.updateCount(0);
+            tile.activateButton();
+            tile._tileInfo = null;
+            //save(2, tile.x, tile.y);
+            _hints.updateMap(_board);
+            if (_hints.solveMap()) {
+                if (isWall)
+                    walls--;
+                tryAgain = true;
+            } else {
+                tile.updateTileColor(lastColor);
+                tile.updateCount(lastValue);
+                tile.desativateButton();
+                tryAgain = true;
+            }
+        }
+        //save('empty');
+
+        _hints.renderPrueba();
+
         System.out.println("Finished generating level");
         for (BoardTile[] row : generatedMap) {
-            for (BoardTile tile : row) {
-                tile.setCoordOrigin(_coordOr);
+            for (BoardTile t : row) {
+                t.setCoordOrigin(_coordOr);
             }
         }
     }

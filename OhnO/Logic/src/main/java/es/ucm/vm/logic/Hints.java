@@ -1,5 +1,7 @@
 package es.ucm.vm.logic;
 
+//import java.awt.image.DirectColorModel;
+
 import static es.ucm.vm.logic.BoardPosition.DIRECTIONS;
 
 /**
@@ -43,9 +45,12 @@ public class Hints {
             // todo handle exception
         }
     }
+    public Board getBoard(){
+        return _board;
+    }
     public void renderPrueba(){
         for (int y = 0; y <  _board.getMapSize(); y++) {
-            System.out.println("+---+---+---+---+");
+            System.out.println("+---+---+---+---+---+---+---+---+---+");
             for (int x = 0; x <  _board.getMapSize(); x++) {
                 if (_board.getMap()[x][y]._tileColor == TileColor.BLUE)
                     System.out.print("| " + _board.getMap()[x][y]._count + " ");
@@ -55,7 +60,7 @@ public class Hints {
             }
             System.out.println("|");
         }
-        System.out.println("+---+---+---+---+");
+        System.out.println("+---+---+---+---+---+---+---+---+---+");
     }
     /**
      * Uses the Hint methods to solve a map and modify it to be solved.
@@ -85,6 +90,228 @@ public class Hints {
         }
 
         return isValid();
+    }
+    private void setTileInfo(BoardTile t, Board mapToSolve){
+        TileInfo info = t._tileInfo;
+        int possibleDirCount = 0;
+        BoardPosition lastPossibleDirection = null;
+        if(t._tileInfo == null) {
+            t._tileInfo = new TileInfo();
+            t._tileInfo.init();
+            info = t._tileInfo;
+            int d = 0;
+            //We check every direction
+            for (BoardPosition dir : DIRECTIONS) {
+                TileInfo.TileInfoInDir infoDir = t._tileInfo.directionInfo[d];
+
+                if (mapToSolve.getTileInDir(t, dir) != null){
+                    //The direction's check will stop when see a wall or we be out the map boundaries
+                    for (BoardTile nextTile = mapToSolve.getTileInDir(t, dir); nextTile._tileColor != TileColor.RED; nextTile = mapToSolve.getTileInDir(nextTile, dir)) {
+                        if (nextTile._tileColor == TileColor.GREY) {
+                            if (infoDir.unknownCount == 0)
+                                infoDir.numberWhenDottingFirstUnknown++;
+
+                            infoDir.unknownCount++;
+                            infoDir.maxPossibleCount++;
+                            info.unknownsAround++;
+
+                            if ((t._tileColor == TileColor.BLUE && t._count > 0) && lastPossibleDirection != dir) {
+                                possibleDirCount++;
+                                lastPossibleDirection = dir;
+                            }
+                        } else if (nextTile._tileColor == TileColor.BLUE) {
+                            infoDir.maxPossibleCount++;
+                            // if no unknown found yet in this direction
+                            if (infoDir.unknownCount == 0) {
+                                info.numberCount++;
+                                infoDir.numberWhenDottingFirstUnknown++;
+                            }
+                            // else if we were looking FROM a number, and we found a number with only 1 unknown in between...
+                            else if ((t._tileColor == TileColor.BLUE && t._count > 0) && infoDir.unknownCount == 1) {
+                                infoDir.numberCountAfterUnknown++;
+                                infoDir.numberWhenDottingFirstUnknown++;
+                                if (infoDir.numberCountAfterUnknown + 1 > t._count) {
+                                    infoDir.wouldBeTooMuch = true;
+                                }
+                            }
+                        }
+                        if (mapToSolve.getTileInDir(nextTile, dir) == null)
+                            break;
+                    }
+                }
+                d++;
+            }
+            // if there's only one possible direction that has room to expand, set it
+            if (possibleDirCount == 1) {
+                info.singlePossibleDirection = lastPossibleDirection;
+            }
+
+        }
+        else {
+            int d = 0;
+            for (BoardPosition dir : DIRECTIONS) {
+                TileInfo.TileInfoInDir infoDir = info.directionInfo[d];
+
+                if (mapToSolve.getTileInDir(t, dir) != null)
+                {
+                    for (BoardTile nextTile = mapToSolve.getTileInDir(t, dir); nextTile._tileColor != TileColor.RED; nextTile = mapToSolve.getTileInDir(nextTile, dir)) {
+
+                        if ((nextTile._tileColor == TileColor.BLUE && nextTile._count > 0) && info.numberReached) {
+                            info.completedNumbersAround = true; // a single happy number was found around
+                        }
+                        if (mapToSolve.getTileInDir(nextTile, dir) == null)
+                            break;
+                    }
+                }
+                // if we originate FROM a number, and there are unknowns in this direction
+                if ((t._tileColor == TileColor.BLUE && t._count > 0) && !info.numberReached && infoDir.unknownCount > 0) {
+                    // check all directions other than this one
+                    infoDir.maxPossibleCountInOtherDirections = 0;
+                    int i  = 0;
+                    for (BoardPosition otherDir : DIRECTIONS) {
+                        if (otherDir != dir)
+                            infoDir.maxPossibleCountInOtherDirections += info.directionInfo[i].maxPossibleCount;
+                        i++;
+                    }
+                }
+                d++;
+            }
+        }
+        // if there's only one possible direction that has room to expand, set it
+        if (possibleDirCount == 1) {
+            info.singlePossibleDirection = lastPossibleDirection;
+        }
+
+        // see if this number's value has been reached, so its paths can be closed
+        if ((t._tileColor == TileColor.BLUE && t._count > 0) && t._count == info.numberCount)
+            info.numberReached = true;
+        else if ((t._tileColor == TileColor.BLUE && t._count > 0)  && t._count == info.numberCount + info.unknownsAround)
+            info.canBeCompletedWithUnknowns = true;
+
+    }
+    public boolean newSolveMap(Board map, boolean trySolve){
+        Board mapToSolve;
+        //if they don't give us a map, we can use hint's map
+        mapToSolve = (map == null) ? _board : map;
+        boolean tryAgain = true;
+        int attempts = 0;
+        BoardTile hintTile = null;
+        BoardTile[] pool = new BoardTile[mapToSolve.getMapSize()*mapToSolve.getMapSize()];
+
+        while (tryAgain && attempts++ < 99) {
+
+            tryAgain = false;
+
+            if(trySolve) if(isValid()) return true;
+            //we fill the pool
+            int z = 0;
+            for(BoardTile[] column : mapToSolve.getMap())
+            {
+                for(BoardTile t : column) {
+                    pool[z] = t;
+                    z++;
+                }
+            }
+            //next pass collection, now we have full info
+            for (int i = 0; i < pool.length; i++) {
+                BoardTile tile = pool[i];
+                setTileInfo(tile, mapToSolve);
+                TileInfo info = tile._tileInfo;
+                // dots with no empty tiles in its paths can be fixed
+                if ((tile._tileColor == TileColor.BLUE && tile._count == 0) && info.unknownsAround == 0 &&  info.numberCount > 0) {
+                    tile.updateCount(info.numberCount);
+                    tryAgain = true;//HintType.NumberCanBeEntered;
+                    break;
+                }
+                //if blue but dont see any blue or gray. you should be red... sorry
+                if (tile._tileColor == TileColor.BLUE && tile._count == 0) {
+                        tile.updateTileColor(TileColor.RED);
+                        tile.updateCount(-1);
+                        tryAgain = true;
+                        break;
+                }
+                // if a number has unknowns around, perhaps we can fill those unknowns
+                if ((tile._tileColor == TileColor.BLUE && tile._count >= 0) && info.unknownsAround > 0) {
+
+                    // if its number is reached, close its paths by walls
+                    if (info.numberReached) {
+                        /*if (hintMode)
+                            hintTile = tile;
+                        else*/
+                        closeWithRed(tile, mapToSolve);
+                        tryAgain = true; //HintType.ValueReached;
+                        break;
+                    }
+
+                    // if a tile has only one direction to go, fill the first unknown there with a dot and retry
+                    if (info.singlePossibleDirection != null) {
+                        /*if (hintMode)
+                            hintTile = tile;
+                        else*/
+                        BoardTile nextTile = mapToSolve.getTileInDir(tile, info.singlePossibleDirection);
+                        if(nextTile._tileColor == TileColor.GREY) nextTile.updateTileColor(TileColor.BLUE);
+                        //tile.closeDirection(info.singlePossibleDirection, true, 1);
+                        tryAgain = true;//HintType.OneDirectionLeft;
+                        break;
+                    }
+                    // if its number CAN be reached by filling out exactly the remaining unknowns, then do so!
+                    //else if (info.canBeCompletedWithUnknowns) {
+                    //console.log(tile.x, tile.y)
+                    //tile.close(true);
+                    //tryAgain = true;
+                    //}
+
+                    // check if a certain direction would be too much
+                    int temporal = 0;
+                    for (BoardPosition dir : DIRECTIONS) {
+                        TileInfo.TileInfoInDir curDir = info.directionInfo[temporal];
+                        if (curDir.wouldBeTooMuch) {
+                            /*if (hintMode)
+                                hintTile = tile;
+                            else*/
+                            BoardTile nextTile = mapToSolve.getTileInDir(tile, dir);
+                            if(nextTile._tileColor == TileColor.GREY) nextTile.updateTileColor(TileColor.RED);
+                            tryAgain = true; //HintType.WouldExceed;
+                            break;
+                        }
+                        // if dotting one unknown tile in this direction is at least required no matter what
+                        else if (curDir.unknownCount > 0 && curDir.numberWhenDottingFirstUnknown + curDir.maxPossibleCountInOtherDirections <= tile._count) {
+                            /*if (hintMode)
+                                hintTile = tile;
+                            else
+                                */
+                            BoardTile nextTile = mapToSolve.getTileInDir(tile, dir);
+                            if(nextTile._tileColor == TileColor.GREY) nextTile.updateTileColor(TileColor.BLUE);
+                            tryAgain = true;//HintType.OneDirectionRequired;
+                            break;
+                        }
+                        temporal++;
+                    }
+                    // break out the outer for loop too
+                    if (tryAgain)
+                        break;
+                }
+                // if a number has its required value around, but still an empty tile somewhere, close it
+                // (this core regards that situation FROM the empty unknown tile, not from the number itself)
+                // (but only if there are no tiles around that have a number and already reached it)
+                if ((tile._tileColor == TileColor.GREY) && info.unknownsAround == 0 && !info.completedNumbersAround) {
+                    if (info.numberCount == 0) {
+                        /*if (hintMode)
+                            hintTile = tile;
+                        else*/
+                        tile.updateTileColor(TileColor.RED);
+                        tryAgain = true;//HintType.MustBeWall;
+                        break;
+                    }
+                    //else if (info.numberCount > 0) {
+                    //tile.number(info.numberCount);
+                    //tryAgain = 7;
+                    //break;
+                    //}
+                }
+            }
+        }
+        return false;
     }
 
     public boolean colorTileIsValid(BoardTile t){
@@ -232,7 +459,7 @@ public class Hints {
         // HINT 1   --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
         if(checkVisibleFulfilled(t))
         {
-            closeWithRed(t);
+            closeWithRed(t, null);
             //renderPrueba();
         }
         else {
@@ -268,9 +495,10 @@ public class Hints {
      * Given a tile, it checks around it and adds red tiles on the surrounding empty spaces.
      * @param t (CounterTile) tile we want to close. it has passed a checkVisibleFulfilled test
      */
-    void closeWithRed(BoardTile t)
+    void closeWithRed(BoardTile t, Board map)
     {
-        if (!_board.offLimits(t._boardPos))
+        if(map == null) map = _board;
+        if (!map.offLimits(t._boardPos))
         {
             int blueCount;
             for (BoardPosition dir: DIRECTIONS)
@@ -278,9 +506,9 @@ public class Hints {
                 blueCount = _watcher.tilesInfFrontOf(t._boardPos, dir, TileColor.BLUE);
                 _auxPos._x = (dir._x * blueCount) + dir._x + t._boardPos._x;
                 _auxPos._y = (dir._y * blueCount) + dir._y + t._boardPos._y;
-                if(!_board.offLimits(_auxPos) && _board.getMap()[_auxPos._x][_auxPos._y]._tileColor == TileColor.GREY)
+                if(!map.offLimits(_auxPos) && map.getMap()[_auxPos._x][_auxPos._y]._tileColor == TileColor.GREY)
                 {
-                    _board.getMap()[_auxPos._x][_auxPos._y]._tileColor = TileColor.RED;
+                    map.getMap()[_auxPos._x][_auxPos._y].updateTileColor(TileColor.RED);
                     _sameMap = false;
                 }
             }
@@ -445,7 +673,6 @@ public class Hints {
 
         return free <= 0;
     }
-
 
     public boolean checkWrongBlue() {
         return false;

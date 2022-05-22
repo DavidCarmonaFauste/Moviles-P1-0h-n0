@@ -23,6 +23,7 @@ public class BoardTile extends GameObject{
     //---------------------------------------------------------------
     public int _d; // diameter
     public TileColor _tileColor;
+    public TileInfo _tileInfo;
     public int _count = -1; // -1 is the counter by default and the one given to red tiles
     BoardPosition _boardPos;
 
@@ -141,31 +142,40 @@ public class BoardTile extends GameObject{
         switch (newColor){
             case BLUE:
                 _c.setBlue();
+                if(_count > 0)this.setTxt(Integer.toString(_count));
                 break;
             case RED:
                 _c.setRed();
+                this.setTxt("");
                 break;
             default:
             case GREY:
                 _c.setMediumGrey();
+                this.setTxt("");
                 break;
         }
     }
-
+    public void activateButton(){
+        this._button = new Button(_pos._x, _pos._y, _d, _d, new Color(0,0,0,100), 20, null, null);
+    }
+    public void desativateButton(){
+        this._button = null;
+    }
     /**
      * Updates the count value depending on the value of the tile color. Intended for use only on
      * constructors
      * @param count number of tiles that should see (by color)
      */
     public void updateCount(int count) {
+        this._count = count;
         if (_tileColor == TileColor.BLUE) {
-            this._count = count;
+            this.setTxt(Integer.toString(count));
         }
         else if (_tileColor == TileColor.GREY) {
-            this._count = 0;
+            this.setTxt("");
         }
         else {
-            this._count = -1;
+            this.setTxt("");
         }
     }
 
@@ -247,4 +257,48 @@ class BoardPosition {
     public static boolean compare(BoardPosition a, BoardPosition b) {
         return a._x == b._x && a._y == b._y;
     }
+}
+
+class TileInfo{
+    public static class TileInfoInDir {
+        public int unknownCount;
+        public int numberCountAfterUnknown; // how many numbers after an unknown were found
+        public int maxPossibleCount; // what would optionally be the highest count?
+        public boolean wouldBeTooMuch; // would filling an unknown with a number be too much
+        public int maxPossibleCountInOtherDirections;
+        public int numberWhenDottingFirstUnknown;
+    }
+    public int unknownsAround; // are there still any unknowns around
+    public int numberCount; // how many numbers/dots are seen in all directions
+    public boolean numberReached; // if the current tile is a number and it has that many numbers/dots around
+    public  boolean canBeCompletedWithUnknowns; // if the number can be reached by exactly its amount of unknowns
+    public  boolean completedNumbersAround; // if the current tile has one or more numberReached tiles around (second pass only)
+    public  BoardPosition singlePossibleDirection; // if there's only one way to expand, set this to that direction
+
+    public TileInfoInDir[] directionInfo;
+
+    public boolean haveInfo = false;
+
+    public void init(){
+        haveInfo = true;
+        unknownsAround = 0;
+        numberCount = 0;
+        numberReached = false;
+        canBeCompletedWithUnknowns = false;
+        completedNumbersAround = false;
+        singlePossibleDirection = null;
+        directionInfo = new TileInfoInDir[4];
+        for(int i = 0; i < 4; i++){
+            directionInfo[i] = new TileInfoInDir();
+            directionInfo[i].unknownCount = 0;
+            directionInfo[i].numberCountAfterUnknown = 0;
+            directionInfo[i].maxPossibleCount = 0;
+            directionInfo[i].wouldBeTooMuch = false;
+            directionInfo[i].maxPossibleCountInOtherDirections = 0;
+            directionInfo[i].numberWhenDottingFirstUnknown = 0;
+        }
+      }
+      public void catchInfo(){
+
+      }
 }
