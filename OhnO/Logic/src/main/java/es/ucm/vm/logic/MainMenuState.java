@@ -28,6 +28,8 @@ public class MainMenuState implements GameState {
     int _diameter = 90;
     Button _closeButton;
 
+    double _cooldown = 0.8;
+
     //---------------------------------------------------------------
     //--------------------------Constants----------------------------
     //---------------------------------------------------------------
@@ -116,7 +118,9 @@ public class MainMenuState implements GameState {
      * @param t (double) Time elapsed since the last frame.
      */
     @Override
-    public void update(double t) {}
+    public void update(double t) {
+        if (_cooldown >= 0) _cooldown -= t;
+    }
 
     /**
      * Renders all data from the scene.
@@ -172,6 +176,8 @@ public class MainMenuState implements GameState {
      */
     @Override
     public void processInput(List<Input.TouchEvent> e) {
+        if (_cooldown >= 0) return;
+
         // int ptr = e.size() - 1; // Pointer to roam the list
         int ptr = 0;
 

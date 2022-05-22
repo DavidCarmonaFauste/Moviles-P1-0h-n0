@@ -6,13 +6,6 @@ import es.ucm.vm.pcengine.Engine;
 public class Main {
     static final int FPS = 60; // FPS to control frame rate.
 
-    //private static Logic logic = new Logic();
-
-    /*public static void main(String[] args) {
-        Engine engine = new Engine();
-        logic.prueba();
-    } // main*/
-
     /**
      * Main method called when application starts. Creates a new Engine and Logic and puts them
      * together to play the game.
@@ -26,9 +19,6 @@ public class Main {
         // Unify Engine and Logic
         Logic _log = new Logic(_eng);
         _log.initLogic();
-
-        // Set logic in engine for update calls
-        //_eng.setLogic(_log);
 
         _eng.saveGameState(_log.getGameState());
 

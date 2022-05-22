@@ -16,7 +16,7 @@ public class Logic implements es.ucm.vm.engine.Logic {
     GameState _currentGameState; // Current GameState instance
     PlayGameState _pgs = null; // PlayGameState to use its different functions
 
-    protected enum GameStates {PLAY, MENU} // Enum with the different type of GameStates.
+    protected enum GameStates {PLAY, MENU, INTRO} // Enum with the different type of GameStates.
 
     int _mapSize;
 
@@ -35,7 +35,7 @@ public class Logic implements es.ucm.vm.engine.Logic {
 
     @Override
     public void initLogic() {
-        setGameState(GameStates.MENU);
+        setGameState(GameStates.INTRO);
     }
 
     /**
@@ -72,6 +72,11 @@ public class Logic implements es.ucm.vm.engine.Logic {
 
             _eng.saveGameState(_currentGameState);
         } // else if
+        else if (gs == GameStates.INTRO) {
+            _currentGameState = new IntroMenuState(this);
+
+            _eng.saveGameState(_currentGameState);
+        }
     } // setGameState
 
     public GameState getGameState() {
