@@ -70,7 +70,6 @@ public class Hints {
         TileInfo info = t._tileInfo;
         int possibleDirCount = 0;
         BoardPosition lastPossibleDirection = null;
-        if(true) {
             t._tileInfo = new TileInfo();
             t._tileInfo.init();
             info = t._tileInfo;
@@ -120,42 +119,6 @@ public class Hints {
             if (possibleDirCount == 1) {
                 info.singlePossibleDirection = lastPossibleDirection;
             }
-
-        }
-        else {
-            int d = 0;
-            for (BoardPosition dir : DIRECTIONS) {
-                TileInfo.TileInfoInDir infoDir = info.directionInfo[d];
-
-                if (mapToSolve.getTileInDir(t, dir) != null)
-                {
-                    for (BoardTile nextTile = mapToSolve.getTileInDir(t, dir); nextTile._tileColor != TileColor.RED; nextTile = mapToSolve.getTileInDir(nextTile, dir)) {
-
-                        if ((nextTile._tileColor == TileColor.BLUE && nextTile._count > 0) && info.numberReached) {
-                            info.completedNumbersAround = true; // a single happy number was found around
-                        }
-                        if (mapToSolve.getTileInDir(nextTile, dir) == null)
-                            break;
-                    }
-                }
-                // if we originate FROM a number, and there are unknowns in this direction
-                if ((t._tileColor == TileColor.BLUE && t._count > 0) && !info.numberReached && infoDir.unknownCount > 0) {
-                    // check all directions other than this one
-                    infoDir.maxPossibleCountInOtherDirections = 0;
-                    int i  = 0;
-                    for (BoardPosition otherDir : DIRECTIONS) {
-                        if (otherDir != dir)
-                            infoDir.maxPossibleCountInOtherDirections += info.directionInfo[i].maxPossibleCount;
-                        i++;
-                    }
-                }
-                d++;
-            }
-        }
-        // if there's only one possible direction that has room to expand, set it
-        if (possibleDirCount == 1) {
-            info.singlePossibleDirection = lastPossibleDirection;
-        }
 
         // see if this number's value has been reached, so its paths can be closed
         if ((t._tileColor == TileColor.BLUE && t._count > 0) && t._count == info.numberCount)
@@ -213,9 +176,6 @@ public class Hints {
 
                     // if its number is reached, close its paths by walls
                     if (info.numberReached) {
-                        /*if (hintMode)
-                            hintTile = tile;
-                        else*/
                         closeWithRed(tile, mapToSolve);
                         tryAgain = true; //HintType.ValueReached;
                         break;
@@ -223,9 +183,6 @@ public class Hints {
 
                     // if a tile has only one direction to go, fill the first unknown there with a dot and retry
                     if (info.singlePossibleDirection != null) {
-                        /*if (hintMode)
-                            hintTile = tile;
-                        else*/
                         BoardTile nextTile = mapToSolve.getTileInDir(tile, info.singlePossibleDirection);
                         if(nextTile._tileColor == TileColor.GREY){
                             nextTile.updateTileColor(TileColor.BLUE);
@@ -234,21 +191,12 @@ public class Hints {
                         tryAgain = true;//HintType.OneDirectionLeft;
                         break;
                     }
-                    // if its number CAN be reached by filling out exactly the remaining unknowns, then do so!
-                    //else if (info.canBeCompletedWithUnknowns) {
-                    //console.log(tile.x, tile.y)
-                    //tile.close(true);
-                    //tryAgain = true;
-                    //}
 
                     // check if a certain direction would be too much
                     int temporal = 0;
                     for (BoardPosition dir : DIRECTIONS) {
                         TileInfo.TileInfoInDir curDir = info.directionInfo[temporal];
                         if (curDir.wouldBeTooMuch) {
-                            /*if (hintMode)
-                                hintTile = tile;
-                            else*/
                             BoardTile nextTile = mapToSolve.getTileInDir(tile, dir);
                             if(nextTile._tileColor == TileColor.GREY){
                                 nextTile.updateTileColor(TileColor.RED);
@@ -258,10 +206,6 @@ public class Hints {
                         }
                         // if dotting one unknown tile in this direction is at least required no matter what
                         else if (curDir.unknownCount > 0 && curDir.numberWhenDottingFirstUnknown + curDir.maxPossibleCountInOtherDirections <= tile._count) {
-                            /*if (hintMode)
-                                hintTile = tile;
-                            else
-                                */
                             BoardTile nextTile = mapToSolve.getTileInDir(tile, dir);
                             if(nextTile._tileColor == TileColor.GREY) {
                                 nextTile.updateTileColor(TileColor.BLUE);
@@ -280,18 +224,10 @@ public class Hints {
                 // (but only if there are no tiles around that have a number and already reached it)
                 if ((tile._tileColor == TileColor.GREY) && info.unknownsAround == 0 && !info.completedNumbersAround) {
                     if (info.numberCount == 0) {
-                        /*if (hintMode)
-                            hintTile = tile;
-                        else*/
                         tile.updateTileColor(TileColor.RED);
                         tryAgain = true;//HintType.MustBeWall;
                         break;
                     }
-                    //else if (info.numberCount > 0) {
-                    //tile.number(info.numberCount);
-                    //tryAgain = 7;
-                    //break;
-                    //}
                 }
             }
         }
@@ -340,12 +276,6 @@ public class Hints {
                     return tile._boardPos._x + "x" + tile._boardPos._y +
                             " needs blue tiles at x:" + info.singlePossibleDirection._x + " y:" + info.singlePossibleDirection._y;
                 }
-                // if its number CAN be reached by filling out exactly the remaining unknowns, then do so!
-                //else if (info.canBeCompletedWithUnknowns) {
-                //console.log(tile.x, tile.y)
-                //tile.close(true);
-                //tryAgain = true;
-                //}
 
                 // check if a certain direction would be too much
                 int temporal = 0;

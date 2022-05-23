@@ -195,7 +195,7 @@ public class PlayGameState implements GameState {
             boolean isWall = tile._tileColor == TileColor.RED;
 
             // make sure there is a minimum of walls
-            if (isWall && walls <= minWalls) continue;
+            if (isWall && walls <= 3) continue;
             TileColor lastColor = TileColor.GREY;
             int lastValue = 0;
             switch (tile._tileColor)
