@@ -205,17 +205,16 @@ public class PlayGameState implements GameState {
             }
             tile.updateTileColor(TileColor.GREY);
             tile.updateCount(0);
-            tile.activateButton();
             tile._tileInfo = null;
             //save(2, tile.x, tile.y);
             _hints.updateMap(_board);
             if (_hints.newSolveMap(null, true)) {
+                tile.activateButton();
                 if (isWall)
                     walls--;
             } else {
                 tile.updateTileColor(lastColor);
                 tile.updateCount(lastValue);
-                tile.desativateButton();
             }
             tryAgain = true;
         }
