@@ -2,6 +2,10 @@ package es.ucm.vm.logic;
 
 //import java.awt.image.DirectColorModel;
 
+import java.util.Collections;
+import java.util.Random;
+import java.util.Stack;
+
 import static es.ucm.vm.logic.BoardPosition.DIRECTIONS;
 
 /**
@@ -45,9 +49,7 @@ public class Hints {
             // todo handle exception
         }
     }
-    public Board getBoard(){
-        return _board;
-    }
+
     public void renderPrueba(){
         for (int y = 0; y <  _board.getMapSize(); y++) {
             System.out.println("+---+---+---+---+---+---+---+---+---+");
@@ -62,40 +64,13 @@ public class Hints {
         }
         System.out.println("+---+---+---+---+---+---+---+---+---+");
     }
-    /**
-     * Uses the Hint methods to solve a map and modify it to be solved.
-     * @return (boolean) false if the map could not be solved, true if the given map is solvable
-     */
-    public boolean solveMap()
-    {
-        _sameMap = true;
-        for(BoardTile[] column : _board.getMap())
-        {
-            for(BoardTile t : column)
-            {
-                switch (t._tileColor)
-                {
-                    case BLUE:
-                        tryHintsOnBlue(t);
-                        if(t._count > 0 && (checkTooMuchBlue(t) || checkTooMuchRed(t))) return false;
-                        break;
-                    case GREY:
-                        tryHintsOnGrey(t);
-                        break;
-                }
-            }
-        }
-        if(!_sameMap && !isValid()){
-            return solveMap();
-        }
 
-        return isValid();
-    }
+
     private void setTileInfo(BoardTile t, Board mapToSolve){
         TileInfo info = t._tileInfo;
         int possibleDirCount = 0;
         BoardPosition lastPossibleDirection = null;
-        if(t._tileInfo == null) {
+        if(true) {
             t._tileInfo = new TileInfo();
             t._tileInfo.init();
             info = t._tileInfo;
@@ -189,8 +164,9 @@ public class Hints {
             info.canBeCompletedWithUnknowns = true;
 
     }
+
     public boolean newSolveMap(Board map, boolean trySolve){
-        Board mapToSolve;
+        Board mapToSolve = new Board(0);
         //if they don't give us a map, we can use hint's map
         mapToSolve = (map == null) ? _board : map;
         boolean tryAgain = true;
@@ -202,7 +178,9 @@ public class Hints {
 
             tryAgain = false;
 
-            if(trySolve) if(isValid()) return true;
+            if(trySolve) {
+                if (newIsValid(mapToSolve)) return true;
+            }
             //we fill the pool
             int z = 0;
             for(BoardTile[] column : mapToSolve.getMap())
@@ -223,7 +201,7 @@ public class Hints {
                     tryAgain = true;//HintType.NumberCanBeEntered;
                     break;
                 }
-                //if blue but dont see any blue or gray. you should be red... sorry
+                //if a blue tile doesnt see any other blue or gray, this tile is red
                 if (tile._tileColor == TileColor.BLUE && tile._count == 0) {
                         tile.updateTileColor(TileColor.RED);
                         tile.updateCount(-1);
@@ -249,7 +227,9 @@ public class Hints {
                             hintTile = tile;
                         else*/
                         BoardTile nextTile = mapToSolve.getTileInDir(tile, info.singlePossibleDirection);
-                        if(nextTile._tileColor == TileColor.GREY) nextTile.updateTileColor(TileColor.BLUE);
+                        if(nextTile._tileColor == TileColor.GREY){
+                            nextTile.updateTileColor(TileColor.BLUE);
+                        }
                         //tile.closeDirection(info.singlePossibleDirection, true, 1);
                         tryAgain = true;//HintType.OneDirectionLeft;
                         break;
@@ -270,7 +250,9 @@ public class Hints {
                                 hintTile = tile;
                             else*/
                             BoardTile nextTile = mapToSolve.getTileInDir(tile, dir);
-                            if(nextTile._tileColor == TileColor.GREY) nextTile.updateTileColor(TileColor.RED);
+                            if(nextTile._tileColor == TileColor.GREY){
+                                nextTile.updateTileColor(TileColor.RED);
+                            }
                             tryAgain = true; //HintType.WouldExceed;
                             break;
                         }
@@ -281,7 +263,9 @@ public class Hints {
                             else
                                 */
                             BoardTile nextTile = mapToSolve.getTileInDir(tile, dir);
-                            if(nextTile._tileColor == TileColor.GREY) nextTile.updateTileColor(TileColor.BLUE);
+                            if(nextTile._tileColor == TileColor.GREY) {
+                                nextTile.updateTileColor(TileColor.BLUE);
+                            }
                             tryAgain = true;//HintType.OneDirectionRequired;
                             break;
                         }
@@ -314,95 +298,81 @@ public class Hints {
         return false;
     }
 
-    public boolean colorTileIsValid(BoardTile t){
-
-        if(t._boardPos._x == 0 && t._boardPos._y == 0) return true;
-        //si es gris da igual
-        if(t._tileColor == TileColor.GREY)
-            return true;
-        //is blue or gray now a valid color?
-        if(t._tileColor == TileColor.BLUE)
-            if (checkTooMuchBlue(t) || checkTooMuchRed(t)) return false;
-
-        if(t._tileColor != TileColor.RED)
-            if(checkIfRed(t)) return false;
-        //see if the last constructed map will be destroyed by this tile
-        int init_X = Math.max(t._boardPos._x- _board.getMapSize(), 0);
-        int init_Y = Math.max(t._boardPos._y- _board.getMapSize(), 0);
-        for(int y = init_Y; y <= t._boardPos._y; y++){
-            for(int x = init_X; x < _board.getMapSize() && y <= t._boardPos._y; x++)
-            {
-                BoardTile actual_Tile = _board.getMap()[x][y];
-                if(t._tileColor == TileColor.BLUE && actual_Tile._tileColor == TileColor.BLUE)
-                    if(checkTooMuchBlue(actual_Tile)) return false;
-                if(actual_Tile._tileColor == TileColor.BLUE)
-                    if(checkTooMuchRed(actual_Tile)) return false;
-            }
-        }
-
-        return true;
-    }
 
     /**
      * Uses the hint methods to display a string with a hint depending on what can be done
      * @return (String) string with the helper hint
      */
     public String helpUser(){
+        Stack<BoardTile> pool = new Stack<BoardTile>();
+        //we fill the pool
         for(BoardTile[] column : _board.getMap())
         {
-            for(BoardTile t : column)
-            {
-                switch (t._tileColor) {
-                    case BLUE:
-                        if(t._count > 0) {
-                            if (checkTooMuchBlue(t))
-                                return t._boardPos._x + "x" + t._boardPos._y + " is seeing to much";
-                            if (checkTooMuchRed(t))
-                                return t._boardPos._x + "x" + t._boardPos._y + " is closed but needs more blue tiles";
-                            if (checkIfRed(t))
-                                return t._boardPos._x + "x" + t._boardPos._y + " cannot be blue";
-                            if(checkVisibleFulfilled(t) && !isClosed(t))
-                                return t._boardPos._x + "x" + t._boardPos._y + " can be closed with red tiles";
-                            for (BoardPosition dir: DIRECTIONS)
-                            {
-                                if (checkNoMoreBlue(t, dir) && _board.getMap()[t._boardPos._x + dir._x][t._boardPos._y + dir._y]._tileColor != TileColor.RED) {
-                                    return t._boardPos._x + "x" + t._boardPos._y +
-                                                            " needs to be closed at x:" + dir._x + " y:" + dir._y;
-                                }
-                                if (checkForcedBlue(t, dir) && _board.getMap()[t._boardPos._x + dir._x][t._boardPos._y + dir._y]._tileColor != TileColor.RED && !isClosed(t)) {
-                                    return t._boardPos._x + "x" + t._boardPos._y +
-                                            " needs blue tiles at x:" + dir._x + " y:" + dir._y;
-                                }
-                            }
-                        }
-                        break;
-                    case GREY:
-                            if (checkIfRed(t))
-                                return t._boardPos._x + "x" + t._boardPos._y + " needs to be red";
-                    break;
+            for(BoardTile t : column) {
+                pool.push(t);
+            }
+        }
+        Collections.shuffle(pool, new Random());
+        while(!pool.isEmpty()) {
+            BoardTile tile = pool.pop();
+            setTileInfo(tile, _board);
+            TileInfo info = tile._tileInfo;
+
+            if (tile._tileColor == TileColor.BLUE && (info.numberCount + info.unknownsAround) == 0) {
+                return tile._boardPos._x + "x" + tile._boardPos._y + " cannot be blue";
+            }
+            if (tile._tileColor == TileColor.BLUE && tile._count > info.numberCount && info.unknownsAround == 0 && tile._count > 0) {
+                return tile._boardPos._x + "x" + tile._boardPos._y + " is closed but needs more blue tiles";
+            }
+            if (tile._tileColor == TileColor.BLUE && tile._count < info.numberCount && tile._count > 0) {
+                return tile._boardPos._x + "x" + tile._boardPos._y + " is seeing to much";
+            }
+            // if a number has unknowns around, perhaps we can fill those unknowns
+            if ((tile._tileColor == TileColor.BLUE && tile._count > 0) && info.unknownsAround > 0) {
+
+                // if its number is reached, close its paths by walls
+                if (info.numberReached) {
+                    return tile._boardPos._x + "x" + tile._boardPos._y + " can be closed with red tiles";
+                }
+
+                // if a tile has only one direction to go, fill the first unknown there with a dot and retry
+                if (info.singlePossibleDirection != null) {
+                    return tile._boardPos._x + "x" + tile._boardPos._y +
+                            " needs blue tiles at x:" + info.singlePossibleDirection._x + " y:" + info.singlePossibleDirection._y;
+                }
+                // if its number CAN be reached by filling out exactly the remaining unknowns, then do so!
+                //else if (info.canBeCompletedWithUnknowns) {
+                //console.log(tile.x, tile.y)
+                //tile.close(true);
+                //tryAgain = true;
+                //}
+
+                // check if a certain direction would be too much
+                int temporal = 0;
+                for (BoardPosition dir : DIRECTIONS) {
+                    TileInfo.TileInfoInDir curDir = info.directionInfo[temporal];
+                    if (curDir.wouldBeTooMuch) {
+                        return tile._boardPos._x + "x" + tile._boardPos._y +
+                                " needs to be closed at x:" + dir._x + " y:" + dir._y;
+                    }
+                    // if dotting one unknown tile in this direction is at least required no matter what
+                    else if (curDir.unknownCount > 0 && curDir.numberWhenDottingFirstUnknown + curDir.maxPossibleCountInOtherDirections <= tile._count) {
+                        return tile._boardPos._x + "x" + tile._boardPos._y + " need more blue tiles";
+                    }
+                    temporal++;
+                }
+            }
+            // if a number has its required value around, but still an empty tile somewhere, close it
+            // (this core regards that situation FROM the empty unknown tile, not from the number itself)
+            // (but only if there are no tiles around that have a number and already reached it)
+            if ((tile._tileColor == TileColor.GREY) && info.unknownsAround == 0 && !info.completedNumbersAround) {
+                if (info.numberCount == 0) {
+                    return tile._boardPos._x + "x" + tile._boardPos._y + " needs to be red";
                 }
             }
         }
 
         return "Think more about the board";
-    }
-
-    /**
-     * Adds the "views"/counter info to blue tiles that currently don't have it
-     */
-    public void reCountEmpty()
-    {
-        for(BoardTile[] column : _board.getMap())
-        {
-            for(BoardTile t : column) {
-                if(t._tileColor == TileColor.BLUE && t._count == 0) {
-                    for (BoardPosition dir: DIRECTIONS)
-                    {
-                        t._count += _watcher.tilesInfFrontOf(t._boardPos, dir, TileColor.BLUE);
-                    }
-                }
-            }
-        }
     }
 
     /**
@@ -423,72 +393,16 @@ public class Hints {
         return true;
     }
 
-    private boolean isValid(){
-        for(BoardTile[] column : _board.getMap())
+    public boolean newIsValid(Board map){
+        for(BoardTile[] column : map.getMap())
         {
             for(BoardTile t : column) {
-                if(t._tileColor == TileColor.BLUE && t._count > 0)
-                    if(!checkVisibleFulfilled(t)) return false;
+                if(t._tileColor == TileColor.GREY){
+                    return false;
+                }
             }
         }
         return true;
-    }
-
-    /**
-     * Checks a tile for grey-specific hints
-     * @param t (BoardTile) tile we want to check
-     */
-    void tryHintsOnGrey(BoardTile t)
-    {
-        // HINT 5   --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
-        if(checkIfRed(t)) {
-            t._tileColor = TileColor.RED;
-            _sameMap = false;
-            //renderPrueba();
-        }
-    }
-
-    /**
-     * Runs hints that involve a blue tile
-     * @param t (CounterTile) blue tile we want to check
-     */
-    void tryHintsOnBlue(BoardTile t)
-    {
-        if (t._count == 0) return;
-
-        // HINT 1   --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
-        if(checkVisibleFulfilled(t))
-        {
-            closeWithRed(t, null);
-            //renderPrueba();
-        }
-        else {
-            // HINT 2   --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
-            for (BoardPosition dir: DIRECTIONS)
-            {
-                if (checkNoMoreBlue(t, dir) && _board.getMap()[t._boardPos._x + dir._x][t._boardPos._y + dir._y]._tileColor != TileColor.RED) {
-                    _board.getMap()[t._boardPos._x + dir._x][t._boardPos._y + dir._y]._tileColor = TileColor.RED;
-                    _sameMap = false;
-                    //renderPrueba();
-                }
-            }
-
-            // HINT 3 (BUGGY)   --  --  --  --  --  --  --  --  --  --  --  --  --  --
-            for (BoardPosition dir: DIRECTIONS)
-            {
-                if (checkForcedBlue(t, dir)) {
-                    int blueCount = _watcher.tilesInfFrontOf(t._boardPos, dir, TileColor.BLUE);
-                    _auxPos._x = (dir._x * blueCount) + dir._x + t._boardPos._x;
-                    _auxPos._y = (dir._y * blueCount) + dir._y + t._boardPos._y;
-                    if(!_board.offLimits(_auxPos))
-                        if(_board.getMap()[_auxPos._x][_auxPos._y]._tileColor == TileColor.GREY){
-                            _board.getMap()[_auxPos._x][_auxPos._y]._tileColor = TileColor.BLUE;
-                            _sameMap = false;
-                        }
-                    //renderPrueba();
-                }
-            }
-        }
     }
 
     /**
@@ -531,97 +445,9 @@ public class Hints {
         return counted;
     }
 
-    /**
-     * Aux function that checks if a tile is closed off
-     * @param t (BoardTile) tile we want to check
-     * @return (boolean) true if it is closed, false if not
-     */
-    boolean isClosed(BoardTile t){
-        int lego , legos;
-        for(BoardPosition dir: DIRECTIONS)
-        {
-            if(!_board.offLimits(BoardPosition.add(t._boardPos, dir))) {
-                lego = _watcher.closerTile(t._boardPos, dir, TileColor.RED);
-                legos = _watcher.closerTile(t._boardPos, dir, TileColor.GREY);
-                if (lego == -1 && legos != -1) return false;
-            }
-        }
-        return true;
-    }
-
     // ---------------------------------------------------------------------------------------------
     //                                H I N T    M E T H O D S
     // ---------------------------------------------------------------------------------------------
-
-    /**
-     * Checks if a blue tile already sees all the necessary blue tiles. Then it can be closed off
-     * with red tiles
-     * @param c (CounterTile) blue tile to be checked
-     * @return (boolean) true if the seen tiles are the same as the blue tiles it neeeds to see
-     */
-    public boolean checkVisibleFulfilled(BoardTile c) {
-        int counted = countVisibleBlue(c);
-
-        return c._count == counted;
-    }
-
-
-    /**
-     * Checks if a tile doesn't allow more blue visible tiles in a given direction
-     * @param c (CounterTile) blue tile to be checked
-     * @param dir (BoardPosition) the direction that will be looking for
-     * @return (boolean) true if the tile doesn't need more blue
-     */
-    public boolean checkNoMoreBlue(BoardTile c, BoardPosition dir) {
-        int counted;
-        BoardPosition _newPos = BoardPosition.add(c._boardPos, dir);
-
-        if (_board.offLimits(_newPos)) return false;
-
-        TileColor last_c = _board.getMap()[_newPos._x][_newPos._y]._tileColor;
-        if(last_c == TileColor.BLUE) return false;
-        _board.getMap()[_newPos._x][_newPos._y]._tileColor = TileColor.BLUE;
-
-        counted = countVisibleBlue(c);
-
-        _board.getMap()[_newPos._x][_newPos._y]._tileColor = last_c;
-
-        return  c._count < counted;
-    }
-
-    /**
-     * Hint that checks if there is mandatory to put a blue tile, or else the count number wouldn't
-     * be able to be achieved
-     * @param c (BoardTile) tile we want to check
-     * @param dir (BoardPosition) direction we're checking in
-     * @return (boolean) true if it needs a forced blue
-     */
-    public boolean checkForcedBlue(BoardTile c, BoardPosition dir) {
-        int _free = 0;
-        BoardPosition _newPos = BoardPosition.add(c._boardPos, dir);
-        if (_board.offLimits(_newPos)) return false;
-
-        int leg;
-        if(!BoardPosition.compare(dir, new BoardPosition(0, 1))){
-            leg = _watcher.closerTile(c._boardPos, new BoardPosition(0, 1), TileColor.RED);
-            _free += (leg == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(0, 1))._y : leg;
-
-        }
-        if(!BoardPosition.compare(dir, new BoardPosition(1, 0))){
-            leg = _watcher.closerTile(c._boardPos, new BoardPosition(1, 0), TileColor.RED);
-            _free += (leg == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(1, 0))._x : leg;
-        }
-        if(!BoardPosition.compare(dir, new BoardPosition(0, -1))) {
-            leg = _watcher.closerTile(c._boardPos, new BoardPosition(0, -1), TileColor.RED);
-            _free += (leg == -1) ? c._boardPos._y : leg;
-        }
-        if(!BoardPosition.compare(dir, new BoardPosition(-1, 0))){
-            leg = _watcher.closerTile(c._boardPos, new BoardPosition(-1, 0), TileColor.RED);
-            _free += (leg == -1) ? c._boardPos._x : leg;
-        }
-
-        return _free < c._count;
-    }
 
     /**
      * Checks if a tile has too much blue surrounding it
@@ -632,26 +458,6 @@ public class Hints {
         int counted = countVisibleBlue(c);
 
         return c._count < counted;
-    }
-
-    /**
-     * Checks if a tile has too much red surrounding it: it doesn't see enough blue tiles
-     * @param c (BoardTile) tile we want to check
-     * @return (boolean) true if there is too much red
-     */
-    public boolean checkTooMuchRed(BoardTile c) {
-        int free = 0, lego;
-
-        lego = _watcher.closerTile(c._boardPos, new BoardPosition(0, 1), TileColor.RED);
-        free += (lego == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(0, 1))._y : lego;
-        lego = _watcher.closerTile(c._boardPos, new BoardPosition(1, 0), TileColor.RED);
-        free += (lego == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(1, 0))._x : lego;
-        lego = _watcher.closerTile(c._boardPos, new BoardPosition(0, -1), TileColor.RED);
-        free += (lego == -1) ? c._boardPos._y : lego;
-        lego = _watcher.closerTile(c._boardPos, new BoardPosition(-1, 0), TileColor.RED);
-        free += (lego == -1) ? c._boardPos._x : lego;
-
-        return c._count > free;
     }
 
     /**
@@ -674,7 +480,4 @@ public class Hints {
         return free <= 0;
     }
 
-    public boolean checkWrongBlue() {
-        return false;
-    }
 }

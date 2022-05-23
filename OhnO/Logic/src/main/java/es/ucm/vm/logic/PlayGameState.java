@@ -68,16 +68,11 @@ public class PlayGameState implements GameState {
      * it sets up that tile data into the board for later use
      *
      * @param mapSize          (int) how many tiles wide is the map
-     * @param probabilityLimit (float) probability of a filled tile
      * @param step             (double) diameter of a tile, used for tile placement and sizing
      */
 
-    private void generateLevel(int mapSize, float probabilityLimit, double step) {
+    private void generateLevel(int mapSize, double step) {
         BoardTile[][] generatedMap;
-        TileColor tileColor;
-        //int tries = 0;
-        int blueCount;
-        int blueInMap = 0, redInMap = 0, greyInMap = 0;
         System.out.println("Generating new level");
         generatedMap = new BoardTile[mapSize][mapSize];
         for (int i = 0; i < mapSize; ++i) {
@@ -214,20 +209,19 @@ public class PlayGameState implements GameState {
             tile._tileInfo = null;
             //save(2, tile.x, tile.y);
             _hints.updateMap(_board);
-            if (_hints.solveMap()) {
+            if (_hints.newSolveMap(null, true)) {
                 if (isWall)
                     walls--;
-                tryAgain = true;
             } else {
                 tile.updateTileColor(lastColor);
                 tile.updateCount(lastValue);
                 tile.desativateButton();
-                tryAgain = true;
             }
+            tryAgain = true;
         }
         //save('empty');
 
-        _hints.renderPrueba();
+        //_hints.renderPrueba();
 
         System.out.println("Finished generating level");
         for (BoardTile[] row : generatedMap) {
@@ -290,11 +284,9 @@ public class PlayGameState implements GameState {
 
         // calculate diameter for tiles
         step = smallSide / (mapSize + 1.5);
-        // set the probability of a filled tile
-        float probabilityLimit = 0.25f;
 
         // generate and assign the tiles to the map
-        generateLevel(mapSize, probabilityLimit, step);
+        generateLevel(mapSize, step);
 
         // generate play scene buttons
         generateButtons(mapSize, step);
