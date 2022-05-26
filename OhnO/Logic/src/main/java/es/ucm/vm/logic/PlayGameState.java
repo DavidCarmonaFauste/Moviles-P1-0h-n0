@@ -169,7 +169,7 @@ public class PlayGameState implements GameState {
         tryAgain = true;
         attempts = 0;
         tile = null;
-        int walls = 0, minWalls = _board.getMapSize() - 1;
+        int walls = 0, minWalls = 3, emptyTiles = 0, minEmptyTile = 0;
         Stack<BoardTile> pool = new Stack<BoardTile>();
 
         //save('full');
@@ -182,20 +182,32 @@ public class PlayGameState implements GameState {
                     walls++;
             }
         }
-
+        minEmptyTile = pool.size()/2;
         Collections.shuffle(pool, new Random());
         _hints.updateMap(_board);
-        while (tryAgain && !pool.isEmpty() && attempts++ < 99) {
-            tryAgain = false;
+        //we will try
+        while (tryAgain  && attempts++ < (minEmptyTile*8)) {
+            tryAgain = emptyTiles >= minEmptyTile;
             //save(1);
-
+            if(pool.isEmpty())
+            {
+                walls = 0;
+                for(BoardTile[] column : _board.getMap())
+                {
+                    for(BoardTile t : column) {
+                        pool.push(t);
+                        if (t._tileColor == TileColor.RED)
+                            walls++;
+                    }
+                }
+            }
             // only use the pool for x,y coordinates, but retrieve the tile again because it has been rebuilt
             tile = pool.pop();
             //tile = tiles[getIndex(tempTile.x, tempTile.y)];
             boolean isWall = tile._tileColor == TileColor.RED;
 
             // make sure there is a minimum of walls
-            if (isWall && walls <= 3) continue;
+            if (isWall && walls <= minWalls) continue;
             TileColor lastColor = TileColor.GREY;
             int lastValue = 0;
             switch (tile._tileColor)
@@ -210,6 +222,7 @@ public class PlayGameState implements GameState {
             _hints.updateMap(_board);
             if (_hints.newSolveMap(null, true)) {
                 tile.activateButton();
+                if(lastValue != 0)emptyTiles++;
                 if (isWall)
                     walls--;
             } else {
@@ -218,6 +231,8 @@ public class PlayGameState implements GameState {
             }
             tryAgain = true;
         }
+        System.out.println("tries: " + attempts + " of " + minEmptyTile*8);
+        System.out.println("empties: "  + emptyTiles);
         //save('empty');
 
         //_hints.renderPrueba();
