@@ -3,6 +3,7 @@ package es.ucm.vm.androidengine;
 import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.view.SurfaceView;
 
 import es.ucm.vm.engine.AbstractGraphics;
@@ -177,8 +178,14 @@ public class Graphics extends AbstractGraphics {
      */
     @Override
     public void drawImage(int x, int y) {
-        _image.setPosition(x, y);
-        _image.render(this);
+        Rect r = new Rect();
+        r.top = y;
+        r.bottom = y + _image.getSizeY();
+        r.left = x;
+        r.right = x + _image.getSizeX();
+
+        _cnv.drawBitmap(_image.getBitmap(), null, r, _pnt);
+        _pnt.setAlpha(_image.getAlpha());
     }
 
     /**

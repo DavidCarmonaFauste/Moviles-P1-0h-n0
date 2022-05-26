@@ -140,8 +140,9 @@ public class Graphics extends AbstractGraphics {
 
     @Override
     public void drawImage(int x, int y) {
-        _image.setPosition(x, y);
-        _image.render(this);
+        _win.getJGraphics().drawImage(_image.getAwtImage(), x, y, x + _image.getSizeX(),
+                y + _image.getSizeY(), 0, 0, _image.getAwtImage().getWidth(null),
+                _image.getAwtImage().getHeight(null), null);
     }
 
     /**

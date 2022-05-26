@@ -34,27 +34,12 @@ public class Image extends AbstractImage {
             ims.close();
         }
         catch(IOException ex) {
-            return;
+            System.err.println(ex.getMessage());
         }
     }
 
-    /**
-     * Renders the stored bitmap through the Android canvas
-     * @param g (Graphics) Android graphics instance, for rendering
-     */
-    @Override
-    public void render(Graphics g) {
-        Rect r = new Rect();
-        r.top = _y;
-        r.bottom = _y + _sizeY;
-        r.left = _x;
-        r.right = _x + _sizeX;
+    public Bitmap getBitmap() {return _bitmap;}
 
-        es.ucm.vm.androidengine.Graphics aG = (es.ucm.vm.androidengine.Graphics)g;
-
-        aG._cnv.drawBitmap(_bitmap, null, r, aG._pnt);
-        aG._pnt.setAlpha(255);
-    }
 
     /**
      * Sets the AssetManager required to open files from the assets folder

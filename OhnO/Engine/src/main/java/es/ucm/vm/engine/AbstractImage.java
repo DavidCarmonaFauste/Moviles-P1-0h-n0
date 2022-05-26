@@ -7,20 +7,8 @@ public abstract class AbstractImage implements Image {
     /**
      * Attributes that control the location and size of the image
      */
-    protected int _x = 0, _y = 0;
     protected int _sizeX = 0, _sizeY = 0;
     protected int _alpha = 100; // 0 (transparent) to 100 (opaque)
-
-    /**
-     * Set position of the image.
-     *
-     * @param x (int) horizontal value
-     * @param y (int) vertical value
-     */
-    public void setPosition(int x, int y) {
-        _x = x;
-        _y = y;
-    }
 
     /**
      * Set size of the image.
@@ -33,7 +21,10 @@ public abstract class AbstractImage implements Image {
         _sizeY = y;
     }
 
-    public void initImage(String filename){}
-    public void render(Graphics g){}
+    public int getSizeX() {return _sizeX;}
+    public int getSizeY() {return _sizeY;}
 
+    public int getAlpha() {return _alpha;}
+
+    public void initImage(String filename){}
 }
