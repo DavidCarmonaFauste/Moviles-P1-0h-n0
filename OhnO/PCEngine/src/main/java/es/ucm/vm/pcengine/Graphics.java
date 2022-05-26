@@ -116,9 +116,8 @@ public class Graphics extends AbstractGraphics {
 
     @Override
     public void drawText(String text, int x, int y) {
-        _font.setContents(text);
-        _font.setPosition(x, y);
-        _font.render();
+        _win.getJGraphics().setFont(_font.getFont());
+        _win.getJGraphics().drawString(text, x, y);
     }
 
     @Override
@@ -126,7 +125,6 @@ public class Graphics extends AbstractGraphics {
         _font = new Font();
 
         _font.initializeFont(filename, size, ((Graphics2D)(_win.getJGraphics())).getColor().getRGB(), isBold);
-        _font.setCanvas((Graphics2D)_win.getJGraphics());
 
         return _font;
     }

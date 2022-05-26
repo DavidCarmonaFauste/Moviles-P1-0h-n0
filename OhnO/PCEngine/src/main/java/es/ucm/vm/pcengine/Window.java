@@ -56,7 +56,7 @@ public class Window extends JFrame {
                 break;
             } // try
             catch(Exception e){
-                _eng.HandleException(e);
+                System.err.println(e.getMessage());
             } // catch
         } // while
 

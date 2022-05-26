@@ -129,9 +129,7 @@ public class Graphics extends AbstractGraphics {
      */
     @Override
     public void drawText(String text, int x, int y) {
-        _font.setContents(text);
-        _font.setPosition(x - (_font._fontSize - _font._fontSize / 4), y - _font._fontSize / 2);
-        _font.render();
+        _cnv.drawText(text, x, y, _pnt);
     }
 
     /**
@@ -148,7 +146,6 @@ public class Graphics extends AbstractGraphics {
 
         _font.setView(_sView);
         _font.setPaint(_pnt);
-        _font.setCanvas(_cnv);
         _font.initializeFont(filename,size,_pnt.getColor(), isBold);
 
         return _font;

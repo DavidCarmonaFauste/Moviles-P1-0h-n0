@@ -7,7 +7,7 @@ import android.view.View;
 
 /**
  * Platform specific instance of the utility class Font. It's in charge of the platform specific
- * actions such as loading from a file or calling the correct render methods
+ * actions such as loading from a file
  */
 public class Font implements es.ucm.vm.engine.Font {
     /**
@@ -17,19 +17,16 @@ public class Font implements es.ucm.vm.engine.Font {
 
 
     /**
-     * Attributes for rendering purposes
+     * Attributes for painting purposes
      */
     private View _view = null;
     private Paint _paint = null;
-    private Canvas _canvas = null;
 
     /**
      * Attributes that control the appearance of the text
      */
-    String _contents = "";
     int _fontSize = 1;
     int _fontColor = 0xFFFFFFFF;
-    int _x = 0, _y = 0;
 
     /**
      * Font initializer. Receives the path to the file containing the font
@@ -44,7 +41,7 @@ public class Font implements es.ucm.vm.engine.Font {
      */
     @Override
     public boolean initializeFont(String filename, int fontSize, int fontColor, boolean isBold) {
-        if (_view == null && _canvas == null && _paint == null) {
+        if (_view == null && _paint == null) {
             System.err.println("Tried to load font before setting View, Canvas and Paint");
             return false;
         }
@@ -67,36 +64,6 @@ public class Font implements es.ucm.vm.engine.Font {
     } // initializeFont
 
     /**
-     * Sets the contents that the font will print on screen.
-     *
-     * @param contents (String) text we want to display
-     */
-    @Override
-    public void setContents(String contents) {
-        _contents = contents;
-    } // setContents
-
-    /**
-     * Displays the text.
-     */
-    @Override
-    public void render() {
-        _canvas.drawText(_contents, _x, _y, _paint);
-    } // render
-
-    /**
-     * Sets the position of the Font.
-     *
-     * @param x (int) horizontal value
-     * @param y (int) vertical value
-     */
-    @Override
-    public void setPosition(int x, int y) {
-        _x = x;
-        _y = y;
-    } // setPosition
-
-    /**
      * Sets the View component used for retrieving the font asset
      * @param view (View) View component from Graphics
      */
@@ -111,12 +78,4 @@ public class Font implements es.ucm.vm.engine.Font {
     public void setPaint(Paint paint) {
         _paint = paint;
     } // setPaint
-
-    /**
-     * Sets the Canvas for rendering purposes
-     * @param canvas (Canvas) Canvas component from Graphics
-     */
-    public void setCanvas(Canvas canvas) {
-        _canvas = canvas;
-    } // setCanvas
 }

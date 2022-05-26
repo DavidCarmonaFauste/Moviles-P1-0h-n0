@@ -12,8 +12,6 @@ public interface Engine {
 
     void saveGameState(GameState gs);
 
-    void HandleException(Exception e);
-
     void closeGame();
 
     int getWinWidth();

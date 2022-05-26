@@ -137,15 +137,7 @@ public class Engine extends AbstractEngine implements Runnable {
         return data;
     } // openInputStream
 
-    /**
-     * Handles an exception received. Print out the message of the exception.
-     *
-     * @param e (Exception)
-     */
-    @Override
-    public void HandleException(Exception e) {
-        System.err.println(e);
-    } // HandleException
+
     //---------------------------------------------------------------
     //----------------------Getters and Setters----------------------
     //---------------------------------------------------------------

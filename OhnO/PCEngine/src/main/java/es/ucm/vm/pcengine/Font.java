@@ -6,7 +6,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 
 /**
- * PC implementeation of the Font class for file loading and platform specific rendering
+ * PC implementation of the Font class for file loading and other platform specific tasks
  */
 public class Font implements es.ucm.vm.engine.Font {
     /**
@@ -17,15 +17,8 @@ public class Font implements es.ucm.vm.engine.Font {
     /**
      * Attributes that control the appearance of the text
      */
-    String _contents = "";
     int _fontSize = 1;
     Color _fontColor = Color.white;
-    int _x = 0, _y = 0;
-
-    /**
-     * Graphics component for rendering purposes
-     */
-    java.awt.Graphics _graphics = null;
 
     @Override
     public boolean initializeFont(String filename, int fontSize, int fontColor, boolean isBold) {
@@ -46,7 +39,6 @@ public class Font implements es.ucm.vm.engine.Font {
         else
             _font = baseFont.deriveFont(java.awt.Font.PLAIN, fontSize);
 
-        _contents = filename;
         _fontSize = fontSize;
         int r = (fontColor & 0xFF0000) >> 16;
         int g = (fontColor & 0xFF00) >> 8;
@@ -56,44 +48,8 @@ public class Font implements es.ucm.vm.engine.Font {
         return true;
     } // initializeFont
 
-    /**
-     * Set the contents to be displayed.
-     *
-     * @param contents (String) text we want to display
-     */
-    @Override
-    public void setContents(String contents) {
-        _contents = contents;
-    } // setContents
 
-    /**
-     * Renders the text on screen.
-     */
-    @Override
-    public void render() {
-        // check for nulls before trying to render
-        if (_graphics != null && _font != null) {
-            //_graphics.setColor(_fontColor);
-            _graphics.setFont(_font);
-            _graphics.drawString(_contents, _x, _y);
-        } // if
-    } // render
-
-    /**
-     * Set position of the text.
-     *
-     * @param x (int) horizontal value
-     * @param y (int) vertical value
-     */
-    @Override
-    public void setPosition(int x, int y) {
-        _x = x;
-        _y = y;
-    } // setPosition
-
-    /**
-     * Sets the Graphics attribute used for rendering
-     * @param g (Graphics) Graphics component for rendering purposes
-     */
-    public void setCanvas(Graphics g) { _graphics = g;} // setCanvas
+    public java.awt.Font getFont() {
+        return _font;
+    }
 }
