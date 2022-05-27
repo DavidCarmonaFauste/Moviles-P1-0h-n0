@@ -28,7 +28,7 @@ public class MainMenuState implements GameState {
     int _diameter = 90;
     Button _closeButton;
 
-    double _cooldown = 0.8;
+    double _cooldown = 0.6;
 
     //---------------------------------------------------------------
     //--------------------------Constants----------------------------

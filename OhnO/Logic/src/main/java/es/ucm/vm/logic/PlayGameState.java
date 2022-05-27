@@ -1,6 +1,5 @@
 package es.ucm.vm.logic;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -74,6 +73,8 @@ public class PlayGameState implements GameState {
     private void generateLevel(int mapSize, double step) {
         BoardTile[][] generatedMap;
         System.out.println("Generating new level");
+
+        // fill the map with all blues ----------------------------------------------
         generatedMap = new BoardTile[mapSize][mapSize];
         for (int i = 0; i < mapSize; ++i) {
             for (int j = 0; j < mapSize; ++j) {
@@ -88,6 +89,47 @@ public class PlayGameState implements GameState {
         _hints.newSolveMap(_board, false);
         _hints.updateMap(_board);
 
+        // adds reds and re-counts the number of blues each tile sees -------------
+        addRedsAndRecountBlues(generatedMap, mapSize, step);
+
+        // count reds and shuffle the tile pool
+        int walls = 0;
+        Stack<BoardTile> pool = new Stack<BoardTile>();
+        for(BoardTile[] column : _board.getMap()) {
+            for(BoardTile t : column) {
+                pool.push(t);
+                if (t._tileColor == TileColor.RED)
+                    walls++;
+            }
+        }
+        Collections.shuffle(pool, new Random());
+
+        _hints.updateMap(_board);
+
+        // try to place grey tiles ------------------------------------------------
+        tryPlacingGreys(pool, walls);
+
+        //System.out.println("tries: " + attempts + " of " + minEmptyTile*8);
+        //System.out.println("empties: "  + emptyTiles);
+
+        System.out.println("Finished generating level");
+        for (BoardTile[] row : generatedMap) {
+            for (BoardTile t : row) {
+                t.setCoordOrigin(_coordOr);
+            }
+        }
+    }
+
+    /**
+     * Checks that the tiles stack doesn't have any tile that sees more than it should. If one
+     * exists, it places a wall and recounts the visible blues, all while making sure the map
+     * stays resolvable
+     *
+     * @param generatedMap (BoardTile[][]) map of tiles
+     * @param mapSize (int) width of the map in tiles
+     * @param step (size of a tile)
+     */
+    private void addRedsAndRecountBlues(BoardTile[][] generatedMap, int mapSize, double step) {
         boolean tryAgain = true;
         int attempts = 0;
         BoardTile tile;
@@ -138,8 +180,8 @@ public class PlayGameState implements GameState {
                         cut = firstCut;
                     if (cut != null) {
                         generatedMap[cut._boardPos._x][cut._boardPos._y] = new BoardTile(step * (cut._boardPos._x - ((double) (mapSize - 1) / 2)),
-                                        step * (cut._boardPos._y - ((double) (mapSize - 1) / 2)) * -1, (int) (step),
-                                        TileColor.RED, -1, new BoardPosition(cut._boardPos._x, cut._boardPos._y));
+                                step * (cut._boardPos._y - ((double) (mapSize - 1) / 2)) * -1, (int) (step),
+                                TileColor.RED, -1, new BoardPosition(cut._boardPos._x, cut._boardPos._y));
                         for (int z = 0; z < mapSize; ++z) {
                             for (int j = 0; j < mapSize; ++j) {
                                 if(generatedMap[z][j]._tileColor != TileColor.RED) {
@@ -151,63 +193,53 @@ public class PlayGameState implements GameState {
                         }
                         _board.setMap(generatedMap);
                         _hints.updateMap(_board);
-                        //_hints.renderPrueba();
                         _hints.newSolveMap(_board, false);
                         _hints.updateMap(_board);
-                        //_hints.renderPrueba();
                         tryAgain = true;
                     }
-                    /*
-                    else {
-                        console.log('no cut found for', tile.x, tile.y, tile.value, cuts, min, max);
-                    }*/
                     break;
                 }
             }
         }
+    } // recountBluesAddReds
 
-        tryAgain = true;
-        attempts = 0;
-        tile = null;
-        int walls = 0, minWalls = 3, emptyTiles = 0, minEmptyTile = 0;
-        Stack<BoardTile> pool = new Stack<BoardTile>();
+    /**
+     * Given a map with a possible solution, removes a singular tile and turns it into
+     * a grey tile, and checks if the change is correct or needs to be undone
+     *
+     * @param pool (Stack(BoardTIle)) stack with shuffled tiles
+     * @param walls (int) number of red tiles
+     * @return (boolean) returns a "try again" value
+     */
+    private void tryPlacingGreys(Stack<BoardTile> pool, int walls) {
+        boolean tryAgain = true;
+        int attempts = 0;
+        BoardTile tile = null;
+        int minWalls = 3, emptyTiles = 0, minEmptyTile = pool.size()/2;
 
-        //save('full');
-        // get the tile set as a shuffled pool
-        for(BoardTile[] column : _board.getMap())
-        {
-            for(BoardTile t : column) {
-                pool.push(t);
-                if (t._tileColor == TileColor.RED)
-                    walls++;
-            }
-        }
-        minEmptyTile = pool.size()/2;
-        Collections.shuffle(pool, new Random());
-        _hints.updateMap(_board);
-        //we will try
         while (tryAgain  && attempts++ < (minEmptyTile*8)) {
             tryAgain = emptyTiles >= minEmptyTile;
-            //save(1);
-            if(pool.isEmpty())
-            {
+
+            if(pool.isEmpty()) {
                 walls = 0;
-                for(BoardTile[] column : _board.getMap())
-                {
+
+                for(BoardTile[] column : _board.getMap()) {
                     for(BoardTile t : column) {
                         pool.push(t);
                         if (t._tileColor == TileColor.RED)
                             walls++;
                     }
                 }
-            }
+            } // if (pool.isEmpty())
+
             // only use the pool for x,y coordinates, but retrieve the tile again because it has been rebuilt
             tile = pool.pop();
-            //tile = tiles[getIndex(tempTile.x, tempTile.y)];
             boolean isWall = tile._tileColor == TileColor.RED;
 
             // make sure there is a minimum of walls
-            if (isWall && walls <= minWalls) continue;
+            if (isWall && walls <= minWalls)
+                continue;
+
             TileColor lastColor = TileColor.GREY;
             int lastValue = 0;
             switch (tile._tileColor)
@@ -218,7 +250,7 @@ public class PlayGameState implements GameState {
             tile.updateTileColor(TileColor.GREY);
             tile.updateCount(0);
             tile._tileInfo = null;
-            //save(2, tile.x, tile.y);
+
             _hints.updateMap(_board);
             if (_hints.newSolveMap(null, true)) {
                 tile.activateButton();
@@ -229,21 +261,10 @@ public class PlayGameState implements GameState {
                 tile.updateTileColor(lastColor);
                 tile.updateCount(lastValue);
             }
+
             tryAgain = true;
         }
-        System.out.println("tries: " + attempts + " of " + minEmptyTile*8);
-        System.out.println("empties: "  + emptyTiles);
-        //save('empty');
-
-        //_hints.renderPrueba();
-
-        System.out.println("Finished generating level");
-        for (BoardTile[] row : generatedMap) {
-            for (BoardTile t : row) {
-                t.setCoordOrigin(_coordOr);
-            }
-        }
-    }
+    } // tryPlacingGreys
 
     /**
      * Creates and sets all the buttons on the play scene

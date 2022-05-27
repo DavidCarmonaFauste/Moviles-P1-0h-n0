@@ -44,7 +44,7 @@ public class BoardTile extends GameObject{
         updateTileColor(tileC);
         updateCount(count);
         if (_tileColor == TileColor.BLUE) {
-            this._text = new Text(x, y, new Color(255,255,255,255), 30,
+            this._text = new Text(x, y, new Color(255,255,255,255), d/3,
                     String.valueOf(count), false, FONT_JOSEFIN_BOLD);
         }
         else if (_tileColor == TileColor.GREY) {
@@ -150,7 +150,7 @@ public class BoardTile extends GameObject{
                 break;
             default:
             case GREY:
-                _c.setMediumGrey();
+                _c.setLightGrey();
                 this.setTxt("");
                 break;
         }
@@ -158,7 +158,7 @@ public class BoardTile extends GameObject{
     public void activateButton(){
         this._button = new Button(_pos._x, _pos._y, _d, _d, new Color(0,0,0,100), 20, null, null);
     }
-    public void desativateButton(){
+    public void deactivateButton(){
         this._button = null;
     }
     /**
