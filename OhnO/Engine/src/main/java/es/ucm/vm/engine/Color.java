@@ -66,7 +66,7 @@ public class Color {
      * Sets the internal rgba values to represent a Dark Grey color
      */
    public void setDarkGrey(){
-       _r = _g = _b = 51;
+       _r = _g = _b = 50;
        _a = 255;
    }
 
@@ -74,7 +74,7 @@ public class Color {
      * Sets the internal rgba values to represent a Medium Grey color
      */
    public void setMediumGrey() {
-        _r = _g = _b = 153;
+        _r = _g = _b = 150;
         _a = 255;
    }
 
@@ -82,7 +82,7 @@ public class Color {
      * Sets the internal rgba values to represent a Light grey color
      */
    public void setLightGrey() {
-       _r = _g = _b = 238;
+       _r = _g = _b = 230;
        _a = 255;
    }
 }

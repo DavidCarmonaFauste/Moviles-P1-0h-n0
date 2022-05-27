@@ -8,8 +8,6 @@ import java.io.InputStream;
 public interface Engine {
     Graphics getGraphics();
 
-    InputStream openInputStream(String filename);
-
     void saveGameState(GameState gs);
 
     void closeGame();

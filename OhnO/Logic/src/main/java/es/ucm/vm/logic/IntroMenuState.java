@@ -10,6 +10,12 @@ import es.ucm.vm.engine.Rect;
 
 public class IntroMenuState implements GameState {
     //---------------------------------------------------------------
+    //--------------------------Constants----------------------------
+    //---------------------------------------------------------------
+    final String FONT_JOSEFIN_BOLD = "fonts/JosefinSans-Bold.ttf";
+    final String FONT_MOLLE_REGULAR = "fonts/Molle-Regular.ttf";
+
+    //---------------------------------------------------------------
     //----------------------Private Attributes-----------------------
     //---------------------------------------------------------------
     Logic _l; // For changing gamestate

@@ -15,6 +15,14 @@ import es.ucm.vm.engine.Rect;
 
 public class PlayGameState implements GameState {
     //---------------------------------------------------------------
+    //--------------------------Constants----------------------------
+    //---------------------------------------------------------------
+    final String IMAGE_CLOSE = "sprites/close.png";
+    final String IMAGE_EYE = "sprites/eye.png";
+    final String IMAGE_HISTORY = "sprites/history.png";
+    final String FONT_JOSEFIN_BOLD = "fonts/JosefinSans-Bold.ttf";
+
+    //---------------------------------------------------------------
     //----------------------Private Attributes-----------------------
     //---------------------------------------------------------------
     Logic _l; // For changing gamestate
@@ -274,7 +282,7 @@ public class PlayGameState implements GameState {
      */
     private void generateButtons(int mapSize, double step) {
         Color boundingBoxColor = new Color(50, 50, 50, 100);
-        double buttonY = -200; // a bit less than half the height of the logical canvas height
+        double buttonY = -240; // a bit less than half the height of the logical canvas height
         int buttonSize = 30;
 
         ImageObject closeImage = new ImageObject(-40, buttonY, buttonSize, buttonSize, IMAGE_CLOSE);
@@ -311,14 +319,8 @@ public class PlayGameState implements GameState {
         // Calculate size, used for tile placement
         double step, smallSide;
 
-        if (_l._eng.getWinHeight() < _l._eng.getWinWidth())
-            smallSide = _l._eng.getWinHeight() * 0.8;
-        else
-            smallSide = _l._eng.getWinWidth() * 0.8;
-        smallSide = _l._eng.getGraphics().screenToLogicX((int) smallSide);
-
         // calculate diameter for tiles
-        step = smallSide / (mapSize + 1.5);
+        step = _l.getCanvasSize().width / (mapSize + 1.5);
 
         // generate and assign the tiles to the map
         generateLevel(mapSize, step);

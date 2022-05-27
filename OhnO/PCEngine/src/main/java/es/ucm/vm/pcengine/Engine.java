@@ -100,24 +100,6 @@ public class Engine extends AbstractEngine implements Runnable, ComponentListene
 
 
     /**
-     * Input stream function to receive the levels.
-     *
-     * @param filename (String) file path
-     * @return (InputStream) File content.
-     */
-    @Override
-    public InputStream openInputStream(String filename) {
-        InputStream data = null;
-        try {
-            data = new FileInputStream("./Data/" + filename);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return data;
-    } // openInputStream
-
-    /**
      * Sets the max frame rate to keep all running at the same velocity
      *
      * @param fps (int) Max frame rate.

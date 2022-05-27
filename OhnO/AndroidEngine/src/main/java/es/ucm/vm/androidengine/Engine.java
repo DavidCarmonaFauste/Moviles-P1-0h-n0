@@ -109,38 +109,6 @@ public class Engine extends AbstractEngine implements Runnable {
             } // while
         } // if
     } // onPause
-    //---------------------------------------------------------------
-    //----------------------App Life management----------------------
-    //---------------------------------------------------------------
-
-
-    //---------------------------------------------------------------
-    //----------------------Getters and Setters----------------------
-    //---------------------------------------------------------------
-
-    /**
-     * Creates an input stream of a file.
-     *
-     * @param filename (String) Name of the file to open the stream.
-     * @return (InputStream) Open file.
-     */
-    @Override
-    public InputStream openInputStream(String filename) {
-        InputStream data = null;
-
-        try{
-            data = _aMan.open(filename);
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-
-        return data;
-    } // openInputStream
-
-
-    //---------------------------------------------------------------
-    //----------------------Getters and Setters----------------------
-    //---------------------------------------------------------------
 
 
     //---------------------------------------------------------------

@@ -89,7 +89,6 @@ public abstract class AbstractEngine implements Engine {
      */
     protected void update(){
         if(_gs != null) {
-            //_l.update(_elapsedTime);
             _gs.update(_elapsedTime);
             _gs.processInput(_ip.getTouchEvents());
         } // if

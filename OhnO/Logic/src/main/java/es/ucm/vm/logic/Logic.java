@@ -30,7 +30,7 @@ public class Logic implements es.ucm.vm.engine.Logic {
         _eng = e;
 
         // Init everything
-        _cnv = new Rect (640, 0, 0, 480);
+        _cnv = new Rect (400, 0, 0, 600);
     } // Logic
 
     @Override

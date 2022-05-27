@@ -13,6 +13,12 @@ import es.ucm.vm.engine.Rect;
 
 public class MainMenuState implements GameState {
     //---------------------------------------------------------------
+    //--------------------------Constants----------------------------
+    //---------------------------------------------------------------
+    final String IMAGE_CLOSE = "sprites/close.png";
+    final String FONT_JOSEFIN_BOLD = "fonts/JosefinSans-Bold.ttf";
+
+    //---------------------------------------------------------------
     //----------------------Private Attributes-----------------------
     //---------------------------------------------------------------
     Logic _l; // For changing gamestate
