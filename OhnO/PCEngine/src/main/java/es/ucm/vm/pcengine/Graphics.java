@@ -131,6 +131,7 @@ public class Graphics extends AbstractGraphics {
     @Override
     public Font setUpFont(String filename, int size, boolean isBold) {
         _font = new Font();
+        size = logicToScreenX(size);
 
         _font.initializeFont(filename, size, ((Graphics2D)(_win.getJGraphics())).getColor().getRGB(), isBold);
 

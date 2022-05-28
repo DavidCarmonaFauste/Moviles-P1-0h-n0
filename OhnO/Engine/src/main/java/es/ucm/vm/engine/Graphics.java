@@ -137,22 +137,6 @@ public interface Graphics {
     void translate(int x, int y);
 
     /**
-     * Receives a X coordinate in logic reference and converts it to physical reference.
-     *
-     * @param x X coordinate in logic reference.
-     * @return X coordinate in physical reference.
-     */
-    int logicToScreenX(int x);
-
-    /**
-     * Receives a Y coordinate in logic reference and converts it to physical reference.
-     *
-     * @param y Y coordinate in logic reference.
-     * @return Y coordinate in physical reference.
-     */
-    int logicToScreenY(int y);
-
-    /**
      * Receives a X coordinate in screen axis system an converts it to logic canvas coordinates.
      *
      * @param x X coordinate in physical reference

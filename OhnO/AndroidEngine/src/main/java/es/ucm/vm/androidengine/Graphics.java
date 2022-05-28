@@ -145,6 +145,7 @@ public class Graphics extends AbstractGraphics {
     @Override
     public Font setUpFont(String filename, int size, boolean isBold) {
         _font = new Font();
+        size = logicToScreenX(size);
 
         _font.setView(_sView);
         _font.setPaint(_pnt);
