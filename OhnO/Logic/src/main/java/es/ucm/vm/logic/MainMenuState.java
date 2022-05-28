@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.ucm.vm.engine.Color;
-import es.ucm.vm.engine.Font;
 import es.ucm.vm.engine.GameState;
 import es.ucm.vm.engine.Graphics;
-import es.ucm.vm.engine.Image;
 import es.ucm.vm.engine.Input;
 import es.ucm.vm.engine.Rect;
 
@@ -27,8 +25,8 @@ public class MainMenuState implements GameState {
     int _posOrY; // Pos of coord origin Y
     Vector2 _coordOrigin;
 
-    Text _header;
-    Text _description;
+    TextGameObject _header;
+    TextGameObject _description;
 
     ArrayList<Button> _buttons; // Array list with the level buttons
     int _diameter = 90;
@@ -58,12 +56,12 @@ public class MainMenuState implements GameState {
         _coordOrigin = new Vector2(_posOrX, _posOrY);
 
         // create header text
-        _header = new Text(0, _l._cnv.height *((double)1/3), new Color(0,0,0,255),
+        _header = new TextGameObject(0, _l._cnv.height *((double)1/3), new Color(0,0,0,255),
                 55, FREE_PLAY, true, FONT_JOSEFIN_BOLD);
         _header.setCoordOrigin(_coordOrigin);
 
         // create description text
-        _description = new Text(30, _l._cnv.height *((double)1/6), new Color(0,0,0,255),
+        _description = new TextGameObject(30, _l._cnv.height *((double)1/6), new Color(0,0,0,255),
                 35, FREE_PLAY_DESCRIPTION, false, FONT_JOSEFIN_BOLD);
         _description.setCoordOrigin(_coordOrigin);
 
@@ -71,10 +69,10 @@ public class MainMenuState implements GameState {
         createLevelButtons();
 
         // create close button
-        ImageObject imageObject = new ImageObject(0, -200, 25, 25, IMAGE_CLOSE);
-        imageObject.setCoordOrigin(_coordOrigin);
+        ImageGameObject imageGameObject = new ImageGameObject(0, -200, 25, 25, IMAGE_CLOSE);
+        imageGameObject.setCoordOrigin(_coordOrigin);
         _closeButton = new Button(0, -200, 25, 25, new Color(50,50,50,100),
-                10, null, imageObject);
+                10, null, imageGameObject);
         _closeButton.setCoordOrigin(_coordOrigin);
     } // Constructor
 
@@ -92,13 +90,13 @@ public class MainMenuState implements GameState {
             for (int j = 0; j < 3; j++) {
                 Vector2 pos = new Vector2(j*100 - 100, - i*100);
 
-                Text levelText = new Text(pos._x, pos._y, white, 20, String.valueOf(levels), false, FONT_JOSEFIN_BOLD);
+                TextGameObject levelTextGameObject = new TextGameObject(pos._x, pos._y, white, 20, String.valueOf(levels), false, FONT_JOSEFIN_BOLD);
 
                 Color buttonColor;
                 if (levels % 2 == 0) buttonColor = blue;
                 else buttonColor = red;
 
-                Button levelButton = new Button(pos._x, pos._y, _diameter, _diameter, buttonColor, 20, levelText,null);
+                Button levelButton = new Button(pos._x, pos._y, _diameter, _diameter, buttonColor, 20, levelTextGameObject,null);
                 levelButton.setCoordOrigin(_coordOrigin);
                 _buttons.add(levelButton);
 

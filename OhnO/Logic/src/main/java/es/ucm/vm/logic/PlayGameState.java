@@ -30,7 +30,7 @@ public class PlayGameState implements GameState {
     Board _board;
     Hints _hints;
     Button _closeButton, _undoButton, _hintsButton;
-    Text _hintsTxt;
+    TextGameObject _hintsTxt;
     Vector2 _coordOr; // Coord origin
     int _coordOrX; // Coord origin X value
     int _coordOrY; // Coord origin Y value
@@ -285,25 +285,25 @@ public class PlayGameState implements GameState {
         double buttonY = -240; // a bit less than half the height of the logical canvas height
         int buttonSize = 30;
 
-        ImageObject closeImage = new ImageObject(-40, buttonY, buttonSize, buttonSize, IMAGE_CLOSE);
+        ImageGameObject closeImage = new ImageGameObject(-40, buttonY, buttonSize, buttonSize, IMAGE_CLOSE);
         closeImage.setCoordOrigin(_coordOr);
         _closeButton = new Button(-40, buttonY, buttonSize, buttonSize,
                 boundingBoxColor, 10, null, closeImage);
         _closeButton.setCoordOrigin(_coordOr);
 
-        ImageObject undoImage = new ImageObject(0, buttonY, buttonSize, buttonSize, IMAGE_HISTORY);
+        ImageGameObject undoImage = new ImageGameObject(0, buttonY, buttonSize, buttonSize, IMAGE_HISTORY);
         undoImage.setCoordOrigin(_coordOr);
         _undoButton = new Button(0, buttonY, buttonSize, buttonSize,
                 boundingBoxColor, 10, null, undoImage);
         _undoButton.setCoordOrigin(_coordOr);
 
-        ImageObject hintImage = new ImageObject(40, buttonY, buttonSize, buttonSize, IMAGE_EYE);
+        ImageGameObject hintImage = new ImageGameObject(40, buttonY, buttonSize, buttonSize, IMAGE_EYE);
         hintImage.setCoordOrigin(_coordOr);
         _hintsButton = new Button(40, buttonY, buttonSize, buttonSize,
                 boundingBoxColor, 10, null, hintImage);
         _hintsButton.setCoordOrigin(_coordOr);
 
-        _hintsTxt = new Text(step / 2 * (mapSize - 1) + (buttonY / 2), -buttonY,
+        _hintsTxt = new TextGameObject(step / 2 * (mapSize - 1) + (buttonY / 2), -buttonY,
                 new Color(50, 50, 50, 255), (int) (step) / 2,
                 (mapSize) + "x" + (mapSize), false, FONT_JOSEFIN_BOLD);
 

@@ -15,8 +15,8 @@ public class Button extends GameObject{
     private final int _h; // Width and Height
     private boolean _debug;
     private final int _lineThickness;
-    private final Text _text;
-    private final ImageObject _image;
+    private final TextGameObject _textGameObject;
+    private final ImageGameObject _image;
 
     /**
      * Button constructor. Creates the new button and sets it's parameters.
@@ -30,11 +30,11 @@ public class Button extends GameObject{
      * @param t (Text) Text associated to the Button. (can be null)
      * @param image (ImageObject) Image object associated to the Button. (can be null)
      */
-    public Button(double x, double y, int width, int height, Color c, int thickness, Text t, ImageObject image) {
+    public Button(double x, double y, int width, int height, Color c, int thickness, TextGameObject t, ImageGameObject image) {
         super(x, y);
         _w = width;
         _h = height;
-        _text = t;
+        _textGameObject = t;
         _image = image;
         _c = c;
         _lineThickness = thickness;
@@ -64,11 +64,11 @@ public class Button extends GameObject{
      * @param g (Graphics) graphics instance to perform all the drawing
      */
     private void tryRenderingText(Graphics g) {
-        if (_text == null) return;
-        if (_text._coordOrigin == null) {
-            _text.setCoordOrigin(_coordOrigin);
+        if (_textGameObject == null) return;
+        if (_textGameObject._coordOrigin == null) {
+            _textGameObject.setCoordOrigin(_coordOrigin);
         }
-        _text.render(g);
+        _textGameObject.render(g);
     }
 
     /**

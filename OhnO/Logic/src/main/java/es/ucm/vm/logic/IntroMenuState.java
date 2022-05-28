@@ -24,8 +24,8 @@ public class IntroMenuState implements GameState {
     int _posOrY; // Pos of coord origin Y
     Vector2 _coordOrigin;
 
-    Text _header;
-    Text _description;
+    TextGameObject _header;
+    TextGameObject _description;
 
     int _diameter = 150;
     Color _blue = new Color();
@@ -47,12 +47,12 @@ public class IntroMenuState implements GameState {
         _coordOrigin = new Vector2(_posOrX, _posOrY);
 
         // create header text
-        _header = new Text(-20, _l._cnv.height *((double)1/3), new Color(0,0,0,255),
+        _header = new TextGameObject(-20, _l._cnv.height *((double)1/3), new Color(0,0,0,255),
                 55, HEADER, true, FONT_MOLLE_REGULAR);
         _header.setCoordOrigin(_coordOrigin);
 
         // create description text
-        _description = new Text(30, -_l._cnv.height *((double)1/4), new Color(150,150,150,255),
+        _description = new TextGameObject(30, -_l._cnv.height *((double)1/4), new Color(150,150,150,255),
                 20, DESCRIPTION, false, FONT_JOSEFIN_BOLD);
         _description.setCoordOrigin(_coordOrigin);
 

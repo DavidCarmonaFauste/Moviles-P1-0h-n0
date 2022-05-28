@@ -114,10 +114,18 @@ public class Graphics extends AbstractGraphics {
         (_win.getJGraphics()).fillOval(x, y, diameter, diameter);
     }
 
+    /**
+     * Used by the Text Game Object to render text in PC platforms
+     *
+     * @param text (String) message to render
+     * @param x (int) x position in logic canvas
+     * @param y (int) y position in logic canvas
+     */
     @Override
     public void drawText(String text, int x, int y) {
         _win.getJGraphics().setFont(_font.getFont());
-        _win.getJGraphics().drawString(text, x, y);
+        _win.getJGraphics().drawString(text, logicToScreenX(x) + _can.getX(),
+                logicToScreenY(y) + _can.getY());
     }
 
     @Override
@@ -138,10 +146,21 @@ public class Graphics extends AbstractGraphics {
         return _image;
     }
 
+    /**
+     * Called from the Image Game Object to render a image on the given position
+     *
+     * @param x (int) x position in logic coordinates
+     * @param y (int) y position in logic coordinates
+     */
     @Override
     public void drawImage(int x, int y) {
-        _win.getJGraphics().drawImage(_image.getAwtImage(), x, y, x + _image.getSizeX(),
-                y + _image.getSizeY(), 0, 0, _image.getAwtImage().getWidth(null),
+        x = getCanvas().getX() + logicToScreenX(x) - logicToScreenX(_image.getSizeX())/2;
+        y = getCanvas().getY() + logicToScreenY(y) - logicToScreenX(_image.getSizeY())/2;
+
+        _win.getJGraphics().drawImage(_image.getAwtImage(), x, y,
+                x + logicToScreenX(_image.getSizeX()),
+                y + logicToScreenX(_image.getSizeY()),
+                0, 0, _image.getAwtImage().getWidth(null),
                 _image.getAwtImage().getHeight(null), null);
     }
 

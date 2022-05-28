@@ -15,7 +15,7 @@ public class BoardTile extends GameObject{
     private double _cD; // Current diameter
     private boolean _taken; // Flag to control if the player has taken this item
     private float _distanceCenter; // Distance to the center point
-    private Text _text = null;
+    private TextGameObject _textGameObject = null;
     private Button _button = null;
 
     //---------------------------------------------------------------
@@ -44,7 +44,7 @@ public class BoardTile extends GameObject{
         updateTileColor(tileC);
         updateCount(count);
         if (_tileColor == TileColor.BLUE) {
-            this._text = new Text(x, y, new Color(255,255,255,255), d/3,
+            this._textGameObject = new TextGameObject(x, y, new Color(255,255,255,255), d/3,
                     String.valueOf(count), false, FONT_JOSEFIN_BOLD);
         }
         else if (_tileColor == TileColor.GREY) {
@@ -58,8 +58,8 @@ public class BoardTile extends GameObject{
      * @param newTxt (String) string that we want to set
      */
     public void setTxt(String newTxt){
-        if(_text == null) this._text = new Text(_pos._x, _pos._y, new Color(50,50,50,255), this._d/3, "", false, FONT_JOSEFIN_BOLD);
-        this._text.changeTxt(newTxt);
+        if(_textGameObject == null) this._textGameObject = new TextGameObject(_pos._x, _pos._y, new Color(50,50,50,255), this._d/3, "", false, FONT_JOSEFIN_BOLD);
+        this._textGameObject.changeTxt(newTxt);
     }
 
     /**
@@ -110,9 +110,9 @@ public class BoardTile extends GameObject{
 
         // Reset canvas after drawing
         g.restore();
-        if (_text != null) {
-            this._text.setCoordOrigin(_coordOrigin);
-            this._text.render(g);
+        if (_textGameObject != null) {
+            this._textGameObject.setCoordOrigin(_coordOrigin);
+            this._textGameObject.render(g);
         }
         if (_button != null) {
             this._button.setCoordOrigin(_coordOrigin);

@@ -7,11 +7,11 @@ public abstract class AbstractImage implements Image {
     /**
      * Attributes that control the location and size of the image
      */
-    protected int _sizeX = 0, _sizeY = 0;
+    protected int _sizeX = 0, _sizeY = 0; // in logic coordinates
     protected int _alpha = 100; // 0 (transparent) to 100 (opaque)
 
     /**
-     * Set size of the image.
+     * Set logical size of the image
      *
      * @param x (int) horizontal value
      * @param y (int) vertical value

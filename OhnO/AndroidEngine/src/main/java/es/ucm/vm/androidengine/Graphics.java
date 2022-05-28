@@ -123,14 +123,15 @@ public class Graphics extends AbstractGraphics {
 
     /**
      * Android implementation of the drawText method. It should be called only after setting up the font.
-     * It sets up a string of text and a position and renders the string
+     *
      * @param text (String) text we want to render
-     * @param x (int) Position for rendering
-     * @param y (int) Position for rendering
+     * @param x (int) x position in logic coordinates
+     * @param y (int) y position in logic coordinates
      */
     @Override
     public void drawText(String text, int x, int y) {
-        _cnv.drawText(text, x, y, _pnt);
+        _cnv.drawText(text, logicToScreenX(x) + getCanvas().getX(),
+                logicToScreenY(y) + getCanvas().getY(), _pnt);
     }
 
     /**
@@ -179,10 +180,10 @@ public class Graphics extends AbstractGraphics {
     @Override
     public void drawImage(int x, int y) {
         Rect r = new Rect();
-        r.top = y;
-        r.bottom = y + _image.getSizeY();
-        r.left = x;
-        r.right = x + _image.getSizeX();
+        r.top = logicToScreenY(y) - logicToScreenX(_image.getSizeY())/2 + getCanvas().getY();
+        r.bottom = logicToScreenY(y) + logicToScreenX(_image.getSizeY())/2 + getCanvas().getY();
+        r.left = logicToScreenX(x) - logicToScreenX(_image.getSizeX())/2 + getCanvas().getX();
+        r.right = logicToScreenX(x) + logicToScreenX(_image.getSizeX())/2 + getCanvas().getX();
 
         _cnv.drawBitmap(_image.getBitmap(), null, r, _pnt);
         _pnt.setAlpha(_image.getAlpha());
