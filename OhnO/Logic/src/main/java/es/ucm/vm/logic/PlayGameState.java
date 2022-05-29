@@ -277,8 +277,8 @@ public class PlayGameState implements GameState {
 
             tryAgain = true;
         }
-        System.out.println("tries: " + attempts + " of " + minEmptyTile*8);
-        System.out.println("empties: "  + emptyTiles + " from: " + minEmptyTile);
+        //System.out.println("tries: " + attempts + " of " + minEmptyTile*8);
+        //System.out.println("empties: "  + emptyTiles + " from: " + minEmptyTile);
 
         return emptyTiles >= minEmptyTile;
     } // tryPlacingGreys

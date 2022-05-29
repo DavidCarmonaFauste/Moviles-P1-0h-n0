@@ -307,7 +307,6 @@ public class Hints {
                     TileInfo info = t._tileInfo;
                     if(info.numberCount == 0) return false;
                     if(t._count < info.numberCount && t._count > 0) return false;
-                    System.out.println("X: "  + t._boardPos._x + " Y: " + t._boardPos._y + " count: " + info.numberTileCount);
                     if(info.numberTileCount == 0 && t._count == 0) return false;
                 }
             }
