@@ -21,7 +21,7 @@ public class BoardTile extends GameObject{
     private  Color _lastColor;
     private  Color _nextColor;
     private double _visibility = 0;
-    private  double _animationSpeed = 0.01;
+    private  double _animationSpeed = 0.25;
     //---------------------------------------------------------------
     //----------------------Public Attributes------------------------
     //---------------------------------------------------------------
@@ -74,8 +74,8 @@ public class BoardTile extends GameObject{
      */
     public int getSize(){return _d;}
 
-    /**
-     * Clone method for deep copy of the tile object
+    /**asd
+    * Clone method for deep copy of the tile object
      * @return (BoardTile) a new board tile with the values initialized to the same things
      * @throws CloneNotSupportedException
      */
@@ -108,7 +108,7 @@ public class BoardTile extends GameObject{
         o = new Rect((int)(_d * ((double)3/4)), 0, 0, (int)(_d * ((double)3/4)));
         n = g.scale(o, g.getCanvas());
         if(_animation){
-            _visibility += 0.25;
+            //_visibility += 0.25;
             _c = g.changeColor(_lastColor,_nextColor,_visibility);
             if(_visibility > 1){
                 _visibility = 0;

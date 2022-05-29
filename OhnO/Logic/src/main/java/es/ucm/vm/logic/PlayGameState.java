@@ -354,6 +354,15 @@ public class PlayGameState implements GameState {
      */
     @Override
     public void update(double t) {
+        int x = 0, y = 0;
+        for (BoardTile[] column : _board.getMap()) {
+            for (BoardTile tile : column) {
+                tile.update(t);
+                y++;
+            }
+            y = 0;
+            x++;
+        }
     }
 
     /**
