@@ -17,7 +17,11 @@ public class BoardTile extends GameObject{
     private float _distanceCenter; // Distance to the center point
     private TextGameObject _textGameObject = null;
     private Button _button = null;
-
+    private boolean _animation = false;
+    private  Color _lastColor;
+    private  Color _nextColor;
+    private double _visibility = 0;
+    private  double _animationSpeed = 0.01;
     //---------------------------------------------------------------
     //----------------------Public Attributes------------------------
     //---------------------------------------------------------------
@@ -39,6 +43,8 @@ public class BoardTile extends GameObject{
      */
     public BoardTile(double x, double y, int d, TileColor tileC, int count, BoardPosition bPos) {
         super(x, y);
+        this._lastColor = new Color();
+        this._nextColor = new Color();
         this._d = d;
         this._boardPos = new BoardPosition(bPos._x, bPos._y);
         updateTileColor(tileC);
@@ -83,6 +89,9 @@ public class BoardTile extends GameObject{
      */
     @Override
     public void update(double t) {
+        if(_animation) {
+            _visibility += _animationSpeed * t;
+        }
         super.update(t);
     }
 
@@ -98,6 +107,14 @@ public class BoardTile extends GameObject{
         Rect n;
         o = new Rect((int)(_d * ((double)3/4)), 0, 0, (int)(_d * ((double)3/4)));
         n = g.scale(o, g.getCanvas());
+        if(_animation){
+            _visibility += 0.25;
+            _c = g.changeColor(_lastColor,_nextColor,_visibility);
+            if(_visibility > 1){
+                _visibility = 0;
+                _animation = false;
+            }
+        }
         // Set the color to paint the coin/item
         g.setColor(_c);
         // Save the actual canvas transformation matrix
@@ -185,14 +202,21 @@ public class BoardTile extends GameObject{
      */
     public void cycleTileColor(){
         if (this._count == 0) {
+            _animation= true;
             switch (_tileColor) {
                 case GREY:
+                    _lastColor.setLightGrey();
+                    _nextColor.setBlue();
                     updateTileColor(TileColor.BLUE);
                     break;
                 case BLUE:
+                    _lastColor.setBlue();
+                    _nextColor.setRed();
                     updateTileColor(TileColor.RED);
                     break;
                 case RED:
+                    _lastColor.setRed();
+                    _nextColor.setLightGrey();
                     updateTileColor(TileColor.GREY);
                     break;
             }

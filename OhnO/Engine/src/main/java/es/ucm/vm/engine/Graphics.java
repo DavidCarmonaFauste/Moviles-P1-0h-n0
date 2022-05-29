@@ -152,5 +152,16 @@ public interface Graphics {
      */
     int screenToLogicY(int y);
 
-    //------------------------------------------------------------------------
+    /**
+     * Receives two colors and the visibility of the second color, and interpolate them.
+     *
+     * @param firstColor Original color
+     * @param secondColor Final color
+     * @param visibility Visibility of the second color
+     * @return The mix of the colors
+     */
+    Color changeColor(Color firstColor, Color secondColor, double visibility);
+
+
+        //------------------------------------------------------------------------
 }

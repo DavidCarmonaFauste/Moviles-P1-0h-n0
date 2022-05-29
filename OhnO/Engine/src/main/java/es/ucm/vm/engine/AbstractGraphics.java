@@ -149,6 +149,23 @@ public abstract class AbstractGraphics implements Graphics {
     } // reverseRepositionY
 
     /**
+     * Receives two colors and the visibility of the second color, and interpolate them.
+     *
+     * @param firstColor Original color
+     * @param secondColor Final color
+     * @param visibility Visibility of the second color
+     * @return The mix of the colors
+     */
+    public Color changeColor(Color firstColor, Color secondColor, double visibility) {
+        if(visibility > 1) visibility = 1;
+        Color result = new Color();
+        result._r = (int)(firstColor._r * (1-visibility)+ secondColor._r * visibility);
+        result._g = (int)(firstColor._g * (1-visibility)+ secondColor._g * visibility);
+        result._b = (int)(firstColor._b * (1-visibility)+ secondColor._b * visibility);
+        result._a = 255;
+        return  result;
+    }
+    /**
      * Return the physic canvas stored here in this object.
      *
      * @return _can
