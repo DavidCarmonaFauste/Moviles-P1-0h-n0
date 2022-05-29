@@ -33,6 +33,8 @@ public class PlayGameState implements GameState {
     int _coordOrX; // Coord origin X value
     int _coordOrY; // Coord origin Y value
 
+    double _cooldown = 0.6;
+
     //---------------------------------------------------------------
     //--------------------------Constants----------------------------
     //---------------------------------------------------------------
@@ -363,6 +365,7 @@ public class PlayGameState implements GameState {
             y = 0;
             x++;
         }
+        if (_cooldown >= 0) _cooldown -= t;
     }
 
     /**
@@ -391,6 +394,8 @@ public class PlayGameState implements GameState {
      */
     @Override
     public void processInput(List<Input.TouchEvent> e) {
+        if (_cooldown >= 0) return;
+
         // int ptr = e.size() - 1; // Pointer to roam the list
         int ptr = 0;
 
