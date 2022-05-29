@@ -29,6 +29,8 @@ public interface Graphics {
      */
     void setColor(Color color);
 
+    Color changeColor(Color firstColor, Color secondColor, double visibility);
+
     /**
      * Draws a line between to points specified with some color provided.
      *

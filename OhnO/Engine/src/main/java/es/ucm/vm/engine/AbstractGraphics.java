@@ -154,6 +154,7 @@ public abstract class AbstractGraphics implements Graphics {
      * @param visibility Visibility of the second color
      * @return The mix of the colors
      */
+    @Override
     public Color changeColor(Color firstColor, Color secondColor, double visibility) {
         if(visibility > 1) visibility = 1;
         Color result = new Color();
