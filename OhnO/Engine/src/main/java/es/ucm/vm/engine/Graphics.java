@@ -5,47 +5,12 @@ package es.ucm.vm.engine;
  */
 public interface Graphics {
     //-----------------------------Canvas-------------------------------------
-
-    /**
-     * Sets size and dimensions of the canvas.
-     *
-     * @param c (Rect) Size of canvas
-     * @param dim (Rect) Dimensions to scale it
-     */
-    void setCanvasSize(Rect c, Rect dim);
-
     /**
      * Gets reference to the canvas.
      *
      * @return (Rect) Canvas of the game
      */
     Rect getCanvas();
-
-    /**
-     * Sets a canvas to use as reference for scaling graphics and images.
-     *
-     * @param c (Rect) Size of the canvas to be used as reference.
-     */
-    void setReferenceCanvas(Rect c);
-
-    /**
-     * Set canvas position in screen.
-     *
-     * @param x (int) X position
-     * @param y (int) Y position
-     */
-    void setCanvasPos(int x, int y);
-
-    /**
-     * Check if some position is inside of canvas.
-     *
-     * @param x (int) X coordinate
-     * @param y (int) Y coordinate
-     * @return (boolean) Is in canvas
-     */
-    boolean isInCanvas(int x, int y);
-
-    //------------------------------------------------------------------------
 
 
     //---------------------------Drawing-------------------------------------
@@ -86,25 +51,6 @@ public interface Graphics {
 
     void drawImage(int x, int y);
 
-    //------------------------------------------------------------------------
-
-    //-----------------------------Getters------------------------------------
-
-    /**
-     * Get window Width
-     *
-     * @return (int) Window width
-     */
-    int getWidth();
-
-    /**
-     * Get window Height
-     *
-     * @return (int) Window height
-     */
-    int getHeight();
-
-    //------------------------------------------------------------------------
 
     //-----------------------------Scaling------------------------------------
 
@@ -135,22 +81,6 @@ public interface Graphics {
      * @param y (int) Y position to set as origin
      */
     void translate(int x, int y);
-
-    /**
-     * Receives a X coordinate in screen axis system an converts it to logic canvas coordinates.
-     *
-     * @param x X coordinate in physical reference
-     * @return X coordinate in logic reference.
-     */
-    int screenToLogicX(int x);
-
-    /**
-     * Receives a Y coordinate in screen axis system an converts it to logic canvas coordinates.
-     *
-     * @param y Y coordinate in physical reference.
-     * @return Y coordinate in logic reference
-     */
-    int screenToLogicY(int y);
 
     //------------------------------------------------------------------------
 }

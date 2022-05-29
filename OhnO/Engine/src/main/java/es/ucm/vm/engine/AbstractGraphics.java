@@ -5,8 +5,8 @@ package es.ucm.vm.engine;
  */
 public abstract class AbstractGraphics implements Graphics {
     // Canvas
-    public Rect _can;
-    public Rect _refCan;
+    public Rect _canvas;
+    public Rect _refCanvas;
 
     /**
      * Set the logic canvas for reference to scale every image that wil be drawn.
@@ -14,7 +14,7 @@ public abstract class AbstractGraphics implements Graphics {
      * @param c Logic canvas
      */
     public void setReferenceCanvas(Rect c) {
-        _refCan = c;
+        _refCanvas = c;
     } // setReferenceCanvas
 
     /**
@@ -23,7 +23,6 @@ public abstract class AbstractGraphics implements Graphics {
      * @param c Size of canvas
      * @param dim Reference rectangle to resize canvas
      */
-    @Override
     public void setCanvasSize(Rect c, Rect dim) {
         Rect temp; // Temporal rectangle for calculations
 
@@ -42,7 +41,7 @@ public abstract class AbstractGraphics implements Graphics {
 
         temp = new Rect (width, 0, 0, height);
 
-        _can = temp;
+        _canvas = temp;
     } // setCanvasSize
 
     /**
@@ -52,9 +51,8 @@ public abstract class AbstractGraphics implements Graphics {
      * @param x X coordinate
      * @param y Y coordinate
      */
-    @Override
     public void setCanvasPos(int x, int y) {
-        _can.setPosition(x, y);
+        _canvas.setPosition(x, y);
     } // setCanvasPos
 
 
@@ -73,14 +71,14 @@ public abstract class AbstractGraphics implements Graphics {
         int height = src.getHeight(); // Save the src height
 
         // Set the new width but resized proportionally
-        width = (width * _can.getWidth()) / _refCan.getWidth();
+        width = (width * _canvas.getWidth()) / _refCanvas.getWidth();
         // Change height keeping proportions
         height = (width * src.getHeight()) / src.getWidth();
 
         // If the src height (or the changed height) is bigger than the reference one
         if(height > dim.getHeight()){
             // Set the new height but resized proportionally
-            height = (height * _can.getHeight()) / _refCan.getHeight();
+            height = (height * _canvas.getHeight()) / _refCanvas.getHeight();
             // Change width proportionally
             width = (height * src.getWidth()) / src.getHeight();
         } // if
@@ -104,8 +102,8 @@ public abstract class AbstractGraphics implements Graphics {
      */
     public boolean isInCanvas(int x, int y) {
         // Checking if coordinates are inside the canvas Rectangle.
-        return ((x >= _can.getX()) && (x < (_can.getX() + _can.getWidth())))
-                && ((y >= _can.getY()) && (y < (_can.getY() + _can.getHeight())));
+        return ((x >= _canvas.getX()) && (x < (_canvas.getX() + _canvas.getWidth())))
+                && ((y >= _canvas.getY()) && (y < (_canvas.getY() + _canvas.getHeight())));
     } // isInCanvas
 
     /**
@@ -115,7 +113,7 @@ public abstract class AbstractGraphics implements Graphics {
      * @return X coordinate in physical reference.
      */
     public int logicToScreenX(int x) {
-        return (x * _can.getWidth()) / _refCan.getWidth();
+        return (x * _canvas.getWidth()) / _refCanvas.getWidth();
     } // repositionX
 
     /**
@@ -125,7 +123,7 @@ public abstract class AbstractGraphics implements Graphics {
      * @return Y coordinate in physical reference.
      */
     public int logicToScreenY(int y) {
-        return (y * _can.getHeight()) / _refCan.getHeight();
+        return (y * _canvas.getHeight()) / _refCanvas.getHeight();
     } // repositionY
 
     /**
@@ -135,7 +133,7 @@ public abstract class AbstractGraphics implements Graphics {
      * @return X coordinate in logic reference.
      */
     public int screenToLogicX(int x) {
-        return (x * _refCan.getWidth()) / _can.getWidth();
+        return (x * _refCanvas.getWidth()) / _canvas.getWidth();
     } // reverseRepositionX
 
     /**
@@ -145,7 +143,7 @@ public abstract class AbstractGraphics implements Graphics {
      * @return Y coordinate in logic reference
      */
     public int screenToLogicY(int y) {
-        return (y * _refCan.getHeight()) / _can.getHeight();
+        return (y * _refCanvas.getHeight()) / _canvas.getHeight();
     } // reverseRepositionY
 
     /**
@@ -154,7 +152,7 @@ public abstract class AbstractGraphics implements Graphics {
      * @return _can
      */
     public Rect getCanvas() {
-        return _can;
+        return _canvas;
     } // getCanvas
 
 }

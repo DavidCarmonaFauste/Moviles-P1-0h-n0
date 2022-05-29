@@ -5,7 +5,7 @@ package es.ucm.vm.engine;
  */
 public abstract class AbstractEngine implements Engine {
     // ENGINE VARS
-    protected Graphics _g;
+    protected AbstractGraphics _g;
     protected Input _ip;
     protected GameState _gs;
     protected GameState _tempGS;

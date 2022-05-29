@@ -25,8 +25,8 @@ public class Graphics extends AbstractGraphics {
      */
     public Graphics(Window w) {
         _win = w;
-        _can = new Rect(0, 0, 0, 0);
-        _refCan = new Rect(0, 0, 0, 0);
+        _canvas = new Rect(0, 0, 0, 0);
+        _refCanvas = new Rect(0, 0, 0, 0);
         _saveStack = new Stack<AffineTransform>();
     } // Graphics
 
@@ -38,7 +38,7 @@ public class Graphics extends AbstractGraphics {
      */
     @Override
     public void setCanvasPos(int x, int y) {
-        _can.setPosition(x, y);
+        _canvas.setPosition(x, y);
         (_win.getJGraphics()).translate(x, y);
     } // setCanvasPos
 
@@ -124,8 +124,8 @@ public class Graphics extends AbstractGraphics {
     @Override
     public void drawText(String text, int x, int y) {
         _win.getJGraphics().setFont(_font.getFont());
-        _win.getJGraphics().drawString(text, logicToScreenX(x) + _can.getX(),
-                logicToScreenY(y) + _can.getY());
+        _win.getJGraphics().drawString(text, logicToScreenX(x) + _canvas.getX(),
+                logicToScreenY(y) + _canvas.getY());
     }
 
     @Override
@@ -166,26 +166,6 @@ public class Graphics extends AbstractGraphics {
     }
 
     /**
-     * Return width of the window.
-     *
-     * @return (int) Window Width
-     */
-    @Override
-    public int getWidth() {
-        return _win.getWidth();
-    } // getWidth
-
-    /**
-     * Return height of the window.
-     *
-     * @return (int) Window height
-     */
-    @Override
-    public int getHeight() {
-        return _win.getHeight();
-    } // getHeight
-
-    /**
      * Saves actual transformation matrix's state for restoring it later.
      */
     @Override
@@ -222,8 +202,8 @@ public class Graphics extends AbstractGraphics {
     @Override
     public void translate(int x, int y) {
         try {
-            x = _can.getX() + logicToScreenX(x);
-            y = _can.getY() + logicToScreenY(y);
+            x = _canvas.getX() + logicToScreenX(x);
+            y = _canvas.getY() + logicToScreenY(y);
 
             (_win.getJGraphics()).translate(x, y);
         } // try

@@ -191,26 +191,6 @@ public class Graphics extends AbstractGraphics {
     }
 
     /**
-     * Return width of the SurfaceView for calculations.
-     *
-     * @return (int) Width of the surface view.
-     */
-    @Override
-    public int getWidth() {
-        return _sView.getWidth();
-    } // getWidth
-
-    /**
-     * Return width of the SurfaceView for calculations.
-     *
-     * @return (int) Height of the surface view.
-     */
-    @Override
-    public int getHeight() {
-        return _sView.getHeight();
-    } // getHeight
-
-    /**
      * Saves actual canvas state for restoring it later.
      */
     @Override
@@ -239,8 +219,8 @@ public class Graphics extends AbstractGraphics {
      */
     @Override
     public void translate(int x, int y) {
-        x = _can.getX() + logicToScreenX(x);
-        y = _can.getY() + logicToScreenY(y);
+        x = _canvas.getX() + logicToScreenX(x);
+        y = _canvas.getY() + logicToScreenY(y);
 
         _cnv.translate(x, y);
     } // translate

@@ -6,10 +6,8 @@ import java.util.Random;
 import java.util.Stack;
 
 import es.ucm.vm.engine.Color;
-//import es.ucm.vm.engine.Font;
 import es.ucm.vm.engine.GameState;
 import es.ucm.vm.engine.Graphics;
-//import es.ucm.vm.engine.Image;
 import es.ucm.vm.engine.Input;
 import es.ucm.vm.engine.Rect;
 
