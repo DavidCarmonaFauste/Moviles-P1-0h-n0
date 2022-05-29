@@ -12,7 +12,6 @@ import static es.ucm.vm.logic.BoardPosition.DIRECTIONS;
  * Class that contains all the hint methods that, applied to a board, allow us to solve it.
  */
 public class Hints {
-    public Watcher _watcher;
     Board _board;
     BoardPosition _auxPos;
     public boolean _sameMap = false;
@@ -25,7 +24,6 @@ public class Hints {
     {
             _board = new Board(b.getMapSize());
             updateMap(b);
-            _watcher = new Watcher(_board);
             _auxPos = new BoardPosition(0, 0);
     }
 
@@ -338,7 +336,7 @@ public class Hints {
             int blueCount;
             for (BoardPosition dir: DIRECTIONS)
             {
-                blueCount = _watcher.tilesInfFrontOf(t._boardPos, dir, TileColor.BLUE);
+                blueCount = bluesInfFrontOf(t._boardPos, dir);
                 _auxPos._x = (dir._x * blueCount) + dir._x + t._boardPos._x;
                 _auxPos._y = (dir._y * blueCount) + dir._y + t._boardPos._y;
                 if(!map.offLimits(_auxPos) && map.getMap()[_auxPos._x][_auxPos._y]._tileColor == TileColor.GREY)
@@ -350,5 +348,16 @@ public class Hints {
         }
     }
 
+    private int bluesInfFrontOf(BoardPosition pos, BoardPosition dir)
+    {
+        int counted = 0;
+        BoardPosition _newPos = BoardPosition.add(pos, dir);
 
+        while(!_board.offLimits(_newPos) && _board.getMap()[_newPos._x][_newPos._y]._tileColor == TileColor.BLUE)
+        {
+            counted++;
+            _newPos = BoardPosition.add(_newPos, dir);
+        }
+        return counted;
+    }
 }

@@ -21,7 +21,7 @@ public class BoardTile extends GameObject{
     private  Color _lastColor;
     private  Color _nextColor;
     private double _visibility = 0;
-    private  double _animationSpeed = 0.25;
+    private  double _animationSpeed = 4;
     //---------------------------------------------------------------
     //----------------------Public Attributes------------------------
     //---------------------------------------------------------------
