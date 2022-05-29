@@ -230,7 +230,7 @@ public class Hints {
      * Uses the hint methods to display a string with a hint depending on what can be done
      * @return (String) string with the helper hint
      */
-    public String helpUser(){
+    public String helpUser(BoardTile hintTile){
         Stack<BoardTile> pool = new Stack<BoardTile>();
         //we fill the pool
         for(BoardTile[] column : _board.getMap())
@@ -244,7 +244,7 @@ public class Hints {
             BoardTile tile = pool.pop();
             setTileInfo(tile, _board);
             TileInfo info = tile._tileInfo;
-
+            hintTile = tile;
             if (tile._tileColor == TileColor.BLUE && (info.numberCount + info.unknownsAround) == 0) {
                 return tile._boardPos._x + "x" + tile._boardPos._y + " cannot be blue";
             }

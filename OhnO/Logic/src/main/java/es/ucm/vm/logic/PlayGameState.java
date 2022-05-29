@@ -412,7 +412,7 @@ public class PlayGameState implements GameState {
                     if (_closeButton.isPressed(x, y)) {
                         _l.setGameState(Logic.GameStates.MENU);
                     } else if (_hintsButton.isPressed(x, y)) {
-                        _hintsTxt.changeTxt(_hints.helpUser());
+                        _hintsTxt.changeTxt(_hints.helpUser(null));
                     } else if (_undoButton.isPressed(x, y)) {
                         _board.removeLastMove();
                     }
