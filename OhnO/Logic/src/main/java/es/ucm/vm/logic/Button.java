@@ -135,34 +135,37 @@ public class Button extends GameObject{
      * @return Returns true if button is pressed, false if not
      */
     public boolean isPressed(int x, int y){
-        // If the cursor is inside the rectangle of the sprite.
-        double leftX, leftY;
-        double rightX, rightY;
+        if(_coordOrigin == null){
+            return false;
+        }
 
-        leftX = _pos._x - ((double)_w / 2);
-        leftY = _pos._y - ((double)_h / 2);
-        rightX = _pos._x + ((double)_w / 2);
-        rightY = _pos._y + ((double)_h / 2);
+            // If the cursor is inside the rectangle of the sprite.
+            double leftX, leftY;
+            double rightX, rightY;
+            leftX = _pos._x - ((double)_w / 2);
+            leftY = _pos._y - ((double)_h / 2);
+            rightX = _pos._x + ((double)_w / 2);
+            rightY = _pos._y + ((double)_h / 2);
 
-        // Translate to coordOriginPos
-        // x
-        if(x < _coordOrigin._x) {
-            x = -((int)_coordOrigin._x - x);
-        } // if
-        else {
-            x = (((int)_coordOrigin._x -((2 * (int)_coordOrigin._x) - x)));
-        } // else
+            // Translate to coordOriginPos
+            // x
+            if(x < _coordOrigin._x) {
+                x = -((int)_coordOrigin._x - x);
+            } // if
+            else {
+                x = (((int)_coordOrigin._x -((2 * (int)_coordOrigin._x) - x)));
+            } // else
 
-        // y
-        if(y < _coordOrigin._y) {
-            y = (((int)_coordOrigin._y - y));
-        } // if
-        else {
-            y = (((int)_coordOrigin._y -((2 * (int)_coordOrigin._y) - y)) * -1);
-        } // else
+            // y
+            if(y < _coordOrigin._y) {
+                y = (((int)_coordOrigin._y - y));
+            } // if
+            else {
+                y = (((int)_coordOrigin._y -((2 * (int)_coordOrigin._y) - y)) * -1);
+            } // else
 
-        return ((x >= leftX) && (x < rightX))
-                && ((y >= leftY) && (y < rightY));
+            return ((x >= leftX) && (x < rightX))
+                    && ((y >= leftY) && (y < rightY));
     } // isPressed
 } // Button
 
