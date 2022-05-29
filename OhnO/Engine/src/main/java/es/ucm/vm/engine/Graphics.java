@@ -81,6 +81,4 @@ public interface Graphics {
      * @param y (int) Y position to set as origin
      */
     void translate(int x, int y);
-
-    //------------------------------------------------------------------------
 }
