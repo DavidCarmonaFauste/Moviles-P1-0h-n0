@@ -99,6 +99,9 @@ public class Hints {
                             if (infoDir.unknownCount == 0) {
                                 info.numberCount++;
                                 infoDir.numberWhenDottingFirstUnknown++;
+                                if(nextTile._count > 0) {
+                                    info.numberTileCount++;
+                                }
                             }
                             // else if we were looking FROM a number, and we found a number with only 1 unknown in between...
                             else if ((t._tileColor == TileColor.BLUE && t._count > 0) && infoDir.unknownCount == 1) {
@@ -142,7 +145,7 @@ public class Hints {
             tryAgain = false;
 
             if(trySolve) {
-                if (newIsValid(mapToSolve)) return true;
+                if (isValid(mapToSolve)) return true;
             }
             //we fill the pool
             int z = 0;
@@ -219,16 +222,6 @@ public class Hints {
                     if (tryAgain)
                         break;
                 }
-                // if a number has its required value around, but still an empty tile somewhere, close it
-                // (this core regards that situation FROM the empty unknown tile, not from the number itself)
-                // (but only if there are no tiles around that have a number and already reached it)
-                if ((tile._tileColor == TileColor.GREY) && info.unknownsAround == 0 && !info.completedNumbersAround) {
-                    if (info.numberCount == 0) {
-                        tile.updateTileColor(TileColor.RED);
-                        tryAgain = true;//HintType.MustBeWall;
-                        break;
-                    }
-                }
             }
         }
         return false;
@@ -292,14 +285,6 @@ public class Hints {
                     temporal++;
                 }
             }
-            // if a number has its required value around, but still an empty tile somewhere, close it
-            // (this core regards that situation FROM the empty unknown tile, not from the number itself)
-            // (but only if there are no tiles around that have a number and already reached it)
-            if ((tile._tileColor == TileColor.GREY) && info.unknownsAround == 0 && !info.completedNumbersAround) {
-                if (info.numberCount == 0) {
-                    return tile._boardPos._x + "x" + tile._boardPos._y + " needs to be red";
-                }
-            }
         }
 
         return "Think more about the board";
@@ -311,19 +296,26 @@ public class Hints {
      */
     public boolean isSolved()
     {
+        Stack<BoardTile> pool = new Stack<BoardTile>();
+        //we fill the pool
         for(BoardTile[] column : _board.getMap())
         {
             for(BoardTile t : column) {
                 if(t._tileColor == TileColor.GREY) return false;
-                if(t._tileColor == TileColor.BLUE)
-                    if(t._count > 0) { if(checkTooMuchBlue(t)) return false; }
-                    else if(checkIfRed(t)) return false;
+                if(t._tileColor == TileColor.BLUE){
+                    setTileInfo(t, _board);
+                    TileInfo info = t._tileInfo;
+                    if(info.numberCount == 0) return false;
+                    if(t._count < info.numberCount && t._count > 0) return false;
+                    System.out.println("X: "  + t._boardPos._x + " Y: " + t._boardPos._y + " count: " + info.numberTileCount);
+                    if(info.numberTileCount == 0 && t._count == 0) return false;
+                }
             }
         }
         return true;
     }
 
-    public boolean newIsValid(Board map){
+    public boolean isValid(Board map){
         for(BoardTile[] column : map.getMap())
         {
             for(BoardTile t : column) {
@@ -359,55 +351,5 @@ public class Hints {
         }
     }
 
-    /**
-     * Counts all visible blue tiles surrounding the given tile
-     * @param t (CounterTile) blue tile we want to count for
-     * @return (int) number of visible blue tiles
-     */
-    int countVisibleBlue(BoardTile t)
-    {
-        int counted = 0;
-        for (BoardPosition dir: DIRECTIONS)
-        {
-            counted += _watcher.tilesInfFrontOf(t._boardPos, dir, TileColor.BLUE);
-        }
-
-        return counted;
-    }
-
-    // ---------------------------------------------------------------------------------------------
-    //                                H I N T    M E T H O D S
-    // ---------------------------------------------------------------------------------------------
-
-    /**
-     * Checks if a tile has too much blue surrounding it
-     * @param c (BoardTile) tile we want to check
-     * @return (boolean) true if there is too much blue
-     */
-    public boolean checkTooMuchBlue(BoardTile c) {
-        int counted = countVisibleBlue(c);
-
-        return c._count < counted;
-    }
-
-    /**
-     * Checks if a tile should be red (if a tile doesn't see any blue tiles, it has to be red)
-     * @param c (BoardTile) tile we want to check
-     * @return (boolean) true if the tile has to be red
-     */
-    public boolean checkIfRed(BoardTile c) {
-        int free = 0, lego;
-
-        lego = _watcher.closerTile(c._boardPos, new BoardPosition(0, 1), TileColor.RED);
-        free += (lego == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(0, 1))._y : lego;
-        lego = _watcher.closerTile(c._boardPos, new BoardPosition(1, 0), TileColor.RED);
-        free += (lego == -1) ? _board.getMapSize() - BoardPosition.add(c._boardPos, new BoardPosition(1, 0))._x : lego;
-        lego = _watcher.closerTile(c._boardPos, new BoardPosition(0, -1), TileColor.RED);
-        free += (lego == -1) ? c._boardPos._y : lego;
-        lego = _watcher.closerTile(c._boardPos, new BoardPosition(-1, 0), TileColor.RED);
-        free += (lego == -1) ? c._boardPos._x : lego;
-
-        return free <= 0;
-    }
 
 }

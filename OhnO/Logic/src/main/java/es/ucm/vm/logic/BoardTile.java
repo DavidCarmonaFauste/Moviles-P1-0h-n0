@@ -270,9 +270,9 @@ class TileInfo{
     }
     public int unknownsAround; // are there still any unknowns around
     public int numberCount; // how many numbers/dots are seen in all directions
+    public int numberTileCount; //how many numbers are seen in all directions
     public boolean numberReached; // if the current tile is a number and it has that many numbers/dots around
     public  boolean canBeCompletedWithUnknowns; // if the number can be reached by exactly its amount of unknowns
-    public  boolean completedNumbersAround; // if the current tile has one or more numberReached tiles around (second pass only)
     public  BoardPosition singlePossibleDirection; // if there's only one way to expand, set this to that direction
 
     public TileInfoInDir[] directionInfo;
@@ -283,9 +283,9 @@ class TileInfo{
         haveInfo = true;
         unknownsAround = 0;
         numberCount = 0;
+        numberTileCount = 0;
         numberReached = false;
         canBeCompletedWithUnknowns = false;
-        completedNumbersAround = false;
         singlePossibleDirection = null;
         directionInfo = new TileInfoInDir[4];
         for(int i = 0; i < 4; i++){
