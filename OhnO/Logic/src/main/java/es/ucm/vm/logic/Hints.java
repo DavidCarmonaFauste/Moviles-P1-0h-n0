@@ -66,7 +66,7 @@ public class Hints {
 
 
     private void setTileInfo(BoardTile t, Board mapToSolve){
-        TileInfo info = t._tileInfo;
+        TileInfo info;
         int possibleDirCount = 0;
         BoardPosition lastPossibleDirection = null;
             t._tileInfo = new TileInfo();
@@ -131,12 +131,11 @@ public class Hints {
     }
 
     public boolean newSolveMap(Board map, boolean trySolve){
-        Board mapToSolve = new Board(0);
+        Board mapToSolve;
         //if they don't give us a map, we can use hint's map
         mapToSolve = (map == null) ? _board : map;
         boolean tryAgain = true;
         int attempts = 0;
-        BoardTile hintTile = null;
         BoardTile[] pool = new BoardTile[mapToSolve.getMapSize()*mapToSolve.getMapSize()];
 
         while (tryAgain && attempts++ < 99) {
@@ -156,22 +155,21 @@ public class Hints {
                 }
             }
             //next pass collection, now we have full info
-            for (int i = 0; i < pool.length; i++) {
-                BoardTile tile = pool[i];
+            for (BoardTile tile : pool) {
                 setTileInfo(tile, mapToSolve);
                 TileInfo info = tile._tileInfo;
                 // dots with no empty tiles in its paths can be fixed
-                if ((tile._tileColor == TileColor.BLUE && tile._count == 0) && info.unknownsAround == 0 &&  info.numberCount > 0) {
+                if ((tile._tileColor == TileColor.BLUE && tile._count == 0) && info.unknownsAround == 0 && info.numberCount > 0) {
                     tile.updateCount(info.numberCount);
                     tryAgain = true;//HintType.NumberCanBeEntered;
                     break;
                 }
                 //if a blue tile doesnt see any other blue or gray, this tile is red
                 if (tile._tileColor == TileColor.BLUE && tile._count == 0) {
-                        tile.updateTileColor(TileColor.RED);
-                        tile.updateCount(-1);
-                        tryAgain = true;
-                        break;
+                    tile.updateTileColor(TileColor.RED);
+                    tile.updateCount(-1);
+                    tryAgain = true;
+                    break;
                 }
                 // if a number has unknowns around, perhaps we can fill those unknowns
                 if ((tile._tileColor == TileColor.BLUE && tile._count >= 0) && info.unknownsAround > 0) {
@@ -186,7 +184,7 @@ public class Hints {
                     // if a tile has only one direction to go, fill the first unknown there with a dot and retry
                     if (info.singlePossibleDirection != null) {
                         BoardTile nextTile = mapToSolve.getTileInDir(tile, info.singlePossibleDirection);
-                        if(nextTile._tileColor == TileColor.GREY){
+                        if (nextTile._tileColor == TileColor.GREY) {
                             nextTile.updateTileColor(TileColor.BLUE);
                         }
                         //tile.closeDirection(info.singlePossibleDirection, true, 1);
@@ -200,7 +198,7 @@ public class Hints {
                         TileInfo.TileInfoInDir curDir = info.directionInfo[temporal];
                         if (curDir.wouldBeTooMuch) {
                             BoardTile nextTile = mapToSolve.getTileInDir(tile, dir);
-                            if(nextTile._tileColor == TileColor.GREY){
+                            if (nextTile._tileColor == TileColor.GREY) {
                                 nextTile.updateTileColor(TileColor.RED);
                             }
                             tryAgain = true; //HintType.WouldExceed;
@@ -209,7 +207,7 @@ public class Hints {
                         // if dotting one unknown tile in this direction is at least required no matter what
                         else if (curDir.unknownCount > 0 && curDir.numberWhenDottingFirstUnknown + curDir.maxPossibleCountInOtherDirections <= tile._count) {
                             BoardTile nextTile = mapToSolve.getTileInDir(tile, dir);
-                            if(nextTile._tileColor == TileColor.GREY) {
+                            if (nextTile._tileColor == TileColor.GREY) {
                                 nextTile.updateTileColor(TileColor.BLUE);
                             }
                             tryAgain = true;//HintType.OneDirectionRequired;
@@ -232,7 +230,7 @@ public class Hints {
      * @return (String) string with the helper hint
      */
     public String helpUser(){
-        Stack<BoardTile> pool = new Stack<BoardTile>();
+        Stack<BoardTile> pool = new Stack<>();
         //we fill the pool
         for(BoardTile[] column : _board.getMap())
         {
@@ -298,8 +296,6 @@ public class Hints {
      */
     public boolean isSolved()
     {
-        Stack<BoardTile> pool = new Stack<BoardTile>();
-        //we fill the pool
         for(BoardTile[] column : _board.getMap())
         {
             for(BoardTile t : column) {

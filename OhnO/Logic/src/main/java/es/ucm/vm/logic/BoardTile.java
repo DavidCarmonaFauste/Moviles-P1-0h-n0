@@ -17,9 +17,6 @@ public class BoardTile extends GameObject{
     //---------------------------------------------------------------
     //---------------------Private Attributes------------------------
     //---------------------------------------------------------------
-    private double _cD; // Current diameter
-    private boolean _taken; // Flag to control if the player has taken this item
-    private float _distanceCenter; // Distance to the center point
     private TextGameObject _textGameObject = null;
     private Button _button = null;
     private boolean _animation = false;
@@ -204,9 +201,7 @@ public class BoardTile extends GameObject{
     public void activateButton(){
         this._button = new Button(_pos._x, _pos._y, _d, _d, new Color(0,0,0,100), 20, null, null);
     }
-    public void deactivateButton(){
-        this._button = null;
-    }
+
     /**
      * Updates the count value depending on the value of the tile color. Intended for use only on
      * constructors
@@ -366,8 +361,5 @@ class TileInfo{
             directionInfo[i].maxPossibleCountInOtherDirections = 0;
             directionInfo[i].numberWhenDottingFirstUnknown = 0;
         }
-      }
-      public void catchInfo(){
-
       }
 }

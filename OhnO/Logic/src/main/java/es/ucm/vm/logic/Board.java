@@ -67,26 +67,7 @@ public class Board {
     {
         _map  = map;
     }
-    /**
-     * Performs a deep copy of the board to update the internal _board
-     * @param b (Board) new board we want to copy
-     */
-    public void updateMap(Board b)
-    {
-        try {
-            int x = 0, y = 0;
-            for (BoardTile[] column : b.getMap()) {
-                for (BoardTile t : column) {
-                    getMap()[x][y] = (BoardTile) t.clone();
-                    y++;
-                }
-                y = 0;
-                x++;
-            }
-        } catch (Exception e){
-            // todo handle exception
-        }
-    }
+
     /**
      * Getter for the whole tile matrix
      * @return (BoardTile[][]) _map

@@ -8,9 +8,9 @@ import es.ucm.vm.engine.Graphics;
  * different parameters.
  */
 public class TextGameObject extends GameObject {
-    private boolean _b; // if the text is bold or not
+    private final boolean _b; // if the text is bold or not
     private String _t; // text that will be displayed
-    private String _f; // path to the font file
+    private final String _f; // path to the font file
 
     int _thickness; // thickness of the text line
     Color _c; // color in which the text will be drawn

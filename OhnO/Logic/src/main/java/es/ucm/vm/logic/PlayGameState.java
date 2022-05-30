@@ -85,7 +85,7 @@ public class PlayGameState implements GameState {
     private void generateLevel(int mapSize, double step) {
         BoardTile[][] generatedMap;
         System.out.println("Generating new level");
-        Stack<BoardTile> pool = new Stack<BoardTile>();
+        Stack<BoardTile> pool = new Stack<>();
         int walls = 0;
         do{
             // fill the map with all blues ----------------------------------------------
@@ -141,7 +141,7 @@ public class PlayGameState implements GameState {
 
         while (tryAgain && attempts++ < 99) {
             tryAgain = false;
-            Stack<BoardTile> maxTiles = new Stack<BoardTile>();
+            Stack<BoardTile> maxTiles = new Stack<>();
 
             for(BoardTile[] column : _board.getMap())
             {
@@ -157,8 +157,8 @@ public class PlayGameState implements GameState {
             for (int i = 0; i < maxTiles.size(); i++) {
                 tile = maxTiles.pop();
                 if (tile._count > maxAllowed) {
-                    int min = 1, max = maxAllowed;
-                    Stack<BoardTile> cuts = new Stack<BoardTile>();
+                    int min = 1;
+                    Stack<BoardTile> cuts = new Stack<>();
                     BoardTile cut = null, firstCut = null;
 
                     for (BoardPosition dir : BoardPosition.DIRECTIONS) {
@@ -166,7 +166,7 @@ public class PlayGameState implements GameState {
                         if(_board.getTileInDir(tile, dir) != null) {
                             for (BoardTile nextTile = _board.getTileInDir(tile, dir); nextTile._tileColor != TileColor.RED; nextTile = _board.getTileInDir(nextTile, dir)) {
                                 distance++;
-                                if (distance >= min && distance <= max)
+                                if (distance >= min && distance <= maxAllowed)
                                     cuts.push(tile);
                                 if (_board.getTileInDir(nextTile, dir) == null)
                                     break;
@@ -221,7 +221,7 @@ public class PlayGameState implements GameState {
     private boolean tryPlacingGreys(Stack<BoardTile> pool, int walls) {
         boolean tryAgain = true;
         int attempts = 0;
-        BoardTile tile = null;
+        BoardTile tile;
         int minWalls = 3, emptyTiles = 0, minEmptyTile = pool.size()/2;
 
         while (tryAgain  && attempts++ < (minEmptyTile*8)) {
@@ -323,7 +323,7 @@ public class PlayGameState implements GameState {
      */
     private void fillBoard(int mapSize) {
         // Calculate size, used for tile placement
-        double step, smallSide;
+        double step;
 
         // calculate diameter for tiles
         step = _l.getCanvasSize().width / (mapSize + 1.5);
@@ -364,14 +364,10 @@ public class PlayGameState implements GameState {
             }
         }
 
-        int x = 0, y = 0;
         for (BoardTile[] column : _board.getMap()) {
             for (BoardTile tile : column) {
                 tile.update(t);
-                y++;
             }
-            y = 0;
-            x++;
         }
 
     }
