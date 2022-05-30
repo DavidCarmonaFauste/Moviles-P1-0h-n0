@@ -19,7 +19,7 @@ public class PlayGameState implements GameState {
     final String IMAGE_EYE = "sprites/eye.png";
     final String IMAGE_HISTORY = "sprites/history.png";
     final String FONT_JOSEFIN_BOLD = "fonts/JosefinSans-Bold.ttf";
-
+    final double TIMER_MAX = 1.5;
     //---------------------------------------------------------------
     //----------------------Private Attributes-----------------------
     //---------------------------------------------------------------
@@ -28,7 +28,11 @@ public class PlayGameState implements GameState {
     Board _board;
     Hints _hints;
     Button _closeButton, _undoButton, _hintsButton;
+
     TextGameObject _hintsTxt;
+    BoardTile _hintedTile = null;
+    double _hintMarkTimer = 0;
+
     Vector2 _coordOr; // Coord origin
     int _coordOrX; // Coord origin X value
     int _coordOrY; // Coord origin Y value
@@ -91,6 +95,7 @@ public class PlayGameState implements GameState {
                     generatedMap[i][j] = new BoardTile(step * (i - ((double) (mapSize - 1) / 2)),
                             step * (j - ((double) (mapSize - 1) / 2)) * -1, (int) (step),
                             TileColor.BLUE, 0, new BoardPosition(i, j));
+                    generatedMap[i][j].setCoordOrigin(_coordOr);
                 }
             }
 
@@ -116,18 +121,7 @@ public class PlayGameState implements GameState {
             // try to place grey tiles ------------------------------------------------
         }while (!tryPlacingGreys(pool, walls));
 
-
-
-
-        //System.out.println("tries: " + attempts + " of " + minEmptyTile*8);
-        //System.out.println("empties: "  + emptyTiles);
-
         System.out.println("Finished generating level");
-        for (BoardTile[] row : generatedMap) {
-            for (BoardTile t : row) {
-                t.setCoordOrigin(_coordOr);
-            }
-        }
     }
 
     /**
@@ -192,12 +186,15 @@ public class PlayGameState implements GameState {
                         generatedMap[cut._boardPos._x][cut._boardPos._y] = new BoardTile(step * (cut._boardPos._x - ((double) (mapSize - 1) / 2)),
                                 step * (cut._boardPos._y - ((double) (mapSize - 1) / 2)) * -1, (int) (step),
                                 TileColor.RED, -1, new BoardPosition(cut._boardPos._x, cut._boardPos._y));
+                        generatedMap[cut._boardPos._x][cut._boardPos._y].setCoordOrigin(_coordOr);
+
                         for (int z = 0; z < mapSize; ++z) {
                             for (int j = 0; j < mapSize; ++j) {
                                 if(generatedMap[z][j]._tileColor != TileColor.RED) {
                                     generatedMap[z][j] = new BoardTile(step * (z - ((double) (mapSize - 1) / 2)),
                                             step * (j - ((double) (mapSize - 1) / 2)) * -1, (int) (step),
                                             TileColor.BLUE, 0, new BoardPosition(z, j));
+                                    generatedMap[z][j].setCoordOrigin(_coordOr);
                                 }
                             }
                         }
@@ -312,9 +309,9 @@ public class PlayGameState implements GameState {
                 boundingBoxColor, 10, null, hintImage);
         _hintsButton.setCoordOrigin(_coordOr);
 
-        _hintsTxt = new TextGameObject(step / 2 * (mapSize - 1) + (buttonY / 2), -buttonY,
-                new Color(50, 50, 50, 255), (int) (step) / 2,
-                (mapSize) + "x" + (mapSize), false, FONT_JOSEFIN_BOLD);
+        _hintsTxt = new TextGameObject(0, -buttonY, new Color(50, 50, 50, 255),
+                (int) (step) / 2, (mapSize) + "x" + (mapSize), false,
+                FONT_JOSEFIN_BOLD);
 
         _hintsTxt.setCoordOrigin(_coordOr);
     }
@@ -356,6 +353,17 @@ public class PlayGameState implements GameState {
      */
     @Override
     public void update(double t) {
+        // update timers
+        if (_cooldown >= 0) _cooldown -= t;
+        if (_hintedTile != null) {
+            if (_hintMarkTimer > 0)
+                _hintMarkTimer -= t;
+            else {
+                _hintedTile = null;
+                _hints._hintedTile = null;
+            }
+        }
+
         int x = 0, y = 0;
         for (BoardTile[] column : _board.getMap()) {
             for (BoardTile tile : column) {
@@ -365,7 +373,7 @@ public class PlayGameState implements GameState {
             y = 0;
             x++;
         }
-        if (_cooldown >= 0) _cooldown -= t;
+
     }
 
     /**
@@ -378,12 +386,17 @@ public class PlayGameState implements GameState {
     public void render(Graphics g) {
         g.clear(_clearColor);
 
+        _hintsTxt.render(g);
+
+        // render hint mark on the tile
+        if (_hintMarkTimer > 0) {
+            _hintedTile.renderHintCircle(g);
+        }
+
         _board.render(g);
         _closeButton.render(g);
         _undoButton.render(g);
         _hintsButton.render(g);
-
-        _hintsTxt.render(g);
     }
 
     /**
@@ -412,7 +425,9 @@ public class PlayGameState implements GameState {
                     if (_closeButton.isPressed(x, y)) {
                         _l.setGameState(Logic.GameStates.MENU);
                     } else if (_hintsButton.isPressed(x, y)) {
-                        _hintsTxt.changeTxt(_hints.helpUser(null));
+                        _hintsTxt.changeTxt(_hints.helpUser());
+                        _hintedTile = _hints._hintedTile;
+                        _hintMarkTimer = TIMER_MAX;
                     } else if (_undoButton.isPressed(x, y)) {
                         _board.removeLastMove();
                     }

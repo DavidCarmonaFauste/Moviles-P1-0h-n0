@@ -45,6 +45,8 @@ public interface Graphics {
 
     void fillCircle(int x, int y, int diameter);
 
+    void lineCircle(int x, int y, int diameter);
+
     Font setUpFont(String filename, int size, boolean isBold);
 
     void drawText(String text, int x, int y);

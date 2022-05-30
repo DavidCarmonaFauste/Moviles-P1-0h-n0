@@ -114,6 +114,12 @@ public class Graphics extends AbstractGraphics {
         (_win.getJGraphics()).fillOval(x, y, diameter, diameter);
     }
 
+    @Override
+    public void lineCircle(int x, int y, int diameter) {
+        ((Graphics2D)(_win.getJGraphics())).setStroke(new BasicStroke(10));
+        (_win.getJGraphics()).drawOval(x, y, diameter, diameter);
+    }
+
     /**
      * Used by the Text Game Object to render text in PC platforms
      *
@@ -123,6 +129,7 @@ public class Graphics extends AbstractGraphics {
      */
     @Override
     public void drawText(String text, int x, int y) {
+        ((Graphics2D)(_win.getJGraphics())).setStroke(new BasicStroke());
         _win.getJGraphics().setFont(_font.getFont());
         _win.getJGraphics().drawString(text, logicToScreenX(x) + _canvas.getX(),
                 logicToScreenY(y) + _canvas.getY());

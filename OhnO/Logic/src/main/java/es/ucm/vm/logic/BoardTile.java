@@ -9,9 +9,14 @@ import es.ucm.vm.engine.Rect;
  */
 public class BoardTile extends GameObject{
     //---------------------------------------------------------------
+    //--------------------------Constants----------------------------
+    //---------------------------------------------------------------
+    private static final String FONT_JOSEFIN_BOLD = "fonts/JosefinSans-Bold.ttf";
+    private static final Color BLACK_COLOR = new Color(0,0,0,255);
+
+    //---------------------------------------------------------------
     //---------------------Private Attributes------------------------
     //---------------------------------------------------------------
-    private final String FONT_JOSEFIN_BOLD = "fonts/JosefinSans-Bold.ttf";
     private double _cD; // Current diameter
     private boolean _taken; // Flag to control if the player has taken this item
     private float _distanceCenter; // Distance to the center point
@@ -22,6 +27,7 @@ public class BoardTile extends GameObject{
     private  Color _nextColor;
     private double _visibility = 0;
     private  double _animationSpeed = 4;
+
     //---------------------------------------------------------------
     //----------------------Public Attributes------------------------
     //---------------------------------------------------------------
@@ -80,7 +86,10 @@ public class BoardTile extends GameObject{
      * @throws CloneNotSupportedException
      */
     protected Object clone() throws CloneNotSupportedException {
-        return new BoardTile(this._pos._x, this._pos._y, this._d, this._tileColor, this._count, new BoardPosition(this._boardPos._x, this._boardPos._y));
+        BoardTile tile = new BoardTile(this._pos._x, this._pos._y, this._d, this._tileColor,
+                this._count, new BoardPosition(this._boardPos._x, this._boardPos._y));
+        tile.setCoordOrigin(_coordOrigin);
+        return tile;
     }
 
     /**
@@ -135,6 +144,26 @@ public class BoardTile extends GameObject{
             this._button.setCoordOrigin(_coordOrigin);
             _button.render(g);
         }
+    }
+
+    public void renderHintCircle(Graphics g) {
+        Rect o;
+        Rect n;
+        o = new Rect((int)(_d * ((double)3/4)), 0, 0, (int)(_d * ((double)3/4)));
+        n = g.scale(o, g.getCanvas());
+
+        // Set the color to paint the coin/item
+        g.setColor(BLACK_COLOR);
+        // Save the actual canvas transformation matrix
+        g.save();
+
+        g.translate((int) _coordOrigin._x + (int) _pos._x,
+                (int) _coordOrigin._y + ((int) _pos._y * (-1)));
+
+        g.lineCircle((int)n.getX() - n.getRight()/2, (int)n.getY() - n.getBottom()/2, (int)(n.getWidth()));
+
+        // Reset canvas after drawing
+        g.restore();
     }
 
     /**
@@ -280,6 +309,22 @@ class BoardPosition {
 
     public static boolean compare(BoardPosition a, BoardPosition b) {
         return a._x == b._x && a._y == b._y;
+    }
+
+    public String dirToString() {
+        String direction = "";
+
+        if (_x == 1 && _y == 0)
+            direction = "right";
+        else if (_x == -1 && _y == 0)
+            direction = "left";
+        else if (_x == 0 && _y == 1)
+            direction = "down";
+        else if (_x == 0 && _y == -1)
+            direction = "up";
+
+        return direction;
+
     }
 }
 

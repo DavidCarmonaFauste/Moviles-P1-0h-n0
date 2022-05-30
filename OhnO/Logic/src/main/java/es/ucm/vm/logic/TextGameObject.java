@@ -50,7 +50,7 @@ public class TextGameObject extends GameObject {
     public void render(Graphics g) {
         g.setUpFont(_f, _thickness, _b);
         g.setColor(_c);
-        g.drawText(_t, (int) _coordOrigin._x + (int) _pos._x - (_thickness/4)*_t.length() ,
+        g.drawText(_t, (int) _coordOrigin._x + (int) _pos._x - (_thickness/5)* _t.length() ,
                 (int) _coordOrigin._y + ((int) _pos._y * (-1)) + (_thickness / 4));
     } // render
 } // Text

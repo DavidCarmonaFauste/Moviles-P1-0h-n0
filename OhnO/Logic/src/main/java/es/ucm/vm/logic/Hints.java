@@ -15,6 +15,7 @@ public class Hints {
     Board _board;
     BoardPosition _auxPos;
     public boolean _sameMap = false;
+    public BoardTile _hintedTile = null;
 
     /**
      * Constructor. Takes a board and creates a Watcher utility for its use inside hint methods
@@ -230,7 +231,7 @@ public class Hints {
      * Uses the hint methods to display a string with a hint depending on what can be done
      * @return (String) string with the helper hint
      */
-    public String helpUser(BoardTile hintTile){
+    public String helpUser(){
         Stack<BoardTile> pool = new Stack<BoardTile>();
         //we fill the pool
         for(BoardTile[] column : _board.getMap())
@@ -244,28 +245,31 @@ public class Hints {
             BoardTile tile = pool.pop();
             setTileInfo(tile, _board);
             TileInfo info = tile._tileInfo;
-            hintTile = tile;
+
+            _hintedTile = tile;
+            int posX = (tile._boardPos._x + 1), posY = (tile._boardPos._y + 1);
+
             if (tile._tileColor == TileColor.BLUE && (info.numberCount + info.unknownsAround) == 0) {
-                return tile._boardPos._x + "x" + tile._boardPos._y + " cannot be blue";
+                return posX + "x" + posY + " cannot be blue";
             }
             if (tile._tileColor == TileColor.BLUE && tile._count > info.numberCount && info.unknownsAround == 0 && tile._count > 0) {
-                return tile._boardPos._x + "x" + tile._boardPos._y + " is closed but needs more blue tiles";
+                return posX + "x" + posY + " is closed but needs more blue tiles";
             }
             if (tile._tileColor == TileColor.BLUE && tile._count < info.numberCount && tile._count > 0) {
-                return tile._boardPos._x + "x" + tile._boardPos._y + " is seeing to much";
+                return posX + "x" + posY + " is seeing to much";
             }
+
             // if a number has unknowns around, perhaps we can fill those unknowns
             if ((tile._tileColor == TileColor.BLUE && tile._count > 0) && info.unknownsAround > 0) {
-
                 // if its number is reached, close its paths by walls
                 if (info.numberReached) {
-                    return tile._boardPos._x + "x" + tile._boardPos._y + " can be closed with red tiles";
+                    return posX + "x" + posY + " can be closed with red tiles";
                 }
 
                 // if a tile has only one direction to go, fill the first unknown there with a dot and retry
                 if (info.singlePossibleDirection != null) {
-                    return tile._boardPos._x + "x" + tile._boardPos._y +
-                            " needs blue tiles at x:" + info.singlePossibleDirection._x + " y:" + info.singlePossibleDirection._y;
+                    return posX + "x" + posY +
+                            " needs blue tiles (" + info.singlePossibleDirection.dirToString() + ")";
                 }
 
                 // check if a certain direction would be too much
@@ -273,12 +277,12 @@ public class Hints {
                 for (BoardPosition dir : DIRECTIONS) {
                     TileInfo.TileInfoInDir curDir = info.directionInfo[temporal];
                     if (curDir.wouldBeTooMuch) {
-                        return tile._boardPos._x + "x" + tile._boardPos._y +
-                                " needs to be closed at x:" + dir._x + " y:" + dir._y;
+                        return posX + "x" + posY +
+                                " needs to be closed (" + dir.dirToString() + ")";
                     }
                     // if dotting one unknown tile in this direction is at least required no matter what
                     else if (curDir.unknownCount > 0 && curDir.numberWhenDottingFirstUnknown + curDir.maxPossibleCountInOtherDirections <= tile._count) {
-                        return tile._boardPos._x + "x" + tile._boardPos._y + " need more blue tiles";
+                        return posX + "x" + posY + " needs more blue tiles";
                     }
                     temporal++;
                 }

@@ -121,6 +121,13 @@ public class Graphics extends AbstractGraphics {
         _cnv.drawCircle(x + (int)(diameter/2), y+(int)(diameter/2), (int)(diameter/2), _pnt);
     }
 
+    @Override
+    public void lineCircle(int x, int y, int diameter) {
+        _pnt.setStyle(Paint.Style.STROKE);
+        _pnt.setStrokeWidth(10);
+        _cnv.drawCircle(x + (int)(diameter/2), y+(int)(diameter/2), (int)(diameter/2), _pnt);
+    }
+
     /**
      * Android implementation of the drawText method. It should be called only after setting up the font.
      *
