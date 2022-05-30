@@ -79,7 +79,12 @@ public abstract class GameObject {
     public void setColor(Color c) {
         _c = c;
     } // setColor
-
+    /**
+     * Set the color to draw the GO.
+     *
+     * @param o (int) Alpha.
+     */
+    public void setAlphaColor(int o) { _c._a = o; } // setAlpha
 
     public void setCoordOrigin(Vector2 or){
         _coordOrigin = or;

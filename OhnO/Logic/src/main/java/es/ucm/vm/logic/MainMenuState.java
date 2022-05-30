@@ -31,7 +31,8 @@ public class MainMenuState implements GameState {
     ArrayList<Button> _buttons; // Array list with the level buttons
     int _diameter = 90;
     Button _closeButton;
-
+    int _alpha = 0;
+    int _animationSpeed =2;
     double _cooldown = 0.6;
 
     //---------------------------------------------------------------
@@ -84,8 +85,8 @@ public class MainMenuState implements GameState {
         _buttons = new ArrayList<>();
         int levels = 4;
         Color white = new Color(255, 255, 255, 255);
-        Color blue = new Color(); blue.setBlue();
-        Color red = new Color(); red.setRed();
+        Color blue = new Color(); blue.setBlue(); blue._a = 0;
+        Color red = new Color(); red.setRed(); red._a = 0;
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 3; j++) {
                 Vector2 pos = new Vector2(j*100 - 100, - i*100);
@@ -123,6 +124,10 @@ public class MainMenuState implements GameState {
      */
     @Override
     public void update(double t) {
+        if(_alpha < 255) {
+            _alpha += _animationSpeed * 100 * t;
+            if(_alpha > 255) _alpha = 255;
+        }
         if (_cooldown >= 0) _cooldown -= t;
     }
 
@@ -134,13 +139,18 @@ public class MainMenuState implements GameState {
     @Override
     public void render(Graphics g) {
         g.clear(_clearColor);
+        Color c = new Color();
 
         for (Button button: _buttons) {
             drawLevelButtons(g, button);
+            button.setAlphaColor(_alpha);
             button.render(g);
         }
 
         g.save();
+        _closeButton.setAlphaColor(_alpha);
+        _header.setAlphaColor(_alpha);
+        _description.setAlphaColor(_alpha);
         _closeButton.render(g);
         _header.render(g);
         _description.render(g);
