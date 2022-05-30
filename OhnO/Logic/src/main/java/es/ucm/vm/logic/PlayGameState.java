@@ -33,7 +33,7 @@ public class PlayGameState implements GameState {
     BoardTile _hintedTile = null;
     double _hintMarkTimer = 0;
 
-    Vector2 _coordOr; // Coord origin
+    Vector2 _coordOr; // Coord origin (center of the logic canvas)
     int _coordOrX; // Coord origin X value
     int _coordOrY; // Coord origin Y value
 
@@ -101,7 +101,7 @@ public class PlayGameState implements GameState {
 
             _board.setMap(generatedMap);
             _hints.updateMap(_board);
-            _hints.newSolveMap(_board, false);
+            _hints.solveMap(_board);
             _hints.updateMap(_board);
 
             // adds reds and re-counts the number of blues each tile sees -------------
@@ -125,7 +125,7 @@ public class PlayGameState implements GameState {
     }
 
     /**
-     * Checks that the tiles stack doesn't have any tile that sees more than it should. If one
+     * Checks that the tiles stack doesn't have any element that sees more than it should. If one
      * exists, it places a wall and recounts the visible blues, all while making sure the map
      * stays resolvable
      *
@@ -200,7 +200,7 @@ public class PlayGameState implements GameState {
                         }
                         _board.setMap(generatedMap);
                         _hints.updateMap(_board);
-                        _hints.newSolveMap(_board, false);
+                        _hints.solveMap(_board);
                         _hints.updateMap(_board);
                         tryAgain = true;
                     }
@@ -262,7 +262,7 @@ public class PlayGameState implements GameState {
             tile._tileInfo = null;
 
             _hints.updateMap(_board);
-            if (_hints.newSolveMap(null, true)) {
+            if (_hints.solveMap(null)) {
                 tile.activateButton();
                 if(lastValue != 0)emptyTiles++;
                 if (isWall)
@@ -281,7 +281,7 @@ public class PlayGameState implements GameState {
     } // tryPlacingGreys
 
     /**
-     * Creates and sets all the buttons on the play scene
+     * Creates and sets all the buttons and text on the play scene
      *
      * @param mapSize   (int) how many tiles wide is the map
      * @param step      (double) diameter of a tile, used for placement and sizing
@@ -347,7 +347,7 @@ public class PlayGameState implements GameState {
 
 
     /**
-     * Update. In this screen is only to fit the Interface requirements.
+     * Updates timers and tile animations
      *
      * @param t (double) Time elapsed since the last frame.
      */
@@ -369,7 +369,6 @@ public class PlayGameState implements GameState {
                 tile.update(t);
             }
         }
-
     }
 
     /**

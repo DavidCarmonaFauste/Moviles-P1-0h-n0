@@ -18,14 +18,14 @@ public class Hints {
     public BoardTile _hintedTile = null;
 
     /**
-     * Constructor. Takes a board and creates a Watcher utility for its use inside hint methods
+     * Constructor. Takes a board for future hint calculations
      * @param b (Board) board we want to apply hints to
      */
     public Hints(Board b)
     {
-            _board = new Board(b.getMapSize());
-            updateMap(b);
-            _auxPos = new BoardPosition(0, 0);
+        _board = new Board(b.getMapSize());
+        updateMap(b);
+        _auxPos = new BoardPosition(0, 0);
     }
 
     /**
@@ -45,11 +45,14 @@ public class Hints {
                 x++;
             }
         } catch (Exception e){
-            // todo handle exception
+            System.err.println(e.getMessage());
         }
     }
 
-    public void renderPrueba(){
+    /**
+     * Debugging method that uses system.out to write board configuration
+     */
+    public void debugRender(){
         for (int y = 0; y <  _board.getMapSize(); y++) {
             System.out.println("+---+---+---+---+---+---+---+---+---+");
             for (int x = 0; x <  _board.getMapSize(); x++) {
@@ -65,6 +68,13 @@ public class Hints {
     }
 
 
+    /**
+     * Uses hint mechanics to store tile info such as number of blues it sees, greys around it, etc.
+     * This info will be used later for hints and map solving
+     *
+     * @param t (BoardTile) tile we want to check
+     * @param mapToSolve (Board) map, for checking out adjacent tiles
+     */
     private void setTileInfo(BoardTile t, Board mapToSolve){
         TileInfo info;
         int possibleDirCount = 0;
@@ -130,10 +140,20 @@ public class Hints {
 
     }
 
-    public boolean newSolveMap(Board map, boolean trySolve){
+
+    /**
+     * Uses the tile info and hints to try to solve a map
+     *
+     * @param map (Board) external map, in case we want to solve it. If the map is null, it will
+     *            use the stored one (_board)
+     * @return (Boolean) true if the map was solved
+     */
+    public boolean solveMap(Board map){
         Board mapToSolve;
+
         //if they don't give us a map, we can use hint's map
         mapToSolve = (map == null) ? _board : map;
+
         boolean tryAgain = true;
         int attempts = 0;
         BoardTile[] pool = new BoardTile[mapToSolve.getMapSize()*mapToSolve.getMapSize()];
@@ -142,8 +162,8 @@ public class Hints {
 
             tryAgain = false;
 
-            if(trySolve) {
-                if (isValid(mapToSolve)) return true;
+            if(map == null) {
+                if (noGreysInMap(mapToSolve)) return true;
             }
             //we fill the pool
             int z = 0;
@@ -294,8 +314,7 @@ public class Hints {
      * Checks for puzzle completion by looking for grey tiles. If no grey tiles remain, it's a win
      * @return (boolean) true if no grey tiles, false if one or more grey tiles remaining
      */
-    public boolean isSolved()
-    {
+    public boolean isSolved() {
         for(BoardTile[] column : _board.getMap())
         {
             for(BoardTile t : column) {
@@ -312,7 +331,13 @@ public class Hints {
         return true;
     }
 
-    public boolean isValid(Board map){
+    /**
+     * Given a map, it checks if there are any grey tiles
+     *
+     * @param map (Board) board we want to check
+     * @return (boolean) true if there are no grey tiles
+     */
+    public boolean noGreysInMap(Board map){
         for(BoardTile[] column : map.getMap())
         {
             for(BoardTile t : column) {
@@ -348,6 +373,13 @@ public class Hints {
         }
     }
 
+    /**
+     * Used to count the number of blue tiles in front of a given tile, and in a certain direction
+     *
+     * @param pos (BoardPos) position of the tile we want to check, in board coords
+     * @param dir (BoardPos) direction of the check
+     * @return (int) number of blue tiles in that direction
+     */
     private int bluesInfFrontOf(BoardPosition pos, BoardPosition dir)
     {
         int counted = 0;

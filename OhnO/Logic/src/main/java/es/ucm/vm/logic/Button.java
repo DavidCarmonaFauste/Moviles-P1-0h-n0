@@ -19,7 +19,7 @@ public class Button extends GameObject{
     private final ImageGameObject _image;
 
     /**
-     * Button constructor. Creates the new button and sets it's parameters.
+     * Button constructor. Creates the new button and sets its parameters.
      *
      * @param x (double) X Position.
      * @param y (double) Y Position.

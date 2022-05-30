@@ -109,11 +109,25 @@ public class Graphics extends AbstractGraphics {
         } // catch
     } // fillRect
 
+    /**
+     * Uses swing methods to draw a filled circle
+     *
+     * @param y (int) y position of the center of the circle
+     * @param diameter (int) diameter of the circle
+     * @param x (int) x position of the center of the circle
+     */
     @Override
     public void fillCircle(int x, int y, int diameter) {
         (_win.getJGraphics()).fillOval(x, y, diameter, diameter);
     }
 
+    /**
+     * Uses swing methods to draw a circumference
+     *
+     * @param y (int) y position of the center of the circle
+     * @param diameter (int) diameter of the circle
+     * @param x (int) x position of the center of the circle
+     */
     @Override
     public void lineCircle(int x, int y, int diameter) {
         ((Graphics2D)(_win.getJGraphics())).setStroke(new BasicStroke(10));

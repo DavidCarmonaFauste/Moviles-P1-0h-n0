@@ -20,6 +20,15 @@ public class Font implements es.ucm.vm.engine.Font {
     int _fontSize = 1;
     Color _fontColor = Color.white;
 
+    /**
+     * Initializes the PC font object, loading the actual font and preparing files
+     *
+     * @param filename (String) string containing the path of the font
+     * @param fontSize (int) size of the text
+     * @param fontColor (int) color of the text, in hex format
+     * @param isBold (boolean) is the font bold?
+     * @return (boolean) true if everything went well
+     */
     @Override
     public boolean initializeFont(String filename, int fontSize, int fontColor, boolean isBold) {
         // Loading the font from the .ttf file
@@ -49,6 +58,11 @@ public class Font implements es.ucm.vm.engine.Font {
     } // initializeFont
 
 
+    /**
+     * Getter for the java font object
+     *
+     * @return (java.awt.Font) _font
+     */
     public java.awt.Font getFont() {
         return _font;
     }

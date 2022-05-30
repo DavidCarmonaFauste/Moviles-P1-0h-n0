@@ -33,6 +33,9 @@ public class Logic implements es.ucm.vm.engine.Logic {
         _cnv = new Rect (400, 0, 0, 600);
     } // Logic
 
+    /**
+     * Sets the first game state so the game can start running
+     */
     @Override
     public void initLogic() {
         setGameState(GameStates.INTRO);
@@ -79,6 +82,10 @@ public class Logic implements es.ucm.vm.engine.Logic {
         }
     } // setGameState
 
+    /**
+     * Getter for the current Game State
+     * @return (GameState) _currentGameState
+     */
     public GameState getGameState() {
         return _currentGameState;
     }

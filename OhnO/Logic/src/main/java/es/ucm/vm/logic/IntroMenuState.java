@@ -8,6 +8,9 @@ import es.ucm.vm.engine.Graphics;
 import es.ucm.vm.engine.Input;
 import es.ucm.vm.engine.Rect;
 
+/**
+ * Intro menu with the name of the game and some extra data
+ */
 public class IntroMenuState implements GameState {
     //---------------------------------------------------------------
     //--------------------------Constants----------------------------
@@ -38,6 +41,11 @@ public class IntroMenuState implements GameState {
     final String DESCRIPTION = "Original game by Q42, Martin Kool";
     final Color _clearColor  = new Color(255,255,255,255);
 
+    /**
+     * Creates all objects that will be shown in the menu and initializes values
+     *
+     * @param l (Logic) instance of the logic, used to change gamestate
+     */
     public IntroMenuState(Logic l) {
         _l = l;
 
@@ -71,11 +79,21 @@ public class IntroMenuState implements GameState {
         return _l.getCanvasSize();
     }
 
+    /**
+     * In this menu, nothing happens
+     *
+     * @param t (double) Time elapsed since the last frame.
+     */
     @Override
     public void update(double t) {
 
     }
 
+    /**
+     * Renders the different text objects as well as the decorative tiles
+     *
+     * @param g (Graphics) Instance of Graphics
+     */
     @Override
     public void render(Graphics g) {
         g.clear(_clearColor);
@@ -90,6 +108,12 @@ public class IntroMenuState implements GameState {
         drawCircles(g);
     }
 
+    /**
+     * If it detects any click/touch, it will use the logic to change to the Main Menu. Also
+     * detects closing events
+     *
+     * @param e (List<Input.TouchEvent>) Event list taken from the Input class
+     */
     @Override
     public void processInput(List<Input.TouchEvent> e) {
         int ptr = 0;
@@ -108,6 +132,11 @@ public class IntroMenuState implements GameState {
         } // while
     }
 
+    /**
+     * Uses methods from Graphics to draw the two decorative tiles
+     *
+     * @param g (Graphics) graphics instance for drawing
+     */
     private void drawCircles(Graphics g) {
         Rect o = new Rect((int)(_diameter * ((double)3/4)), 0, 0, (int)(_diameter * ((double)3/4)));
         Rect n = g.scale(o, g.getCanvas());

@@ -90,7 +90,7 @@ public class BoardTile extends GameObject{
     }
 
     /**
-     * Update function. In this case, it doesn't do anything
+     * Update function that changes the visibility factor for fade ins
      * @param t (double) Time elapsed
      */
     @Override
@@ -143,6 +143,10 @@ public class BoardTile extends GameObject{
         }
     }
 
+    /**
+     * Uses the graphic's methods to draw a circumference around the tile, as a marker for a hinted tile
+     * @param g (Graphics) Instance of graphics to draw
+     */
     public void renderHintCircle(Graphics g) {
         Rect o;
         Rect n;
@@ -198,6 +202,10 @@ public class BoardTile extends GameObject{
                 break;
         }
     }
+
+    /**
+     * Makes a tile also react to input
+     */
     public void activateButton(){
         this._button = new Button(_pos._x, _pos._y, _d, _d, new Color(0,0,0,100), 20, null, null);
     }
@@ -276,8 +284,6 @@ public class BoardTile extends GameObject{
 enum TileColor {GREY, RED, BLUE}
 
 
-
-
 /**
  * Simple position class intended for board positioning and movement
  */
@@ -323,6 +329,9 @@ class BoardPosition {
     }
 }
 
+/**
+ * Auxiliary class used to store various info for each tile, used for easy and fast hint checking
+ */
 class TileInfo{
     public static class TileInfoInDir {
         public int unknownCount;

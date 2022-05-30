@@ -46,10 +46,18 @@ public class Board {
 
         return b;
     }
+
+    /**
+     * Tries to get next tile in a certain direction
+     * @param t (BoardTile) tile we want to check (starting position)
+     * @param dir (BoardPosition) direction we want to check
+     * @return
+     */
     public BoardTile getTileInDir(BoardTile t, BoardPosition dir){
         BoardPosition _newPos = BoardPosition.add(t._boardPos, dir);
         return (offLimits(_newPos)) ? null : _map[t._boardPos._x + dir._x][t._boardPos._y + dir._y];
     }
+
     /**
      * Setter for the map size
      * @param size (int) new map size to store

@@ -23,7 +23,7 @@ public class MainMenuState implements GameState {
 
     int _posOrX; // Pos of coord origin X
     int _posOrY; // Pos of coord origin Y
-    Vector2 _coordOrigin;
+    Vector2 _coordOrigin; // center of the logic canvas
 
     TextGameObject _header;
     TextGameObject _description;
@@ -118,7 +118,7 @@ public class MainMenuState implements GameState {
 
 
     /**
-     * Update. In this screen is only to fit the Interface requirements.
+     * Updates the fade in values for animations
      *
      * @param t (double) Time elapsed since the last frame.
      */

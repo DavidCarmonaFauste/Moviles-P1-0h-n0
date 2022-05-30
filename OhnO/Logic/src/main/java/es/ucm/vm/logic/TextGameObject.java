@@ -37,12 +37,17 @@ public class TextGameObject extends GameObject {
         _f = font;
     } // Constructor
 
+    /**
+     * Changes the string that will be written
+     *
+     * @param newTxt (String) string to be written
+     */
     public void changeTxt(String newTxt){
         _t = newTxt;
     }
 
     /**
-     * Renders the text in the current position.
+     * Renders the text in the current position by using Graphics methods
      *
      * @param g (Graphics) Graphics instance to paint it.
      */

@@ -86,6 +86,10 @@ public abstract class GameObject {
      */
     public void setAlphaColor(int o) { _c._a = o; } // setAlpha
 
+    /**
+     * Sets the coordOrigin value (the center of the logic canvas)
+     * @param or
+     */
     public void setCoordOrigin(Vector2 or){
         _coordOrigin = or;
     } // set_coordOrigin
